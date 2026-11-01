@@ -1,0 +1,53 @@
+[
+ {
+  "id": "testgelaende",
+  "name": "Testgelände",
+  "level": "gridmap_v2",
+  "fallbackLevels": [
+   "automation_test_track",
+   "driver_training",
+   "smallgrid"
+  ],
+  "anchor": "spawn",
+  "offset": [
+   0,
+   25
+  ]
+ },
+ {
+  "id": "crawlpark",
+  "name": "Felsenpark",
+  "level": "johnson_valley",
+  "fallbackLevels": [
+   "utah",
+   "gridmap_v2"
+  ],
+  "anchor": "spawn",
+  "offset": [
+   0,
+   15
+  ]
+ },
+ {
+  "id": "derby_arena",
+  "name": "Derby-Arena",
+  "level": "derby",
+  "fallbackLevels": [
+   "industrial",
+   "gridmap_v2"
+  ],
+  "anchor": "spawn",
+  "radius": 24
+ },
+ {
+  "id": "derby_gross",
+  "name": "Große Arena",
+  "level": "derby",
+  "fallbackLevels": [
+   "industrial",
+   "gridmap_v2"
+  ],
+  "anchor": "spawn",
+  "radius": 34
+ }
+]

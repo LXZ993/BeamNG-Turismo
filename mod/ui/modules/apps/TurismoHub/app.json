@@ -1,0 +1,11 @@
+{
+  "name": "Turismo Karriere",
+  "author": "Turismo-Projekt",
+  "version": "0.1.0",
+  "description": "World-Menü, Fahrer-HUD, Ergebnisse und Musik der Turismo-Karriere. Einmal ins Layout ziehen – das Menü legt sich dann über den ganzen Bildschirm.",
+  "directive": "turismoHub",
+  "domElement": "<turismo-hub></turismo-hub>",
+  "css": { "width": "160px", "height": "40px", "right": "0px", "bottom": "0px" },
+  "types": ["ui.apps.categories.gameplay"],
+  "preview": "app.png"
+}

@@ -1,0 +1,27 @@
+[
+ {
+  "match": "hirochi_raceway",
+  "tags": [
+   "tarmac",
+   "circuit-main"
+  ]
+ },
+ {
+  "match": "automation_test_track",
+  "tags": [
+   "tarmac"
+  ]
+ },
+ {
+  "match": "/utah/",
+  "surface": "dirt"
+ },
+ {
+  "match": "johnson_valley",
+  "surface": "dirt"
+ },
+ {
+  "match": "jungle_rock_island",
+  "surface": "tarmac"
+ }
+]

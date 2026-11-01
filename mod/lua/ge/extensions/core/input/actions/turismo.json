@@ -1,0 +1,32 @@
+{
+  "turismo_toggleHub": {
+    "cat": "gameplay", "order": 1, "ctx": "tlua",
+    "onDown": "if extensions.turismo_core then extensions.turismo_core.toggleHub() end",
+    "title": "Turismo: Hauptmenü öffnen/schließen",
+    "desc": "Öffnet das Turismo-Karrieremenü (World-Menü)."
+  },
+  "turismo_imguiHub": {
+    "cat": "gameplay", "order": 2, "ctx": "tlua",
+    "onDown": "if extensions.turismo_imguiHub then extensions.turismo_imguiHub.toggle() end",
+    "title": "Turismo: Notfall-Menü (IMGUI)",
+    "desc": "Einfaches Ersatzmenü, falls die Turismo-Oberfläche nicht angezeigt wird."
+  },
+  "turismo_raceMenu": {
+    "cat": "gameplay", "order": 3, "ctx": "tlua",
+    "onDown": "if extensions.turismo_core then extensions.turismo_core.raceMenu() end",
+    "title": "Turismo: Rennmenü (Neustart/Aufgeben)",
+    "desc": "Zeigt während eines Rennens oder Tests das Pausenmenü mit Neustart und Aufgeben."
+  },
+  "turismo_skip": {
+    "cat": "gameplay", "order": 4, "ctx": "tlua",
+    "onDown": "if extensions.turismo_core then extensions.turismo_core.skip() end",
+    "title": "Turismo: Intro überspringen",
+    "desc": "Überspringt die Kamerafahrt vor dem Start oder schließt den Ergebnisbildschirm."
+  },
+  "turismo_recorderCheckpoint": {
+    "cat": "gameplay", "order": 5, "ctx": "tlua",
+    "onDown": "if extensions.turismo_core then extensions.turismo_core.call('recorderCheckpoint', {}) end",
+    "title": "Turismo: Streckenrekorder - Checkpoint setzen",
+    "desc": "Setzt beim Aufnehmen einer eigenen Strecke einen Checkpoint an der aktuellen Position."
+  }
+}

@@ -1,0 +1,643 @@
+[
+ {
+  "id": "TR-brake1",
+  "name": "Bremsen 1: Vollbremsung",
+  "desc": "Mit 80 km/h ins Tor, dann so kurz wie möglich stoppen.",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 0,
+    "y": 150,
+    "w": 6,
+    "minSpeed": 80,
+    "label": "min 80"
+   },
+   {
+    "kind": "stop",
+    "x": 0,
+    "y": 190,
+    "w": 4,
+    "len": 6,
+    "label": "STOP"
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 120,
+  "category": "Bremsen",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-brake2",
+  "name": "Bremsen 2: Präzision",
+  "desc": "Kleine Haltezone nach Highspeed-Anfahrt.",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 0,
+    "y": 250,
+    "w": 6,
+    "minSpeed": 120
+   },
+   {
+    "kind": "stop",
+    "x": 0,
+    "y": 330,
+    "w": 3,
+    "len": 4,
+    "label": "STOP"
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 120,
+  "category": "Bremsen",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-corner1",
+  "name": "Kurven 1: Konstanter Radius",
+  "desc": "Ein Dreiviertelkreis mit gleichmäßigem Tempo.",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 20.0,
+    "w": 7,
+    "heading": -360.0
+   },
+   {
+    "kind": "gate",
+    "x": 4.02,
+    "y": 35.0,
+    "w": 7,
+    "heading": -330.0
+   },
+   {
+    "kind": "gate",
+    "x": 15.0,
+    "y": 45.98,
+    "w": 7,
+    "heading": -300.0
+   },
+   {
+    "kind": "gate",
+    "x": 30.0,
+    "y": 50.0,
+    "w": 7,
+    "heading": -270.0
+   },
+   {
+    "kind": "gate",
+    "x": 45.0,
+    "y": 45.98,
+    "w": 7,
+    "heading": -240.0
+   },
+   {
+    "kind": "gate",
+    "x": 55.98,
+    "y": 35.0,
+    "w": 7,
+    "heading": -210.0
+   },
+   {
+    "kind": "gate",
+    "x": 60.0,
+    "y": 20.0,
+    "w": 7,
+    "heading": -180.0
+   },
+   {
+    "kind": "gate",
+    "x": 55.98,
+    "y": 5.0,
+    "w": 7,
+    "heading": -150.0
+   },
+   {
+    "kind": "gate",
+    "x": 45.0,
+    "y": -5.98,
+    "w": 7,
+    "heading": -120.0
+   },
+   {
+    "kind": "gate",
+    "x": 30.0,
+    "y": -10.0,
+    "w": 7,
+    "heading": -90.0
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 120,
+  "category": "Kurven",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-corner2",
+  "name": "Kurven 2: Wechselkurven",
+  "desc": "Eine S-Kurve mit Gefühl.",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 20.0,
+    "w": 7,
+    "heading": 0.0
+   },
+   {
+    "kind": "gate",
+    "x": -1.71,
+    "y": 30.82,
+    "w": 7,
+    "heading": -18.0
+   },
+   {
+    "kind": "gate",
+    "x": -6.68,
+    "y": 40.57,
+    "w": 7,
+    "heading": -36.0
+   },
+   {
+    "kind": "gate",
+    "x": -14.43,
+    "y": 48.32,
+    "w": 7,
+    "heading": -54.0
+   },
+   {
+    "kind": "gate",
+    "x": -24.18,
+    "y": 53.29,
+    "w": 7,
+    "heading": -72.0
+   },
+   {
+    "kind": "gate",
+    "x": -35.0,
+    "y": 55.0,
+    "w": 7,
+    "heading": -90.0
+   },
+   {
+    "kind": "gate",
+    "x": -35.0,
+    "y": 55.0,
+    "w": 7,
+    "heading": -450.0
+   },
+   {
+    "kind": "gate",
+    "x": -24.18,
+    "y": 56.71,
+    "w": 7,
+    "heading": -468.0
+   },
+   {
+    "kind": "gate",
+    "x": -14.43,
+    "y": 61.68,
+    "w": 7,
+    "heading": -486.0
+   },
+   {
+    "kind": "gate",
+    "x": -6.68,
+    "y": 69.43,
+    "w": 7,
+    "heading": -504.0
+   },
+   {
+    "kind": "gate",
+    "x": -1.71,
+    "y": 79.18,
+    "w": 7,
+    "heading": -522.0
+   },
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 90.0,
+    "w": 7,
+    "heading": -540.0
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 120,
+  "category": "Kurven",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-slalom",
+  "name": "Slalom-Meister",
+  "desc": "Zwölf Tore - wer bleibt im Rhythmus?",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 3.2,
+    "y": 30,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": -3.2,
+    "y": 52,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": 3.2,
+    "y": 74,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": -3.2,
+    "y": 96,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": 3.2,
+    "y": 118,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": -3.2,
+    "y": 140,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": 3.2,
+    "y": 162,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": -3.2,
+    "y": 184,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": 3.2,
+    "y": 206,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": -3.2,
+    "y": 228,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": 3.2,
+    "y": 250,
+    "w": 4.5
+   },
+   {
+    "kind": "gate",
+    "x": -3.2,
+    "y": 272,
+    "w": 4.5
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 120,
+  "category": "Kontrolle",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-moose",
+  "name": "Elchtest",
+  "desc": "Spurwechsel mit 80 km/h.",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 0,
+    "y": 110,
+    "w": 3.2,
+    "label": "Einfahrt",
+    "minSpeed": 80
+   },
+   {
+    "kind": "gate",
+    "x": 0,
+    "y": 120,
+    "w": 3.2
+   },
+   {
+    "kind": "gate",
+    "x": 3.6,
+    "y": 133,
+    "w": 3.6
+   },
+   {
+    "kind": "gate",
+    "x": 3.6,
+    "y": 143,
+    "w": 3.6
+   },
+   {
+    "kind": "gate",
+    "x": 0,
+    "y": 158,
+    "w": 3.4
+   },
+   {
+    "kind": "gate",
+    "x": 0,
+    "y": 170,
+    "w": 3.4
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 120,
+  "category": "Kontrolle",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-eight",
+  "name": "Liegende Acht",
+  "desc": "Zwei Kreise, eine Linie.",
+  "type": "gates",
+  "venue": "testgelaende",
+  "course": [
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 30.0,
+    "w": 8,
+    "heading": -360.0
+   },
+   {
+    "kind": "gate",
+    "x": 3.06,
+    "y": 39.4,
+    "w": 8,
+    "heading": -324.0
+   },
+   {
+    "kind": "gate",
+    "x": 11.06,
+    "y": 45.22,
+    "w": 8,
+    "heading": -288.0
+   },
+   {
+    "kind": "gate",
+    "x": 20.94,
+    "y": 45.22,
+    "w": 8,
+    "heading": -252.0
+   },
+   {
+    "kind": "gate",
+    "x": 28.94,
+    "y": 39.4,
+    "w": 8,
+    "heading": -216.0
+   },
+   {
+    "kind": "gate",
+    "x": 32.0,
+    "y": 30.0,
+    "w": 8,
+    "heading": -180.0
+   },
+   {
+    "kind": "gate",
+    "x": 28.94,
+    "y": 20.6,
+    "w": 8,
+    "heading": -144.0
+   },
+   {
+    "kind": "gate",
+    "x": 20.94,
+    "y": 14.78,
+    "w": 8,
+    "heading": -108.0
+   },
+   {
+    "kind": "gate",
+    "x": 11.06,
+    "y": 14.78,
+    "w": 8,
+    "heading": -72.0
+   },
+   {
+    "kind": "gate",
+    "x": 3.06,
+    "y": 20.6,
+    "w": 8,
+    "heading": -36.0
+   },
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 30.0,
+    "w": 8,
+    "heading": 0.0
+   },
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 30.01,
+    "w": 8,
+    "heading": 0.0
+   },
+   {
+    "kind": "gate",
+    "x": -3.06,
+    "y": 39.41,
+    "w": 8,
+    "heading": -36.0
+   },
+   {
+    "kind": "gate",
+    "x": -11.06,
+    "y": 45.23,
+    "w": 8,
+    "heading": -72.0
+   },
+   {
+    "kind": "gate",
+    "x": -20.94,
+    "y": 45.23,
+    "w": 8,
+    "heading": -108.0
+   },
+   {
+    "kind": "gate",
+    "x": -28.94,
+    "y": 39.41,
+    "w": 8,
+    "heading": -144.0
+   },
+   {
+    "kind": "gate",
+    "x": -32.0,
+    "y": 30.01,
+    "w": 8,
+    "heading": -180.0
+   },
+   {
+    "kind": "gate",
+    "x": -28.94,
+    "y": 20.61,
+    "w": 8,
+    "heading": -216.0
+   },
+   {
+    "kind": "gate",
+    "x": -20.94,
+    "y": 14.79,
+    "w": 8,
+    "heading": -252.0
+   },
+   {
+    "kind": "gate",
+    "x": -11.06,
+    "y": 14.79,
+    "w": 8,
+    "heading": -288.0
+   },
+   {
+    "kind": "gate",
+    "x": -3.06,
+    "y": 20.61,
+    "w": 8,
+    "heading": -324.0
+   },
+   {
+    "kind": "gate",
+    "x": 0.0,
+    "y": 30.01,
+    "w": 8,
+    "heading": -360.0
+   }
+  ],
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "timeLimit": 200,
+  "category": "Kontrolle",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-lap-hr",
+  "name": "Rundentraining Rennstrecke",
+  "desc": "Eine fehlerfreie Runde mit deinem Auto.",
+  "type": "track",
+  "track": [
+   "@circuit:hirochi_raceway",
+   "@circuit:west_coast_usa",
+   "@circuit:tarmac",
+   "@circuit:"
+  ],
+  "laps": 1,
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "cleanLap": true,
+  "category": "Strecke",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-lap-it",
+  "name": "Rundentraining Bergstrecke",
+  "desc": "Eine Sprintprüfung mit deinem Auto.",
+  "type": "track",
+  "track": [
+   "@sprint:italy",
+   "@sprint:utah",
+   "@sprint:tarmac",
+   "@sprint:"
+  ],
+  "laps": 1,
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "cleanLap": true,
+  "category": "Strecke",
+  "dayCost": 0
+ },
+ {
+  "id": "TR-lap-3",
+  "name": "Konstanz-Training",
+  "desc": "Drei Runden ohne Kollision.",
+  "type": "track",
+  "track": [
+   "@circuit:hirochi_raceway",
+   "@circuit:italy",
+   "@circuit:tarmac",
+   "@circuit:"
+  ],
+  "laps": 3,
+  "car": {
+   "rental": false
+  },
+  "targets": {
+   "mode": "estimate"
+  },
+  "cleanLap": true,
+  "category": "Strecke",
+  "dayCost": 0
+ }
+]

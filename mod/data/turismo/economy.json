@@ -1,0 +1,49 @@
+{
+ "startMoney": 15000,
+ "homeLevel": "west_coast_usa",
+ "dailyGoalKm": 42,
+ "currentYear": 2025,
+ "usedRotationDays": 3,
+ "usedOfferCount": 20,
+ "legendRotationDays": 7,
+ "legendOfferCount": 8,
+ "legendYearMax": 1995,
+ "legendCollectorLevel": 4,
+ "testRewards": {
+  "bronze": 1000,
+  "silver": 2500,
+  "gold": 5000
+ },
+ "collectorLevels": [
+  0,
+  30000,
+  80000,
+  150000,
+  300000,
+  500000,
+  800000,
+  1200000,
+  2000000,
+  3500000,
+  5000000,
+  8000000
+ ],
+ "baseUnlocks": [
+  "dealer_used",
+  "services",
+  "freeDrive",
+  "recorder",
+  "hall_einsteiger",
+  "license_L1"
+ ],
+ "purchaseLicenseByLI": [
+  {
+   "liMin": 800,
+   "license": "L4"
+  },
+  {
+   "liMin": 650,
+   "license": "L3"
+  }
+ ]
+}

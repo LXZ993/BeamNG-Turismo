@@ -1,0 +1,75 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<title>Turismo UI Vorschau</title>
+<link rel="stylesheet" href="../../mod/ui/modules/apps/TurismoHub/app.css">
+<style>
+  body { margin: 0; background: #556 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="900"><defs><linearGradient id="s" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="%2387a8c8"/><stop offset=".55" stop-color="%23c9d6df"/><stop offset=".56" stop-color="%23585d60"/><stop offset="1" stop-color="%233a3d40"/></linearGradient></defs><rect width="1600" height="900" fill="url(%23s)"/><path d="M700 495 L900 495 L1400 900 L200 900Z" fill="%23464a4d"/><path d="M795 500 L805 500 L830 900 L770 900Z" fill="%23ddd"/></svg>') center/cover; height: 100vh; overflow: hidden; }
+</style>
+</head>
+<body>
+<div id="root"></div>
+<script src="mockdata.js"></script>
+<script src="../../mod/ui/modules/apps/TurismoHub/turismo-ui.js"></script>
+<script>
+  // mock bridge: answers from data dumped by the Lua test harness
+  var M = window.TURISMO_MOCK, listeners = {}, streamCb;
+  var bridge = {
+    call: function (a, args) {
+      var d;
+      if (a === 'showroom') d = M.showroom[args.brand];
+      else if (a === 'carDetails') d = M.carDetails;
+      else if (a === 'recorderState') d = null;
+      else if (a === 'hub') { emit('TurismoHubToggle', { visible: args.visible }); d = true; }
+      else if (a === 'getSlots') d = M.getSlots;
+      else d = M[a];
+      if (d === undefined) d = true;
+      return new Promise(function (r) { setTimeout(function () { r(JSON.parse(JSON.stringify(d))); }, 10); });
+    },
+    on: function (n, cb) { (listeners[n] = listeners[n] || []).push(cb); },
+    stream: function (cb) { streamCb = cb; }
+  };
+  function emit(n, d) { (listeners[n] || []).forEach(function (f) { f(d); }); }
+  var app = TurismoUI.mount(document.getElementById('root'), bridge);
+  window.preview = {
+    emit: emit,
+    hub: function (screen, params) { emit('TurismoHubToggle', { visible: true }); if (screen) setTimeout(function () { app.go(screen, params || {}); }, 60); },
+    title: function () { app.state = { loaded: false }; M.getSlots = M.slotsEmpty.map(function (s, i) { return i === 0 ? M.getSlots[0] : s; }); emit('TurismoHubToggle', { visible: true }); setTimeout(function () { app.stack = [{ name: 'title', params: {} }]; app.load(); }, 80); },
+    race: function () {
+      emit('TurismoHubToggle', { visible: false });
+      emit('TurismoRacePhase', { phase: 'racing' });
+      emit('TurismoHud', { phase: 'racing', pos: 3, total: 8, lap: 2, laps: 3, lapTime: 41.237, lastLap: 62.881, bestLap: 62.881, gapAhead: 0.84, gapBehind: 1.92,
+        nameAhead: 'Henrik Valtonen', nameBehind: 'Mara Lindqvist', progress: 0.42,
+        standings: [{ pos: 1, name: 'Tomás Herrera' }, { pos: 2, name: 'Henrik Valtonen', gap: 2.1 }, { pos: 3, name: 'Du', isPlayer: true, gap: 2.9 },
+          { pos: 4, name: 'Mara Lindqvist', gap: 4.8 }, { pos: 5, name: 'Kenji Arakawa', gap: 7.2 }, { pos: 6, name: 'Luca Ferrandi', gap: 9.9 }, { pos: 7, name: 'Ana Duarte', gap: 12.4 }, { pos: 8, name: 'Pieter de Vries', gap: 15.0 }] });
+      streamCb && streamCb({ electrics: { wheelspeed: 38.2, rpmTacho: 6100, maxrpm: 7200, gear: 4 } });
+    },
+    countdown: function () { emit('TurismoHubToggle', { visible: false }); emit('TurismoRacePhase', { phase: 'racing' }); emit('TurismoCountdown', { value: 1 }); },
+    intro: function () { emit('TurismoHubToggle', { visible: false }); emit('TurismoRacePhase', { phase: 'intro', track: 'Hirochi Hauptkurs', title: 'Clubsport-Cup - Lauf 2', laps: 3 }); },
+    results: function () {
+      emit('TurismoHubToggle', { visible: false });
+      emit('TurismoRaceResults', { cleanRace: true, list: [{ pos: 1, name: 'Du', isPlayer: true, car: 'Ibishu Covet 1.8 Sport', time: 188.412, bestLap: 61.902 },
+        { pos: 2, name: 'Henrik Valtonen', car: 'Cherrier Vivace 100', time: 189.37, bestLap: 62.2 }, { pos: 3, name: 'Tomás Herrera', car: 'Hirochi Sunburst 1.8', time: 190.05, bestLap: 62.4 },
+        { pos: 4, name: 'Mara Lindqvist', car: 'ETK 844', time: 193.6, bestLap: 63.3 }],
+        rewards: { money: 3500, bonus: [{ name: 'Saubere Fahrt', money: 350 }], ticket: 1 } });
+    },
+    test: function () {
+      emit('TurismoHubToggle', { visible: false });
+      emit('TurismoTestPhase', { phase: 'running', name: 'Slalom' });
+      app.banner = null;
+      emit('TurismoTestHud', { name: 'Slalom', time: 8.95, penalty: 0, gate: 3, gates: 5, speed: 64, targets: { gold: 8.76, silver: 9.18, bronze: 9.86 } });
+    },
+    testResult: function () { emit('TurismoHubToggle', { visible: false }); emit('TurismoTestResult', { name: 'Slalom', value: 8.701, medal: 'gold', newBest: true, reward: 5000, targets: { gold: 8.76, silver: 9.18, bronze: 9.86 } }); },
+    drag: function () {
+      emit('TurismoHubToggle', { visible: false });
+      emit('TurismoDragPhase', { phase: 'staging', title: 'Straßen-Drag - Drag-Wochenende', roundName: 'Halbfinale', opponent: 'Kenji Arakawa' });
+      emit('TurismoDragTree', { phase: 'green' });
+      emit('TurismoDragHud', { time: 9.412, reaction: 0.212, speed: 152, splits: { sixty: 2.31, t330: 5.62, eighth: 8.61 } });
+      streamCb && streamCb({ electrics: { wheelspeed: 42, rpmTacho: 6800, maxrpm: 7200, gear: 3 } });
+    },
+    drift: function () { emit('TurismoHubToggle', { visible: false }); emit('TurismoRacePhase', { phase: 'drift', title: 'Drift-Einsteiger' }); app.banner = null; emit('TurismoModeHud', { mode: 'drift', score: 18450, pending: 1260, combo: 2.5, remaining: 96 }); }
+  };
+</script>
+</body>
+</html>

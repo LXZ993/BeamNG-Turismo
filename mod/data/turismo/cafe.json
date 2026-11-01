@@ -1,0 +1,559 @@
+[
+ {
+  "id": "h01",
+  "name": "Das erste eigene Auto",
+  "chapter": 1,
+  "intro": "Willkommen im Boxenstopp-Café! Jeder Fahrer fängt klein an. Such dir beim Gebrauchtwagenhändler etwas Günstiges aus.",
+  "outro": "Das ist der Anfang einer langen Freundschaft. Ein Auto, das man selbst gekauft hat, fährt man ganz anders.",
+  "steps": [
+   {
+    "type": "own",
+    "label": "Kaufe ein Fahrzeug",
+    "criteria": {},
+    "count": 1,
+    "hint": "Gebrauchtwagenmarkt im Hauptmenü"
+   }
+  ],
+  "reward": {
+   "money": 2000
+  },
+  "unlocks": [
+   "license_L1"
+  ],
+  "unlockNames": [
+   "Lizenzzentrum (Lizenz C)"
+  ]
+ },
+ {
+  "id": "h02",
+  "name": "Die Lizenz C",
+  "chapter": 1,
+  "intro": "Ohne Lizenz kein Rennen. Zeig im Lizenzzentrum, dass du ein Auto beherrschst.",
+  "outro": "Glückwunsch! Mit der C-Lizenz stehen dir die ersten Pokale offen.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Lizenz C",
+    "license": "L1"
+   }
+  ],
+  "reward": {
+   "money": 3000
+  },
+  "unlocks": [
+   "hall_einsteiger",
+   "services"
+  ],
+  "unlockNames": [
+   "Einsteiger-Liga",
+   "Werkstatt"
+  ]
+ },
+ {
+  "id": "h03",
+  "name": "Sonntagsausflug",
+  "chapter": 1,
+  "intro": "Der Sonntagspokal ist das Rennen der Leute. Fahr mit und hol dir einen Podestplatz.",
+  "outro": "Die ersten Pokale im Regal! Siehst du, wie viel Spaß Rennen machen können?",
+  "steps": [
+   {
+    "type": "trophy",
+    "label": "Podium im Sonntagspokal (beliebiges Rennen)",
+    "series": "sonntagspokal",
+    "position": 3,
+    "allRaces": false
+   }
+  ],
+  "reward": {
+   "car": {
+    "categories": [
+     "street"
+    ],
+    "liMax": 330
+   }
+  },
+  "unlocks": [
+   "dealer_new"
+  ],
+  "unlockNames": [
+   "Neuwagen-Zentrum"
+  ]
+ },
+ {
+  "id": "h04",
+  "name": "Japanische Kompakte",
+  "chapter": 1,
+  "intro": "Kleine, leichte Autos aus Japan haben die Clubsport-Szene geprägt. Sammle drei davon.",
+  "outro": "Leicht, drehfreudig, zuverlässig: Kein Wunder, dass diese Autos auf jedem Clubsport-Parkplatz stehen.",
+  "steps": [
+   {
+    "type": "own",
+    "label": "Besitze 3 Fahrzeuge aus Japan mit LI unter 420",
+    "criteria": {
+     "regions": [
+      "japan"
+     ],
+     "liMax": 420
+    },
+    "count": 3
+   }
+  ],
+  "reward": {
+   "ticket": 2
+  },
+  "unlocks": [
+   "hall_regional"
+  ],
+  "unlockNames": [
+   "Regional-Cups"
+  ]
+ },
+ {
+  "id": "h05",
+  "name": "Front gegen Heck",
+  "chapter": 1,
+  "intro": "Frontantrieb zieht, Hinterradantrieb schiebt. Fahre beide Trophäen.",
+  "outro": "Jetzt kennst du beide Welten. Welche magst du lieber?",
+  "steps": [
+   {
+    "type": "trophy",
+    "label": "Podium in der Frontantriebs-Trophäe",
+    "series": "frontantrieb_trophy",
+    "position": 3,
+    "allRaces": false
+   },
+   {
+    "type": "trophy",
+    "label": "Podium im Hecktriebler-Pokal",
+    "series": "hecktriebler_pokal",
+    "position": 3,
+    "allRaces": false
+   }
+  ],
+  "reward": {
+   "money": 8000
+  },
+  "unlocks": [
+   "tuning"
+  ],
+  "unlockNames": [
+   "Tuning (Umbau-Stufen)"
+  ]
+ },
+ {
+  "id": "h06",
+  "name": "Clubsport",
+  "chapter": 2,
+  "intro": "Der Clubsport-Cup ist die Schule der Rennfahrer.",
+  "outro": "Du fährst jetzt wie ein echter Clubsportler. Zeit für die nächste Lizenz.",
+  "steps": [
+   {
+    "type": "trophy",
+    "label": "Podium in allen Läufen des Clubsport-Cups",
+    "series": "clubsport_cup",
+    "position": 3,
+    "allRaces": true
+   }
+  ],
+  "reward": {
+   "car": {
+    "categories": [
+     "sport"
+    ],
+    "liMax": 460
+   }
+  },
+  "unlocks": [
+   "license_L2",
+   "license_R1",
+   "license_D1"
+  ],
+  "unlockNames": [
+   "Lizenz B",
+   "Rallye-Lizenz",
+   "Drift-Lizenz"
+  ]
+ },
+ {
+  "id": "h07",
+  "name": "Die Lizenz B",
+  "chapter": 2,
+  "intro": "Höhere Geschwindigkeiten brauchen mehr Können.",
+  "outro": "Mit der B-Lizenz geht es in die Amateur-Liga.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Lizenz B",
+    "license": "L2"
+   }
+  ],
+  "reward": {
+   "money": 10000
+  },
+  "unlocks": [
+   "hall_amateur",
+   "hall_marken"
+  ],
+  "unlockNames": [
+   "Amateur-Liga",
+   "Marken-Cups"
+  ]
+ },
+ {
+  "id": "h08",
+  "name": "Europäische Klassiker",
+  "chapter": 2,
+  "intro": "Europa hat einige der schönsten Autos hervorgebracht. Sammle drei.",
+  "outro": "Design, Handwerk, Geschichte: Diese Autos erzählen etwas über ihre Herkunft.",
+  "steps": [
+   {
+    "type": "own",
+    "label": "Besitze 3 Fahrzeuge aus Europa",
+    "criteria": {
+     "regions": [
+      "europe"
+     ]
+    },
+    "count": 3
+   }
+  ],
+  "reward": {
+   "ticket": 2
+  },
+  "unlocks": [],
+  "unlockNames": []
+ },
+ {
+  "id": "h09",
+  "name": "Amerikanische Muskeln",
+  "chapter": 2,
+  "intro": "Viel Hubraum, viel Drehmoment. Sammle drei amerikanische Autos.",
+  "outro": "Ein V8 klingt nach Freiheit. Und auf der Geraden ist er kaum zu schlagen.",
+  "steps": [
+   {
+    "type": "own",
+    "label": "Besitze 3 Fahrzeuge aus Amerika",
+    "criteria": {
+     "regions": [
+      "america"
+     ]
+    },
+    "count": 3
+   }
+  ],
+  "reward": {
+   "money": 15000
+  },
+  "unlocks": [],
+  "unlockNames": []
+ },
+ {
+  "id": "h10",
+  "name": "Schotter und Staub",
+  "chapter": 2,
+  "intro": "Rallye ist die härteste Schule. Hol dir die Rallye-Lizenz und einen Pokal.",
+  "outro": "Wer auf Schotter schnell ist, ist überall schnell.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Rallye-Lizenz",
+    "license": "R1"
+   },
+   {
+    "type": "trophy",
+    "label": "Podium im Schotter-Cup",
+    "series": "schotter_cup",
+    "position": 3,
+    "allRaces": false
+   }
+  ],
+  "reward": {
+   "car": {
+    "categories": [
+     "rally",
+     "offroad"
+    ]
+   }
+  },
+  "unlocks": [
+   "hall_gelaende"
+  ],
+  "unlockNames": [
+   "Rallye & Gelände"
+  ]
+ },
+ {
+  "id": "h11",
+  "name": "Quer ist mehr",
+  "chapter": 2,
+  "intro": "Drift ist Kunst. Hol dir die Drift-Lizenz und zeig es den Punktrichtern.",
+  "outro": "Rauch, Winkel, Gefühl. Die Zuschauer lieben dich.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Drift-Lizenz",
+    "license": "D1"
+   },
+   {
+    "type": "trophy",
+    "label": "Podium bei den Drift-Einsteigern",
+    "series": "drift_einsteiger",
+    "position": 3,
+    "allRaces": false
+   }
+  ],
+  "reward": {
+   "money": 15000
+  },
+  "unlocks": [
+   "hall_spezial"
+  ],
+  "unlockNames": [
+   "Spezial-Events (Drag, Derby, Touge ...)"
+  ]
+ },
+ {
+  "id": "h12",
+  "name": "Tourenwagen",
+  "chapter": 3,
+  "intro": "Die Tourenwagen-Club-Meisterschaft: fünf Rennen, ein Champion.",
+  "outro": "Ein Meistertitel! Jetzt bist du bereit für die Profis.",
+  "steps": [
+   {
+    "type": "championship",
+    "label": "Werde unter die ersten 3 im Tourenwagen-Club",
+    "series": "tourenwagen_club"
+   }
+  ],
+  "reward": {
+   "ticket": 3
+  },
+  "unlocks": [
+   "license_L3"
+  ],
+  "unlockNames": [
+   "Lizenz A"
+  ]
+ },
+ {
+  "id": "h13",
+  "name": "Die Lizenz A",
+  "chapter": 3,
+  "intro": "Die A-Lizenz trennt Amateure von Profis.",
+  "outro": "Willkommen in der Profi-Liga.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Lizenz A",
+    "license": "L3"
+   }
+  ],
+  "reward": {
+   "money": 30000
+  },
+  "unlocks": [
+   "hall_profi",
+   "hall_langstrecke",
+   "dealer_legend"
+  ],
+  "unlockNames": [
+   "Profi-Liga",
+   "Langstrecke",
+   "Klassiker-Galerie"
+  ]
+ },
+ {
+  "id": "h14",
+  "name": "Sammlerleidenschaft",
+  "chapter": 3,
+  "intro": "Ein echter Sammler hat Autos aus allen Epochen.",
+  "outro": "Deine Garage wird langsam zum Museum.",
+  "steps": [
+   {
+    "type": "own",
+    "label": "Besitze ein Fahrzeug vor 1975",
+    "criteria": {
+     "yearMax": 1975
+    },
+    "count": 1
+   },
+   {
+    "type": "own",
+    "label": "Besitze ein Fahrzeug der 80er",
+    "criteria": {
+     "yearMin": 1980,
+     "yearMax": 1989
+    },
+    "count": 1
+   },
+   {
+    "type": "own",
+    "label": "Besitze ein Fahrzeug der 90er",
+    "criteria": {
+     "yearMin": 1990,
+     "yearMax": 1999
+    },
+    "count": 1
+   },
+   {
+    "type": "collector",
+    "label": "Erreiche Sammlerstufe 5",
+    "level": 5
+   }
+  ],
+  "reward": {
+   "car": {
+    "yearMax": 1980,
+    "liMin": 350
+   }
+  },
+  "unlocks": [],
+  "unlockNames": []
+ },
+ {
+  "id": "h15",
+  "name": "Ausdauer",
+  "chapter": 3,
+  "intro": "Langstrecke heißt: ankommen. Schone dein Auto und fahr die 100 km.",
+  "outro": "Material schonen ist eine Kunst. Du beherrschst sie.",
+  "steps": [
+   {
+    "type": "trophy",
+    "label": "Podium beim 100-km-Ausdauerrennen",
+    "series": "ausdauer_100",
+    "position": 3,
+    "allRaces": false
+   }
+  ],
+  "reward": {
+   "ticket": 3
+  },
+  "unlocks": [],
+  "unlockNames": []
+ },
+ {
+  "id": "h16",
+  "name": "GT-Nationals",
+  "chapter": 4,
+  "intro": "Die nationale GT-Meisterschaft: Rennwochenende mit Qualifying und fliegendem Start.",
+  "outro": "Ein nationaler GT-Champion! Die Welt wartet.",
+  "steps": [
+   {
+    "type": "championship",
+    "label": "Gewinne die GT-Nationals",
+    "series": "gt_nationals",
+    "win": true
+   }
+  ],
+  "reward": {
+   "money": 100000
+  },
+  "unlocks": [
+   "license_L4"
+  ],
+  "unlockNames": [
+   "Lizenz I"
+  ]
+ },
+ {
+  "id": "h17",
+  "name": "Die Lizenz I",
+  "chapter": 4,
+  "intro": "International fahren nur die Besten.",
+  "outro": "Die Extrem-Liga steht dir offen.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Lizenz I",
+    "license": "L4"
+   }
+  ],
+  "reward": {
+   "ticket": 4
+  },
+  "unlocks": [
+   "hall_extrem"
+  ],
+  "unlockNames": [
+   "Extrem-Liga"
+  ]
+ },
+ {
+  "id": "h18",
+  "name": "Supersportler",
+  "chapter": 4,
+  "intro": "Drei Supersportwagen mit über 600 LI gehören in jede große Sammlung.",
+  "outro": "Diese Autos sind Ingenieurskunst in Reinform.",
+  "steps": [
+   {
+    "type": "own",
+    "label": "Besitze 3 Fahrzeuge mit LI über 600",
+    "criteria": {
+     "liMin": 600
+    },
+    "count": 3
+   }
+  ],
+  "reward": {
+   "money": 150000
+  },
+  "unlocks": [],
+  "unlockNames": []
+ },
+ {
+  "id": "h19",
+  "name": "Weltmeister",
+  "chapter": 5,
+  "intro": "Die GT-Weltmeisterschaft. Mehr gibt es nicht zu sagen.",
+  "outro": "Du bist Weltmeister. Der Café-Besitzer stellt dein Foto an die Wand.",
+  "steps": [
+   {
+    "type": "championship",
+    "label": "Gewinne die GT-Weltmeisterschaft",
+    "series": "gt_weltmeisterschaft",
+    "win": true
+   }
+  ],
+  "reward": {
+   "ticket": 5
+  },
+  "unlocks": [
+   "license_L5"
+  ],
+  "unlockNames": [
+   "Lizenz S"
+  ]
+ },
+ {
+  "id": "h20",
+  "name": "Die Lizenz S",
+  "chapter": 5,
+  "intro": "Die letzte Lizenz.",
+  "outro": "Es gibt nichts mehr, was du nicht fahren darfst.",
+  "steps": [
+   {
+    "type": "license",
+    "label": "Erwirb die Lizenz S",
+    "license": "L5"
+   },
+   {
+    "type": "trophy",
+    "label": "Podium bei den Prototypen-Masters",
+    "series": "prototypen_masters",
+    "position": 3,
+    "allRaces": false
+   }
+  ],
+  "reward": {
+   "car": {
+    "categories": [
+     "proto"
+    ],
+    "liMin": 800
+   },
+   "money": 500000
+  },
+  "unlocks": [],
+  "unlockNames": []
+ }
+]

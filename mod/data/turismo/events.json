@@ -1,0 +1,3765 @@
+[
+ {
+  "id": "sonntagspokal",
+  "name": "Sonntagspokal",
+  "hall": "einsteiger",
+  "desc": "Der klassische Einstieg: Alltagsautos, kurze Rennen.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 2,
+    "name": "Lauf 1"
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 2,
+    "name": "Lauf 2"
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 2,
+    "name": "Lauf 3"
+   }
+  ],
+  "eligibility": {
+   "liMax": 330,
+   "excludeCategories": [
+    "gt",
+    "proto",
+    "touring"
+   ]
+  },
+  "recommendedLI": 300,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    2000,
+    1250,
+    900,
+    650,
+    450,
+    300,
+    200,
+    150
+   ],
+   "car": {
+    "categories": [
+     "street"
+    ],
+    "liMax": 320
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "clubsport_cup",
+  "name": "Clubsport-Cup",
+  "hall": "einsteiger",
+  "desc": "Für Straßenwagen bis LI 400.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "liMax": 400,
+   "excludeCategories": [
+    "gt",
+    "proto"
+   ]
+  },
+  "recommendedLI": 380,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    3500,
+    2150,
+    1600,
+    1100,
+    750,
+    500,
+    350,
+    250
+   ],
+   "car": {
+    "categories": [
+     "sport",
+     "street"
+    ],
+    "liMax": 420
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "frontantrieb_trophy",
+  "name": "Frontantriebs-Trophäe",
+  "hall": "einsteiger",
+  "desc": "Nur Fronttriebler: Untersteuern beherrschen.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "drivetrains": [
+    "FWD"
+   ],
+   "liMax": 450
+  },
+  "recommendedLI": 380,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    3000,
+    1850,
+    1350,
+    950,
+    650,
+    450,
+    300,
+    200
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "hecktriebler_pokal",
+  "name": "Hecktriebler-Pokal",
+  "hall": "einsteiger",
+  "desc": "Hinterradantrieb und leichte Autos.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "drivetrains": [
+    "RWD"
+   ],
+   "liMax": 450
+  },
+  "recommendedLI": 400,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    3000,
+    1850,
+    1350,
+    950,
+    650,
+    450,
+    300,
+    200
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "leichtgewicht_cup",
+  "name": "Leichtgewicht-Cup",
+  "hall": "einsteiger",
+  "desc": "Unter 1100 kg: Kurvenspeed statt PS.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "weightMax": 1100,
+   "liMax": 460
+  },
+  "recommendedLI": 380,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    3000,
+    1850,
+    1350,
+    950,
+    650,
+    450,
+    300,
+    200
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "kompakt_sprint",
+  "name": "Kompaktsprint",
+  "hall": "einsteiger",
+  "desc": "Kurze K.O.-Rennen: Wer am Rundenende Letzter ist, fliegt.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 5,
+    "name": "K.O. 1"
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 5,
+    "name": "K.O. 2"
+   }
+  ],
+  "eligibility": {
+   "liMax": 380
+  },
+  "recommendedLI": 340,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    3000,
+    1850,
+    1350,
+    950,
+    650,
+    450,
+    300,
+    200
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "elimination",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "tourenwagen_club",
+  "name": "Tourenwagen-Club",
+  "hall": "amateur",
+  "desc": "Meisterschaft für getunte Straßenwagen.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:east_coast_usa",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   }
+  ],
+  "eligibility": {
+   "liMax": 520
+  },
+  "recommendedLI": 500,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6000,
+    3700,
+    2700,
+    1900,
+    1300,
+    900,
+    600,
+    400
+   ],
+   "championship": {
+    "money": 30000,
+    "car": {
+     "categories": [
+      "touring",
+      "sport"
+     ],
+     "liMin": 480,
+     "liMax": 600
+    }
+   }
+  },
+  "championship": true,
+  "format": "choice",
+  "startType": "standing",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "sportwagen_festival",
+  "name": "Sportwagen-Festival",
+  "hall": "amateur",
+  "desc": "Coupés und Roadster bis LI 560.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   }
+  ],
+  "eligibility": {
+   "liMax": 560,
+   "categories": [
+    "sport",
+    "street"
+   ]
+  },
+  "recommendedLI": 540,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    7000,
+    4350,
+    3150,
+    2250,
+    1550,
+    1050,
+    700,
+    500
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "allrad_challenge",
+  "name": "Allrad-Challenge",
+  "hall": "amateur",
+  "desc": "Vier angetriebene Räder, jede Menge Traktion.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@any:utah",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1
+   }
+  ],
+  "eligibility": {
+   "drivetrains": [
+    "AWD",
+    "4WD"
+   ],
+   "liMax": 600
+  },
+  "recommendedLI": 560,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    7000,
+    4350,
+    3150,
+    2250,
+    1550,
+    1050,
+    700,
+    500
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "saugmotor_meisterschaft",
+  "name": "Saugmotor-Meisterschaft",
+  "hall": "amateur",
+  "desc": "Nur Saugmotoren - Drehzahl ist alles.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   }
+  ],
+  "eligibility": {
+   "aspiration": "NA",
+   "liMax": 560
+  },
+  "recommendedLI": 520,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6500,
+    4050,
+    2900,
+    2100,
+    1450,
+    1000,
+    650,
+    450
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "turbo_trophy",
+  "name": "Turbo-Trophäe",
+  "hall": "amateur",
+  "desc": "Ladedruck erwünscht.",
+  "races": [
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 4
+   }
+  ],
+  "eligibility": {
+   "aspiration": "Turbo",
+   "liMax": 580
+  },
+  "recommendedLI": 540,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6500,
+    4050,
+    2900,
+    2100,
+    1450,
+    1000,
+    650,
+    450
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "verfolgungsjagd",
+  "name": "Verfolgungsjagd",
+  "hall": "amateur",
+  "desc": "Die Gegner starten mit Vorsprung. Hol sie alle ein!",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "name": "Jagd 1"
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "name": "Jagd 2"
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "name": "Jagd 3"
+   }
+  ],
+  "eligibility": {
+   "liMax": 520
+  },
+  "recommendedLI": 500,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6000,
+    3700,
+    2700,
+    1900,
+    1300,
+    900,
+    600,
+    400
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "pursuit",
+  "requires": {
+   "license": "L2"
+  },
+  "gap": 3
+ },
+ {
+  "id": "gt_nationals",
+  "name": "GT-Nationals",
+  "hall": "profi",
+  "desc": "Nationale GT-Meisterschaft mit Rennwochenende.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:east_coast_usa",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:jungle_rock_island",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   }
+  ],
+  "eligibility": {
+   "liMax": 680
+  },
+  "recommendedLI": 650,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    15000,
+    9300,
+    6750,
+    4800,
+    3300,
+    2250,
+    1500,
+    1050
+   ],
+   "championship": {
+    "money": 120000,
+    "car": {
+     "categories": [
+      "gt",
+      "touring"
+     ],
+     "liMin": 620,
+     "liMax": 720
+    }
+   },
+   "ticketTier": 3
+  },
+  "championship": true,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L3"
+  }
+ },
+ {
+  "id": "supersport_serie",
+  "name": "Supersport-Serie",
+  "hall": "profi",
+  "desc": "Die schnellsten Straßenwagen der Welt.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 5
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 5
+   },
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 5
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "sport"
+   ],
+   "liMin": 560,
+   "liMax": 760
+  },
+  "recommendedLI": 700,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    18000,
+    11150,
+    8100,
+    5750,
+    3950,
+    2700,
+    1800,
+    1250
+   ],
+   "ticketTier": 3
+  },
+  "championship": false,
+  "format": "choice",
+  "startType": "standing",
+  "requires": {
+   "license": "L3"
+  }
+ },
+ {
+  "id": "tourenwagen_international",
+  "name": "Tourenwagen International",
+  "hall": "profi",
+  "desc": "Rennumbauten auf den großen Strecken.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 6
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "touring"
+   ],
+   "liMax": 720
+  },
+  "recommendedLI": 660,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    16000,
+    9900,
+    7200,
+    5100,
+    3500,
+    2400,
+    1600,
+    1100
+   ],
+   "championship": {
+    "money": 64000
+   }
+  },
+  "championship": true,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L3"
+  }
+ },
+ {
+  "id": "profi_ko",
+  "name": "Profi-K.O.",
+  "hall": "profi",
+  "desc": "Elimination mit Sportwagen.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 7
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 7
+   }
+  ],
+  "eligibility": {
+   "liMax": 700
+  },
+  "recommendedLI": 650,
+  "difficulty": 3,
+  "field": {
+   "size": 9,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    15000,
+    9300,
+    6750,
+    4800,
+    3300,
+    2250,
+    1500,
+    1050,
+    750,
+    600
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "elimination",
+  "requires": {
+   "license": "L3"
+  }
+ },
+ {
+  "id": "gt_weltmeisterschaft",
+  "name": "GT-Weltmeisterschaft",
+  "hall": "extrem",
+  "desc": "Die große GT-Meisterschaft. Rennwochenende Pflicht.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:east_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:jungle_rock_island",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 12
+   }
+  ],
+  "eligibility": {
+   "liMax": 800
+  },
+  "recommendedLI": 760,
+  "difficulty": 4,
+  "field": {
+   "size": 11,
+   "tiers": [
+    "expert",
+    "legend"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    40000,
+    24800,
+    18000,
+    12800,
+    8800,
+    6000,
+    4000,
+    2800,
+    2000,
+    1600,
+    1200,
+    800
+   ],
+   "championship": {
+    "money": 500000,
+    "car": {
+     "categories": [
+      "gt",
+      "proto"
+     ],
+     "liMin": 740
+    }
+   },
+   "ticketTier": 4
+  },
+  "championship": true,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L4"
+  }
+ },
+ {
+  "id": "prototypen_masters",
+  "name": "Prototypen-Masters",
+  "hall": "extrem",
+  "desc": "Prototypen und Formelautos: das schnellste Feld.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   },
+   {
+    "track": [
+     "@circuit:automation_test_track",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 10
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "proto",
+    "gt"
+   ],
+   "liMin": 760
+  },
+  "recommendedLI": 880,
+  "difficulty": 5,
+  "field": {
+   "size": 11,
+   "tiers": [
+    "expert",
+    "legend"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    60000,
+    37200,
+    27000,
+    19200,
+    13200,
+    9000,
+    6000,
+    4200,
+    3000,
+    2400,
+    1800,
+    1200
+   ],
+   "championship": {
+    "money": 1000000,
+    "car": {
+     "categories": [
+      "proto"
+     ],
+     "liMin": 800
+    }
+   },
+   "ticketTier": 5
+  },
+  "championship": true,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L5"
+  }
+ },
+ {
+  "id": "unlimited",
+  "name": "Ohne Limit",
+  "hall": "extrem",
+  "desc": "Keine Regeln, keine Grenzen.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 8
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 8
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 8
+   }
+  ],
+  "eligibility": {},
+  "recommendedLI": 900,
+  "difficulty": 5,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "expert",
+    "legend"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    80000,
+    49600,
+    36000,
+    25600,
+    17600,
+    12000,
+    8000,
+    5600
+   ],
+   "ticketTier": 5
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L5"
+  }
+ },
+ {
+  "id": "ausdauer_100",
+  "name": "100-km-Ausdauer",
+  "hall": "langstrecke",
+  "desc": "Eine lange Distanz: Material schonen, Schäden bleiben.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 25,
+    "name": "100 km"
+   }
+  ],
+  "eligibility": {
+   "liMax": 620
+  },
+  "recommendedLI": 580,
+  "difficulty": 3,
+  "field": {
+   "size": 9,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    40000,
+    24800,
+    18000,
+    12800,
+    8800,
+    6000,
+    4000,
+    2800,
+    2000,
+    1600
+   ],
+   "ticketTier": 3
+  },
+  "championship": false,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L3"
+  }
+ },
+ {
+  "id": "ausdauer_gt",
+  "name": "GT-Langstrecke",
+  "hall": "langstrecke",
+  "desc": "Langstrecke für GT-Rennwagen.",
+  "races": [
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 30,
+    "name": "2 Stunden"
+   }
+  ],
+  "eligibility": {
+   "liMax": 780
+  },
+  "recommendedLI": 740,
+  "difficulty": 4,
+  "field": {
+   "size": 11,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    120000,
+    74400,
+    54000,
+    38400,
+    26400,
+    18000,
+    12000,
+    8400,
+    6000,
+    4800,
+    3600,
+    2400
+   ],
+   "ticketTier": 4
+  },
+  "championship": false,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L4"
+  }
+ },
+ {
+  "id": "ausdauer_klassik",
+  "name": "Klassiker-Langstrecke",
+  "hall": "langstrecke",
+  "desc": "Vor 1990 gebaute Autos auf langer Distanz.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 20
+   }
+  ],
+  "eligibility": {
+   "yearMax": 1990
+  },
+  "recommendedLI": 450,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    30000,
+    18600,
+    13500,
+    9600,
+    6600,
+    4500,
+    3000,
+    2100
+   ]
+  },
+  "championship": false,
+  "format": "weekend",
+  "startType": "rolling",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "marke_ibishu",
+  "name": "Ibishu-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Ibishu.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Ibishu"
+   ]
+  },
+  "recommendedLI": 420,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    5050,
+    3100,
+    2250,
+    1600,
+    1100,
+    750,
+    500,
+    350
+   ],
+   "car": {
+    "brands": [
+     "Ibishu"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_hirochi",
+  "name": "Hirochi-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Hirochi.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Hirochi"
+   ]
+  },
+  "recommendedLI": 520,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    6250,
+    3850,
+    2800,
+    2000,
+    1350,
+    950,
+    600,
+    450
+   ],
+   "car": {
+    "brands": [
+     "Hirochi"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_gavril",
+  "name": "Gavril-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Gavril.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Gavril"
+   ]
+  },
+  "recommendedLI": 480,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    5750,
+    3550,
+    2600,
+    1850,
+    1250,
+    850,
+    600,
+    400
+   ],
+   "car": {
+    "brands": [
+     "Gavril"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_bruckell",
+  "name": "Bruckell-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Bruckell.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Bruckell"
+   ]
+  },
+  "recommendedLI": 500,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    6000,
+    3700,
+    2700,
+    1900,
+    1300,
+    900,
+    600,
+    400
+   ],
+   "car": {
+    "brands": [
+     "Bruckell"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_etk",
+  "name": "ETK-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von ETK.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "ETK"
+   ]
+  },
+  "recommendedLI": 600,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    7200,
+    4450,
+    3250,
+    2300,
+    1600,
+    1100,
+    700,
+    500
+   ],
+   "car": {
+    "brands": [
+     "ETK"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_civetta",
+  "name": "Civetta-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Civetta.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Civetta"
+   ]
+  },
+  "recommendedLI": 720,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    8650,
+    5350,
+    3900,
+    2750,
+    1900,
+    1300,
+    850,
+    600
+   ],
+   "car": {
+    "brands": [
+     "Civetta"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_cherrier",
+  "name": "Cherrier-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Cherrier.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Cherrier"
+   ]
+  },
+  "recommendedLI": 450,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    5400,
+    3350,
+    2450,
+    1750,
+    1200,
+    800,
+    550,
+    400
+   ],
+   "car": {
+    "brands": [
+     "Cherrier"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_autobello",
+  "name": "Autobello-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Autobello.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Autobello"
+   ]
+  },
+  "recommendedLI": 300,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    3600,
+    2250,
+    1600,
+    1150,
+    800,
+    550,
+    350,
+    250
+   ],
+   "car": {
+    "brands": [
+     "Autobello"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_soliad",
+  "name": "Soliad-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Soliad.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Soliad"
+   ]
+  },
+  "recommendedLI": 450,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    5400,
+    3350,
+    2450,
+    1750,
+    1200,
+    800,
+    550,
+    400
+   ],
+   "car": {
+    "brands": [
+     "Soliad"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "marke_burnside",
+  "name": "Burnside-Markenpokal",
+  "hall": "marken",
+  "desc": "Nur Fahrzeuge von Burnside.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "brands": [
+    "Burnside"
+   ]
+  },
+  "recommendedLI": 350,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 80,
+   "oneMake": true
+  },
+  "rewards": {
+   "positions": [
+    4200,
+    2600,
+    1900,
+    1350,
+    900,
+    650,
+    400,
+    300
+   ],
+   "car": {
+    "brands": [
+     "Burnside"
+    ]
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "japan_cup",
+  "name": "Japan-Cup",
+  "hall": "regional",
+  "desc": "Fahrzeuge aus Japan.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "regions": [
+    "japan"
+   ],
+   "liMax": 560
+  },
+  "recommendedLI": 480,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    5000,
+    3100,
+    2250,
+    1600,
+    1100,
+    750,
+    500,
+    350
+   ],
+   "car": {
+    "regions": [
+     "japan"
+    ],
+    "liMax": 560
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "europa_cup",
+  "name": "Europa-Cup",
+  "hall": "regional",
+  "desc": "Fahrzeuge aus Europa.",
+  "races": [
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "regions": [
+    "europe"
+   ],
+   "liMax": 600
+  },
+  "recommendedLI": 520,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    5500,
+    3400,
+    2500,
+    1750,
+    1200,
+    800,
+    550,
+    400
+   ],
+   "car": {
+    "regions": [
+     "europe"
+    ],
+    "liMax": 600
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "amerika_cup",
+  "name": "Amerika-Cup",
+  "hall": "regional",
+  "desc": "Big-Block und Pick-ups: Amerika.",
+  "races": [
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:east_coast_usa",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "regions": [
+    "america"
+   ],
+   "liMax": 600
+  },
+  "recommendedLI": 520,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    5500,
+    3400,
+    2500,
+    1750,
+    1200,
+    800,
+    550,
+    400
+   ],
+   "car": {
+    "regions": [
+     "america"
+    ],
+    "liMax": 600
+   }
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "achtziger",
+  "name": "80er-Jahre-Pokal",
+  "hall": "regional",
+  "desc": "Baujahr 1980 bis 1989.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1
+   }
+  ],
+  "eligibility": {
+   "yearMin": 1980,
+   "yearMax": 1989
+  },
+  "recommendedLI": 380,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    4000,
+    2500,
+    1800,
+    1300,
+    900,
+    600,
+    400,
+    300
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "neunziger",
+  "name": "90er-Jahre-Pokal",
+  "hall": "regional",
+  "desc": "Baujahr 1990 bis 1999.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "yearMin": 1990,
+   "yearMax": 1999
+  },
+  "recommendedLI": 450,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    4500,
+    2800,
+    2000,
+    1450,
+    1000,
+    700,
+    450,
+    300
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "schotter_cup",
+  "name": "Schotter-Cup",
+  "hall": "gelaende",
+  "desc": "Rallye-Prüfungen gegen die Uhr.",
+  "races": [
+   {
+    "track": [
+     "@any:utah",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "WP 1"
+   },
+   {
+    "track": [
+     "@any:johnson_valley",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "WP 2"
+   },
+   {
+    "track": [
+     "@any:utah",
+     "@any:italy",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "WP 3"
+   }
+  ],
+  "eligibility": {
+   "excludeCategories": [
+    "proto",
+    "gt",
+    "truck"
+   ]
+  },
+  "recommendedLI": 450,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6000,
+    3700,
+    2700,
+    1900,
+    1300,
+    900,
+    600,
+    400
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "timeAttack",
+  "requires": {
+   "license": "R1"
+  },
+  "runs": 2
+ },
+ {
+  "id": "rallye_meisterschaft",
+  "name": "Rallye-Meisterschaft",
+  "hall": "gelaende",
+  "desc": "Mehrere Prüfungen, Gesamtwertung.",
+  "races": [
+   {
+    "track": [
+     "@any:utah",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1
+   },
+   {
+    "track": [
+     "@any:johnson_valley",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1
+   },
+   {
+    "track": [
+     "@any:italy",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1
+   },
+   {
+    "track": [
+     "@any:utah",
+     "@any:johnson_valley",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 1
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "rally",
+    "offroad",
+    "street",
+    "sport"
+   ]
+  },
+  "recommendedLI": 560,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    12000,
+    7450,
+    5400,
+    3850,
+    2650,
+    1800,
+    1200,
+    850
+   ],
+   "championship": {
+    "money": 48000,
+    "car": {
+     "categories": [
+      "rally"
+     ]
+    }
+   }
+  },
+  "championship": true,
+  "format": "quick",
+  "startType": "standing",
+  "type": "timeAttack",
+  "requires": {
+   "license": "R1"
+  },
+  "runs": 1
+ },
+ {
+  "id": "gelaende_trophy",
+  "name": "Gelände-Trophäe",
+  "hall": "gelaende",
+  "desc": "Offroader auf Rundkursen im Dreck.",
+  "races": [
+   {
+    "track": [
+     "@any:johnson_valley",
+     "@any:utah",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@any:utah",
+     "@sprint:dirt",
+     "@circuit:dirt",
+     "@any:dirt",
+     "@sprint:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "offroad",
+    "truck"
+   ]
+  },
+  "recommendedLI": 350,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    5000,
+    3100,
+    2250,
+    1600,
+    1100,
+    750,
+    500,
+    350
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "R1"
+  }
+ },
+ {
+  "id": "crawl_meister",
+  "name": "Crawler-Meisterschaft",
+  "hall": "gelaende",
+  "desc": "Langsam, präzise, über Felsen. Strafsekunden für ausgelassene Tore.",
+  "races": [
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Parcours 1",
+    "course": [
+     {
+      "kind": "gate",
+      "x": 3.0,
+      "y": 15,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": -3.0,
+      "y": 29,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": 3.0,
+      "y": 43,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": -3.0,
+      "y": 57,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": 3.0,
+      "y": 71,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": -3.0,
+      "y": 85,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": 0,
+      "y": 110,
+      "w": 5
+     }
+    ],
+    "venue": "crawlpark",
+    "parTime": 150,
+    "timeLimit": 600
+   },
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Parcours 2",
+    "course": [
+     {
+      "kind": "gate",
+      "x": 0,
+      "y": 10,
+      "w": 6
+     },
+     {
+      "kind": "gate",
+      "x": 0.0,
+      "y": 40.0,
+      "w": 8,
+      "heading": -360.0
+     },
+     {
+      "kind": "gate",
+      "x": 1.34,
+      "y": 45.0,
+      "w": 8,
+      "heading": -330.0
+     },
+     {
+      "kind": "gate",
+      "x": 5.0,
+      "y": 48.66,
+      "w": 8,
+      "heading": -300.0
+     },
+     {
+      "kind": "gate",
+      "x": 10.0,
+      "y": 50.0,
+      "w": 8,
+      "heading": -270.0
+     },
+     {
+      "kind": "gate",
+      "x": 15.0,
+      "y": 48.66,
+      "w": 8,
+      "heading": -240.0
+     },
+     {
+      "kind": "gate",
+      "x": 18.66,
+      "y": 45.0,
+      "w": 8,
+      "heading": -210.0
+     },
+     {
+      "kind": "gate",
+      "x": 20.0,
+      "y": 40.0,
+      "w": 8,
+      "heading": -180.0
+     },
+     {
+      "kind": "gate",
+      "x": 20,
+      "y": 0,
+      "w": 8
+     },
+     {
+      "kind": "gate",
+      "x": 2.5,
+      "y": -80,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": -2.5,
+      "y": -68,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": 2.5,
+      "y": -56,
+      "w": 4
+     },
+     {
+      "kind": "gate",
+      "x": -2.5,
+      "y": -44,
+      "w": 4
+     }
+    ],
+    "venue": "crawlpark",
+    "parTime": 200,
+    "timeLimit": 600
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "offroad",
+    "truck"
+   ]
+  },
+  "recommendedLI": 300,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    5000,
+    3100,
+    2250,
+    1600,
+    1100,
+    750,
+    500,
+    350
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "crawl",
+  "requires": {
+   "license": "R1"
+  }
+ },
+ {
+  "id": "truck_auftraege",
+  "name": "Transport-Aufträge",
+  "hall": "gelaende",
+  "desc": "Liefere pünktlich und ohne Ladungsschaden.",
+  "races": [
+   {
+    "track": [
+     "@sprint:west_coast_usa",
+     "@sprint:east_coast_usa",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Hafen-Lieferung",
+    "budget": 3000
+   },
+   {
+    "track": [
+     "@sprint:utah",
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Bergstraße",
+    "budget": 2500
+   },
+   {
+    "track": [
+     "@sprint:johnson_valley",
+     "@sprint:west_coast_usa",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Wüstenfahrt",
+    "budget": 3500
+   }
+  ],
+  "eligibility": {
+   "categories": [
+    "truck"
+   ]
+  },
+  "recommendedLI": 250,
+  "difficulty": 1,
+  "field": {
+   "size": 1,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6000,
+    3700
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "trucking",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "drift_einsteiger",
+  "name": "Drift-Einsteiger",
+  "hall": "spezial",
+  "desc": "Punkte für Winkel und Tempo.",
+  "races": [
+   {
+    "track": [
+     "@circuit:industrial",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 2,
+    "timeLimit": 180
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 2,
+    "timeLimit": 180
+   }
+  ],
+  "eligibility": {
+   "drivetrains": [
+    "RWD"
+   ]
+  },
+  "recommendedLI": 450,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    5000,
+    3100,
+    2250,
+    1600,
+    1100,
+    750,
+    500,
+    350
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "drift",
+  "requires": {
+   "license": "D1"
+  },
+  "parScore": 18000
+ },
+ {
+  "id": "drift_masters",
+  "name": "Drift-Masters",
+  "hall": "spezial",
+  "desc": "Die Drift-Elite.",
+  "races": [
+   {
+    "track": [
+     "@circuit:industrial",
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "timeLimit": 240
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "timeLimit": 240
+   },
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "timeLimit": 240
+   }
+  ],
+  "eligibility": {
+   "drivetrains": [
+    "RWD"
+   ],
+   "liMin": 450
+  },
+  "recommendedLI": 600,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    15000,
+    9300,
+    6750,
+    4800,
+    3300,
+    2250,
+    1500,
+    1050
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "drift",
+  "requires": {
+   "license": "D1"
+  },
+  "parScore": 40000
+ },
+ {
+  "id": "drag_strasse",
+  "name": "Straßen-Drag",
+  "hall": "spezial",
+  "desc": "Viertelmeile mit Straßenautos: Qualifying, dann K.O.-Leiter.",
+  "races": [
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Drag-Wochenende",
+    "level": "west_coast_usa",
+    "distance": 402.34
+   }
+  ],
+  "eligibility": {
+   "excludeCategories": [
+    "gt",
+    "proto",
+    "touring"
+   ],
+   "liMax": 520
+  },
+  "recommendedLI": 450,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    6000,
+    3700,
+    2700,
+    1900,
+    1300,
+    900,
+    600,
+    400
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "drag",
+  "requires": {
+   "license": "L1"
+  },
+  "tree": "sportsman",
+  "qualifyingRuns": 2
+ },
+ {
+  "id": "drag_bracket",
+  "name": "Bracket-Drag",
+  "hall": "spezial",
+  "desc": "Dial-in-Rennen: Konstanz schlägt Leistung. Zu schnell = verloren.",
+  "races": [
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Bracket-Wochenende",
+    "level": "west_coast_usa",
+    "distance": 201.17
+   }
+  ],
+  "eligibility": {},
+  "recommendedLI": 500,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    8000,
+    4950,
+    3600,
+    2550,
+    1750,
+    1200,
+    800,
+    550
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "drag",
+  "requires": {
+   "license": "L1"
+  },
+  "tree": "sportsman",
+  "bracket": true,
+  "qualifyingRuns": 3
+ },
+ {
+  "id": "drag_pro",
+  "name": "Pro-Drag",
+  "hall": "spezial",
+  "desc": "Pro-Tree und volle Viertelmeile für Umbauten.",
+  "races": [
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Pro-Wochenende",
+    "level": "west_coast_usa",
+    "distance": 402.34
+   }
+  ],
+  "eligibility": {
+   "liMin": 550
+  },
+  "recommendedLI": 700,
+  "difficulty": 3,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    25000,
+    15500,
+    11250,
+    8000,
+    5500,
+    3750,
+    2500,
+    1750
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "drag",
+  "requires": {
+   "license": "L3"
+  },
+  "tree": "pro",
+  "qualifyingRuns": 3
+ },
+ {
+  "id": "derby_einsteiger",
+  "name": "Blechschaden-Derby",
+  "hall": "spezial",
+  "desc": "Destruction Derby: wer zuletzt noch fährt, gewinnt.",
+  "races": [
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Arena",
+    "venue": "derby_arena",
+    "timeLimit": 300
+   }
+  ],
+  "eligibility": {
+   "excludeCategories": [
+    "proto",
+    "gt"
+   ]
+  },
+  "recommendedLI": 300,
+  "difficulty": 1,
+  "field": {
+   "size": 9,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    4000,
+    2500,
+    1800,
+    1300,
+    900,
+    600,
+    400,
+    300,
+    200,
+    150
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "derby",
+  "requires": {
+   "license": "L1"
+  }
+ },
+ {
+  "id": "derby_gross",
+  "name": "Großes Derby",
+  "hall": "spezial",
+  "desc": "Mehr Autos, größere Arena, mehr Chaos.",
+  "races": [
+   {
+    "track": null,
+    "laps": 1,
+    "name": "Große Arena",
+    "venue": "derby_gross",
+    "timeLimit": 420
+   }
+  ],
+  "eligibility": {},
+  "recommendedLI": 400,
+  "difficulty": 1,
+  "field": {
+   "size": 13,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    9000,
+    5600,
+    4050,
+    2900,
+    2000,
+    1350,
+    900,
+    650,
+    450,
+    350,
+    250,
+    200
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "derby",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "touge_battle",
+  "name": "Touge-Duelle",
+  "hall": "spezial",
+  "desc": "Eins gegen eins am Berg: erst jagen, dann führen.",
+  "races": [
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:utah",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Duell 1"
+   },
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:west_coast_usa",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Duell 2"
+   },
+   {
+    "track": [
+     "@sprint:utah",
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Duell 3"
+   }
+  ],
+  "eligibility": {
+   "liMax": 600
+  },
+  "recommendedLI": 520,
+  "difficulty": 3,
+  "field": {
+   "size": 1,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    8000,
+    4950
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "touge",
+  "requires": {
+   "license": "L2"
+  }
+ },
+ {
+  "id": "time_attack",
+  "name": "Time Attack",
+  "hall": "spezial",
+  "desc": "Eine schnelle Runde zählt.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "name": "Attacke 1"
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "name": "Attacke 2"
+   },
+   {
+    "track": [
+     "@circuit:italy",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3,
+    "name": "Attacke 3"
+   }
+  ],
+  "eligibility": {},
+  "recommendedLI": 600,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "pro",
+    "expert"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    10000,
+    6200,
+    4500,
+    3200,
+    2200,
+    1500,
+    1000,
+    700
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "timeAttack",
+  "requires": {
+   "license": "L2"
+  },
+  "runs": 1,
+  "timeLimit": 600
+ },
+ {
+  "id": "hillclimb",
+  "name": "Bergrennen",
+  "hall": "spezial",
+  "desc": "Zwei Läufe bergauf, der bessere zählt.",
+  "races": [
+   {
+    "track": [
+     "@sprint:italy",
+     "@sprint:utah",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Bergwertung 1"
+   },
+   {
+    "track": [
+     "@sprint:utah",
+     "@sprint:italy",
+     "@sprint:tarmac",
+     "@sprint:"
+    ],
+    "laps": 1,
+    "name": "Bergwertung 2"
+   }
+  ],
+  "eligibility": {},
+  "recommendedLI": 550,
+  "difficulty": 2,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "amateur",
+    "pro"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    9000,
+    5600,
+    4050,
+    2900,
+    2000,
+    1350,
+    900,
+    650
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "type": "timeAttack",
+  "requires": {
+   "license": "L2"
+  },
+  "runs": 2
+ },
+ {
+  "id": "klassiker_parade",
+  "name": "Klassiker-Rennen",
+  "hall": "spezial",
+  "desc": "Baujahr vor 1975.",
+  "races": [
+   {
+    "track": [
+     "@circuit:hirochi_raceway",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   },
+   {
+    "track": [
+     "@circuit:west_coast_usa",
+     "@circuit:tarmac",
+     "@circuit:"
+    ],
+    "laps": 3
+   }
+  ],
+  "eligibility": {
+   "yearMax": 1975
+  },
+  "recommendedLI": 330,
+  "difficulty": 1,
+  "field": {
+   "size": 7,
+   "tiers": [
+    "rookie",
+    "amateur"
+   ],
+   "liSpread": 35
+  },
+  "rewards": {
+   "positions": [
+    4000,
+    2500,
+    1800,
+    1300,
+    900,
+    600,
+    400,
+    300
+   ]
+  },
+  "championship": false,
+  "format": "quick",
+  "startType": "standing",
+  "requires": {
+   "license": "L1"
+  }
+ }
+]

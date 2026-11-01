@@ -1,0 +1,91 @@
+{
+ "info": "Alle Stücke wurden für Turismo prozedural komponiert und synthetisiert (tools/gen_music.py). Eigene Musik: Dateien hier ablegen und unten eintragen.",
+ "tracks": {
+  "title": {
+   "file": "turismo_titel.ogg",
+   "title": "Lichter der Stadt",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "lounge": {
+   "file": "turismo_lounge.ogg",
+   "title": "Boulevard Lounge",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "lounge2": {
+   "file": "turismo_lounge2.ogg",
+   "title": "Espresso am Ring",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "funk": {
+   "file": "turismo_funk.ogg",
+   "title": "Showroom Funk",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "license": {
+   "file": "turismo_fahrschule.ogg",
+   "title": "Fahrschule",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "race1": {
+   "file": "turismo_rennen1.ogg",
+   "title": "Vollgas",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "race2": {
+   "file": "turismo_rennen2.ogg",
+   "title": "Kurvenjagd",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "race3": {
+   "file": "turismo_rennen3.ogg",
+   "title": "Neon-Apex",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "race4": {
+   "file": "turismo_rennen4.ogg",
+   "title": "Nachtfahrt",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  },
+  "results": {
+   "file": "turismo_siegerehrung.ogg",
+   "title": "Siegerehrung",
+   "artist": "Turismo (generiert)",
+   "license": "eigenes Werk, frei verwendbar"
+  }
+ },
+ "contexts": {
+  "title": [
+   "title"
+  ],
+  "menu": [
+   "lounge",
+   "lounge2",
+   "funk"
+  ],
+  "dealer": [
+   "funk",
+   "lounge"
+  ],
+  "license": [
+   "license"
+  ],
+  "race": [
+   "race1",
+   "race2",
+   "race3",
+   "race4"
+  ],
+  "results": [
+   "results"
+  ]
+ }
+}
