@@ -28,6 +28,12 @@ local function U() return extensions.turismo_util end
 local function S() return extensions.turismo_save end
 local function X(name) return extensions['turismo_' .. name] end
 
+local function levelLoaded()
+  local lvl = getCurrentLevelIdentifier and getCurrentLevelIdentifier()
+  return lvl ~= nil and lvl ~= ''
+end
+M.levelLoaded = levelLoaded
+
 ---------------------------------------------------------------------------
 -- bootstrap
 ---------------------------------------------------------------------------
@@ -75,6 +81,10 @@ end
 ---------------------------------------------------------------------------
 function M.setHubVisible(v)
   hubVisible = v and true or false
+  -- leaving the Turismo menu to drive: make sure BeamNG's own menu is closed too
+  if not hubVisible and levelLoaded() and ui_menuManager and ui_menuManager.closeMenu then
+    pcall(ui_menuManager.closeMenu)
+  end
   if guihooks then guihooks.trigger('TurismoHubToggle', { visible = hubVisible }) end
   local st = S().get()
   local pause = not st or not st.settings or st.settings.pauseInHub ~= false
@@ -90,16 +100,13 @@ function M.toggleHub() M.setHubVisible(not hubVisible) end
 ---------------------------------------------------------------------------
 -- career as its own game mode (main menu entry, see ui/ui-vue/mods/turismo_karriere)
 ---------------------------------------------------------------------------
-local function levelLoaded()
-  local lvl = getCurrentLevelIdentifier and getCurrentLevelIdentifier()
-  return lvl ~= nil and lvl ~= ''
-end
-M.levelLoaded = levelLoaded
 
 -- main menu button "Turismo Karriere": title screen with the save slots
 function M.startCareer()
   log('I', 'turismo', 'Karriere aus dem Hauptmenü gestartet')
   M.registerPauseButton()
+  -- started from the in-game menu: close it, the Turismo menu takes over
+  if levelLoaded() and ui_menuManager and ui_menuManager.closeMenu then pcall(ui_menuManager.closeMenu) end
   M.setHubVisible(true)
 end
 
@@ -199,6 +206,8 @@ function M.snapshotState()
     raceActive = X('race').isActive() or X('modes').isActive() or X('drag').isActive(), testActive = X('tests').isActive(),
     level = X('session').currentLevel(),
     hubVisible = hubVisible,
+    aiLevel = X('aiDirector').ratingLabel(st.meta.aiRating),
+    firstVisit = not (st.meta.introSeen),
   }
 end
 
@@ -224,7 +233,7 @@ handlers.getSlots = function() return S().listSlots() end
 handlers.newProfile = function(a)
   local eco = X('data').economy()
   local st = S().newProfile(a.slot or 1, a.name, {
-    difficulty = a.difficulty, progressionMode = a.progressionMode, damageMode = a.damageMode,
+    progressionMode = a.progressionMode, damageMode = a.damageMode,
   })
   st.meta.hardcore = a.hardcore and true or false
   st.economy.money = eco.startMoney or st.economy.money
@@ -248,7 +257,7 @@ handlers.save = function() requireProfile() S().save() return true end
 handlers.setting = function(a)
   requireProfile()
   local st = S().get()
-  local metaKeys = { difficulty = true, hardcore = true, damageMode = true, progressionMode = true, raceLength = true, skipIntro = true, catchUp = true }
+  local metaKeys = { introSeen = true, hardcore = true, damageMode = true, progressionMode = true, raceLength = true, skipIntro = true }
   if metaKeys[a.key] then st.meta[a.key] = a.value else
     st.settings = st.settings or {}
     st.settings[a.key] = a.value

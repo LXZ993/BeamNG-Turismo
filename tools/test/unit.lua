@@ -304,6 +304,25 @@ H.test('main menu entry: startCareer opens hub and registers pause button', func
   extensions.ui_pause_actions = nil
 end)
 
+H.test('automatic difficulty follows results, catch-up only for beginners', function()
+  local AI = extensions.turismo_aiDirector
+  local lo, hi = AI.autoDifficulty(0), AI.autoDifficulty(1)
+  H.truthy(lo.skill < 0 and hi.skill > 0)
+  H.truthy(math.abs(AI.autoDifficulty(0.4).skill - AI.difficulty.normal.skill) < 1e-6)
+  local meta = {}
+  AI.updateRating(meta, 1, 8)
+  H.truthy(meta.aiRating > AI.RATING_START, 'win raises rating')
+  local m2 = {}
+  AI.updateRating(m2, 8, 8)
+  H.truthy(m2.aiRating < AI.RATING_START, 'last place lowers rating')
+  H.truthy(AI.autoCatchUp(0.1, 'quick', false) > 0)
+  H.eq(AI.autoCatchUp(0.6, 'quick', false), 0)
+  H.eq(AI.autoCatchUp(0.1, 'weekend', false), 0)
+  H.eq(AI.autoCatchUp(0.1, 'quick', true), 0)
+  local p = AI.resolveProfile({ tier = 'amateur' }, AI.autoDifficulty(0.4))
+  H.truthy(math.abs(p.skill - 0.55) < 1e-6)
+end)
+
 print(string.format('== %d ok, %d failed', H.passed, H.failed))
 for _, l in ipairs(H.logs) do if l:sub(1, 1) == 'E' then print('  log ' .. l) end end
 os.exit(H.failed == 0 and 0 or 1)

@@ -33,9 +33,11 @@ const path = require('path');
     ['20_newprofile', 'preview.hub("newProfile", {arg2: 2})'],
     ['21_car', 'preview.hub("car", {carId: window.TURISMO_MOCK.garage[0].id})'],
     ['22_world2', 'preview.hub("world2")'],
+    ['24_test_brief', 'preview.testBrief()'],
+    ['23_guide', 'preview.hub(); window.__turismoApp.showGuide()'],
   ];
   for (const [name, js] of shots) {
-    await page.evaluate(`document.querySelector("[data-el=overlay]").innerHTML=""; preview.emit("TurismoRacePhase",{phase:"idle"}); preview.emit("TurismoDragPhase",{phase:"idle"}); window.__turismoApp.tree=null;`);
+    await page.evaluate(`document.querySelector("[data-el=overlay]").innerHTML=""; preview.emit("TurismoRacePhase",{phase:"idle"}); preview.emit("TurismoDragPhase",{phase:"idle"}); window.__turismoApp.tree=null; window.__turismoApp._guideShown=true; window.__turismoApp.closeModal();`);
     await page.evaluate(js);
     await page.waitForTimeout(450);
     await page.screenshot({ path: path.join(out, name + '.png') });

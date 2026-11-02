@@ -46,7 +46,8 @@ angular.module('beamng.apps').directive('turismoHub', ['$injector', function ($i
           (listeners[name] = listeners[name] || []).push(cb);
           if (listeners[name].length === 1) scope.$on(name, function (ev, data) { listeners[name].forEach(function (f) { try { f(data); } catch (e) { console.error(e); } }); });
         },
-        stream: function (cb) { streamCb = cb; }
+        stream: function (cb) { streamCb = cb; },
+        typing: function (on) { bngApi.engineLua('setCEFTyping(' + (on ? 'true' : 'false') + ')'); }
       };
       scope.$on('TurismoResult', function (ev, res) {
         var p = res && pending[res.reqId];
