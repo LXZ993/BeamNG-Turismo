@@ -6,6 +6,7 @@ come from https://incompetech.com/music/royalty-free/mp3-royaltyfree/<Title>.mp3
 and are not stored in the repo; the converted OGGs are.
 
     python3 tools/import_music.py <folder with the MP3s>
+    python3 tools/import_music.py --playlist-only   # rewrite playlist.json only
 
 Each track is loudness-normalised (EBU R128) so menu and race music sit at a
 similar level, then encoded as Ogg Vorbis (BeamNG's CEF plays OGG reliably).
@@ -41,21 +42,24 @@ TRACKS = {
 CONTEXT_ORDER = ['title', 'menu', 'dealer', 'license', 'race', 'results']
 
 
-def main(src):
+LICENSE_TEXT = 'Licensed under Creative Commons: By Attribution 4.0 License, ' + LICENSE_URL
+
+
+def main(src, encode=True):
     os.makedirs(OUT, exist_ok=True)
     tracks, contexts = {}, {c: [] for c in CONTEXT_ORDER}
     for key, (title, ctxs, lufs) in TRACKS.items():
         mp3 = os.path.join(src, title + '.mp3')
         ogg = 'km_' + key + '.ogg'
-        if not os.path.exists(mp3):
+        if encode and not os.path.exists(mp3):
             sys.exit('missing: ' + mp3)
-        subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', mp3, '-map', '0:a', '-map_metadata', '-1',
+        if encode: subprocess.run(['ffmpeg', '-v', 'error', '-y', '-i', mp3, '-map', '0:a', '-map_metadata', '-1',
                         '-af', 'loudnorm=I=%d:TP=-1.5:LRA=11' % lufs, '-ar', '44100', '-ac', '2',
                         '-c:a', 'libvorbis', '-q:a', '3',
                         '-metadata', 'title=' + title, '-metadata', 'artist=Kevin MacLeod',
                         '-metadata', 'copyright=' + LICENSE + ' ' + LICENSE_URL,
                         os.path.join(OUT, ogg)], check=True)
-        tracks[key] = {'file': ogg, 'title': title, 'artist': ARTIST, 'license': LICENSE,
+        tracks[key] = {'file': ogg, 'title': title, 'artist': ARTIST, 'license': LICENSE, 'licenseText': LICENSE_TEXT,
                        'source': 'https://incompetech.com/music/royalty-free/mp3-royaltyfree/' + title.replace(' ', '%20') + '.mp3'}
         for c in ctxs:
             contexts[c].append(key)
@@ -63,11 +67,15 @@ def main(src):
     pl = {
         'info': 'Musik: Kevin MacLeod (incompetech.com), Lizenz Creative Commons BY 4.0 (' + LICENSE_URL + '). '
                 'Namensnennung wird beim Abspielen eingeblendet und steht in CREDITS.md. Eigene Musik: OGG hier ablegen und unten eintragen.',
+        'credit': 'Alle Musikstücke von Kevin MacLeod (incompetech.com), lizenziert unter Creative Commons BY 4.0. '
+                  'Für Turismo nur ins OGG-Format umgewandelt und in der Lautstärke angeglichen.',
         'tracks': tracks,
         'contexts': contexts,
     }
     with open(os.path.join(OUT, 'playlist.json'), 'w', encoding='utf-8') as f:
         json.dump(pl, f, ensure_ascii=False, indent=1)
+    if not encode:
+        return
     keep = {t['file'] for t in tracks.values()} | {'playlist.json'}
     for f in os.listdir(OUT):
         if f not in keep and re.search(r'\.(ogg|mp3|wav)$', f):
@@ -75,4 +83,7 @@ def main(src):
 
 
 if __name__ == '__main__':
-    main(sys.argv[1] if len(sys.argv) > 1 else '.')
+    if len(sys.argv) > 1 and sys.argv[1] == '--playlist-only':
+        main('.', encode=False)
+    else:
+        main(sys.argv[1] if len(sys.argv) > 1 else '.')

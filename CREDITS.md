@@ -27,7 +27,7 @@ Alle Musikstücke: **Kevin MacLeod** ([incompetech.com](https://incompetech.com)
 
 Lizenzhinweis je Stück: "<Titel>" Kevin MacLeod (incompetech.com), Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/
 
-Beim Start jedes Stücks blendet das Spiel Titel, Künstler und Lizenz ein.
+Beim Start jedes Stücks blendet das Spiel Titel, Künstler und Lizenz ein. Im Spiel stehen alle Stücke mit Lizenzhinweis unter **Credits** (Titelbildschirm und Einstellungen), dort lassen sie sich auch einzeln anhören.
 
 ## Sounds
 

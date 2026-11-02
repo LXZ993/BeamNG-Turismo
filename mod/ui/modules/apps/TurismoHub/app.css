@@ -243,3 +243,5 @@
 .tz-guide ol { padding-left: 20px; } .tz-guide li { margin: 6px 0; }
 .tz-guide .hint { color: var(--dim); font-size: 13px; }
 .tz-world .tz-tile p { max-width: 86%; }
+
+.tz-credits-lic { font-size: 12px; color: var(--dim); line-height: 1.6; }

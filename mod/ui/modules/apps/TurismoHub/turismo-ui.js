@@ -85,6 +85,7 @@
       if (self.ctxName !== context) return;
       var tr = list[self.idx % list.length];
       var info = (self.playlist.tracks && self.playlist.tracks[tr]) || null;
+      self.currentKey = tr;
       var file = info ? info.file : tr;
       if (info && info.title && self.onTrack) { try { self.onTrack(info); } catch (e) { } }
       try {
@@ -95,6 +96,15 @@
         var v = 0, target = self.musicVol;
         var iv = setInterval(function () { v = Math.min(target, v + target / 20); a.volume = v; if (v >= target) clearInterval(iv); }, 60);
       } catch (e) { }
+    },
+    // credits screen: play one track (again = stop and back to menu music)
+    preview: function (key) {
+      var self = this;
+      if (self.currentKey === key && self.ctxName === 'preview') { self.ctxName = 'off'; self.currentKey = null; self.music('menu'); return; }
+      self.loadPlaylist().then(function () {
+        self.ctxName = 'preview';
+        self.fadeOut(function () { self.idx = 0; self.playTrack([key], 'preview'); });
+      });
     },
     onTrack: null, // set by App: shows "now playing" with artist + licence (CC BY attribution)
     fadeOut: function (done) {
@@ -256,6 +266,7 @@
     tickets: function (a) { return a.call('tickets').then(function (d) { return { tickets: arr(d) }; }); },
     world2: function (a) { return Promise.all([a.call('levels'), a.call('tracks'), a.call('recorderState')]).then(function (r) { return { levels: arr(r[0]), tracks: arr(r[1]), rec: r[2] }; }); },
     settings: function () { return Promise.resolve({}); },
+    credits: function () { return Audio_.loadPlaylist().then(function (pl) { return { playlist: pl }; }); },
     diag: function (a) { return a.call('diagnostics').then(function (d) { return { diag: d }; }); }
   };
 
@@ -319,7 +330,7 @@
           '<div style="font-size:40px">+</div>Neue Karriere<br><small>Platz ' + s.slot + '</small></div>';
       }
     });
-    html += '</div><div><button class="tz-btn" data-act="close">◂ Zurück</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
+    html += '</div><div style="display:flex;gap:10px;justify-content:center"><button class="tz-btn" data-act="close">◂ Zurück</button><button class="tz-btn" data-act="go" data-arg="credits">Credits</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
     return html;
   };
 
@@ -610,6 +621,30 @@
     return html;
   };
 
+  App.prototype.scr_credits = function (d) {
+    var pl = d.playlist || {}, tracks = pl.tracks || {}, ctx = pl.contexts || {};
+    var CTX = { title: 'Titel', menu: 'Menü & Café', dealer: 'Händler', license: 'Lizenzen', race: 'Rennen', results: 'Siegerehrung' };
+    var playing = Audio_.current && Audio_.currentKey;
+    var rows = Object.keys(tracks).map(function (k) {
+      var t = tracks[k];
+      var used = Object.keys(ctx).filter(function (c) { return arr(ctx[c]).indexOf(k) >= 0; }).map(function (c) { return CTX[c] || c; }).join(', ');
+      return '<tr><td><b>' + esc(t.title) + '</b></td><td>' + esc(t.artist) + '</td><td>' + esc(t.license || '') + '</td><td>' + esc(used) + '</td>' +
+        '<td><span class="tz-btn" data-act="previewTrack" data-arg="' + esc(k) + '">' + (playing === k ? '■' : '▶') + '</span></td></tr>';
+    }).join('');
+    var lic = Object.keys(tracks).map(function (k) {
+      var t = tracks[k];
+      return '<div>"' + esc(t.title) + '" ' + esc(t.artist) + (t.licenseText ? ', ' + esc(t.licenseText) : '') + '</div>';
+    }).join('');
+    return this.head('Credits', 'Turismo – Die Karriere · ein Fan-Mod für BeamNG.drive') +
+      '<div class="tz-panel" style="max-width:1000px"><h2 style="margin:0 0 6px">Musik</h2>' +
+      '<div class="tz-note">' + esc(pl.credit || '') + '</div>' +
+      '<table class="tz-table"><tr><th>Titel</th><th>Künstler</th><th>Lizenz</th><th>Einsatz</th><th></th></tr>' + rows + '</table>' +
+      '<h3 style="margin:18px 0 6px">Lizenzhinweise</h3><div class="tz-credits-lic">' + lic + '</div></div>' +
+      '<div class="tz-panel" style="max-width:1000px;margin-top:16px"><h2 style="margin:0 0 6px">Turismo</h2>' +
+      '<div>Konzept, Programmierung, Texte, Oberfläche und Sounds: eigene Arbeit für dieses Projekt. Alle Fahrer-, Serien- und Hallennamen sind frei erfunden.</div>' +
+      '<div style="margin-top:8px;color:var(--dim)">BeamNG.drive ist ein Spiel der BeamNG GmbH. Dieser Mod ist ein inoffizielles Fanprojekt und steht in keiner Verbindung zu BeamNG oder anderen Rennspiel-Herstellern.</div></div>';
+  };
+
   App.prototype.scr_settings = function () {
     var s = this.state, m = s.meta || {}, st = s.settings || {};
     function opt(key, val, label, cur) { return '<div class="' + (String(cur) === String(val) ? 'on' : '') + '" data-act="setting" data-arg="' + key + '" data-arg2="' + val + '">' + label + '</div>'; }
@@ -622,7 +657,7 @@
       '<label>Hardcore</label><div class="tz-choice">' + opt('hardcore', 'false', 'Aus', !!m.hardcore) + opt('hardcore', 'true', 'An (immer Rennwochenende, kein Neustart)', !!m.hardcore) + '</div>' +
       '<label>Spiel pausieren im Menü</label><div class="tz-choice">' + opt('pauseInHub', 'true', 'Ja', st.pauseInHub !== false) + opt('pauseInHub', 'false', 'Nein', st.pauseInHub !== false) + '</div>' +
       '<label>Musik-Lautstärke</label><div class="tz-choice">' + [0, 0.2, 0.45, 0.7].map(function (v) { return '<div class="' + (Math.abs(Audio_.musicVol - v) < 0.01 ? 'on' : '') + '" data-act="musicVol" data-arg="' + v + '">' + (v === 0 ? 'Aus' : Math.round(v * 100) + '%') + '</div>'; }).join('') + '</div>' +
-      '<div style="margin-top:20px;display:flex;gap:10px"><button class="tz-btn" data-act="save">Jetzt speichern</button><button class="tz-btn" data-act="toTitle">Spielstand wechseln</button></div></div>';
+      '<div style="margin-top:20px;display:flex;gap:10px"><button class="tz-btn" data-act="save">Jetzt speichern</button><button class="tz-btn" data-act="toTitle">Spielstand wechseln</button><button class="tz-btn" data-act="go" data-arg="credits">Credits</button></div></div>';
   };
 
   App.prototype.scr_diag = function (d) {
@@ -713,6 +748,7 @@
         this.call('setting', { key: arg, value: v }).then(function (s) { self.state = s; self.render(); });
         break;
       case 'musicVol': Audio_.setMusicVolume(+arg); this.render(); break;
+      case 'previewTrack': Audio_.preview(arg); setTimeout(function () { self.render(); }, 50); break;
       case 'save': this.call('save').then(function () { self.toast('Gespeichert', 'info'); }); break;
       case 'toTitle': this.stack = [{ name: 'title', params: {} }]; this.load(); break;
       case 'rescan': this.call('rescan').then(function () { self.reload(); }); break;

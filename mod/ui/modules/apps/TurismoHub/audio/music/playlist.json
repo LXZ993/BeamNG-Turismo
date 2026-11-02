@@ -1,11 +1,13 @@
 {
  "info": "Musik: Kevin MacLeod (incompetech.com), Lizenz Creative Commons BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Namensnennung wird beim Abspielen eingeblendet und steht in CREDITS.md. Eigene Musik: OGG hier ablegen und unten eintragen.",
+ "credit": "Alle Musikstücke von Kevin MacLeod (incompetech.com), lizenziert unter Creative Commons BY 4.0. Für Turismo nur ins OGG-Format umgewandelt und in der Lautstärke angeglichen.",
  "tracks": {
   "exhilarate": {
    "file": "km_exhilarate.ogg",
    "title": "Exhilarate",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Exhilarate.mp3"
   },
   "airport_lounge": {
@@ -13,6 +15,7 @@
    "title": "Airport Lounge",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Airport%20Lounge.mp3"
   },
   "bossa_antigua": {
@@ -20,6 +23,7 @@
    "title": "Bossa Antigua",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Bossa%20Antigua.mp3"
   },
   "cool_vibes": {
@@ -27,6 +31,7 @@
    "title": "Cool Vibes",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cool%20Vibes.mp3"
   },
   "lobby_time": {
@@ -34,6 +39,7 @@
    "title": "Lobby Time",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Lobby%20Time.mp3"
   },
   "local_forecast": {
@@ -41,6 +47,7 @@
    "title": "Local Forecast - Elevator",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Local%20Forecast%20-%20Elevator.mp3"
   },
   "funkorama": {
@@ -48,6 +55,7 @@
    "title": "Funkorama",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funkorama.mp3"
   },
   "funky_chunk": {
@@ -55,6 +63,7 @@
    "title": "Funky Chunk",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funky%20Chunk.mp3"
   },
   "groove_grove": {
@@ -62,6 +71,7 @@
    "title": "Groove Grove",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Groove%20Grove.mp3"
   },
   "easy_lemon": {
@@ -69,6 +79,7 @@
    "title": "Easy Lemon",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Easy%20Lemon.mp3"
   },
   "cut_and_run": {
@@ -76,6 +87,7 @@
    "title": "Cut and Run",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cut%20and%20Run.mp3"
   },
   "exit_the_premises": {
@@ -83,6 +95,7 @@
    "title": "Exit the Premises",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Exit%20the%20Premises.mp3"
   },
   "movement_prop": {
@@ -90,6 +103,7 @@
    "title": "Movement Proposition",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Movement%20Proposition.mp3"
   },
   "ouroboros": {
@@ -97,6 +111,7 @@
    "title": "Ouroboros",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Ouroboros.mp3"
   },
   "raving_energy": {
@@ -104,6 +119,7 @@
    "title": "Raving Energy",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Raving%20Energy.mp3"
   },
   "rhinoceros": {
@@ -111,6 +127,7 @@
    "title": "Rhinoceros",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Rhinoceros.mp3"
   },
   "volatile_reaction": {
@@ -118,6 +135,7 @@
    "title": "Volatile Reaction",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Volatile%20Reaction.mp3"
   },
   "hep_cats": {
@@ -125,6 +143,7 @@
    "title": "Hep Cats",
    "artist": "Kevin MacLeod (incompetech.com)",
    "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
    "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Hep%20Cats.mp3"
   }
  },
