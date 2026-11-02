@@ -190,12 +190,35 @@
 .tz-hgaps .ahead b { color: var(--bad); } .tz-hgaps .behind b { color: var(--good); }
 .tz-hprog { bottom: 12px; left: 50%; transform: translateX(-50%); width: 420px; height: 5px; padding: 0; border-radius: 3px; overflow: hidden; }
 .tz-hprog i { display: block; height: 100%; background: var(--accent); }
-.tz-speedo { position: absolute; right: 26px; bottom: 22px; width: 230px; height: 230px; }
-.tz-speedo svg { width: 100%; height: 100%; }
-.tz-speedo .spd { position: absolute; left: 0; right: 0; top: 78px; text-align: center; font-size: 52px; font-weight: 800; font-style: italic; }
-.tz-speedo .unit { position: absolute; left: 0; right: 0; top: 140px; text-align: center; color: var(--dim); font-size: 11px; letter-spacing: .3em; }
-.tz-speedo .gear { position: absolute; left: 0; right: 0; top: 160px; text-align: center; font-size: 30px; font-weight: 800; color: var(--accent); }
-.tz-speedo .gear.shift { color: var(--bad); }
+.tz-speedo { position: absolute; right: 26px; bottom: 22px; width: 340px; padding: 12px 16px 10px; border-radius: 14px;
+  background: linear-gradient(135deg, rgba(6,12,26,.86), rgba(10,20,44,.74)); border: 1px solid rgba(130,170,255,.2); }
+.tz-speedo .row { display: flex; align-items: flex-end; justify-content: space-between; }
+.tz-speedo .gear { font-size: 64px; font-weight: 800; font-style: italic; line-height: .85; color: var(--accent); min-width: 54px; }
+.tz-speedo .spdbox { text-align: right; }
+.tz-speedo .spd { font-size: 50px; font-weight: 800; font-style: italic; line-height: .9; }
+.tz-speedo .unit { color: var(--dim); font-size: 11px; letter-spacing: .3em; text-transform: uppercase; }
+.tz-speedo .revs { display: flex; gap: 2px; height: 16px; margin-top: 10px; }
+.tz-speedo .revs i { flex: 1; background: rgba(255,255,255,.08); border-radius: 2px; transform: skewX(-12deg); }
+.tz-speedo .revs i.on { background: var(--accent); box-shadow: 0 0 6px rgba(54,209,255,.6); }
+.tz-speedo .revs i.red { background: rgba(255,93,108,.22); }
+.tz-speedo .revs i.red.on { background: var(--bad); box-shadow: 0 0 8px rgba(255,93,108,.8); }
+.tz-speedo .marks { position: relative; height: 14px; margin-top: 2px; font-size: 10px; color: var(--dim); }
+.tz-speedo .marks span { position: absolute; transform: translateX(-50%); }
+.tz-speedo .rpm { font-size: 10px; color: var(--dim); letter-spacing: .1em; text-align: right; }
+.tz-speedo .rpm b { color: var(--text, #fff); font-size: 12px; }
+.tz-speedo.shift .gear { color: var(--bad); animation: tz-shift .12s steps(2) infinite; }
+.tz-speedo.shift .revs i.on { animation: tz-shift .12s steps(2) infinite; }
+@keyframes tz-shift { 50% { opacity: .25; } }
+.tz-hdelta { position: absolute; top: 22px; left: 50%; transform: translateX(-50%); padding: 4px 16px; border-radius: 8px; font-size: 26px; font-weight: 800; font-style: italic;
+  background: rgba(6,12,26,.8); border: 1px solid rgba(130,170,255,.2); }
+.tz-hdelta.good, .tz-htimes .good { color: var(--good); } .tz-hdelta.bad, .tz-htimes .bad { color: var(--bad); }
+.tz-minimap { left: 22px; bottom: 22px; width: 200px; height: 200px; padding: 12px; }
+.tz-minimap svg { width: 100%; height: 100%; }
+.tz-minimap .trk2 { fill: none; stroke: rgba(0,0,0,.55); stroke-width: 9; stroke-linejoin: round; stroke-linecap: round; }
+.tz-minimap .trk { fill: none; stroke: rgba(220,230,255,.85); stroke-width: 4; stroke-linejoin: round; stroke-linecap: round; }
+.tz-minimap .sf { fill: #fff; stroke: #000; stroke-width: 1.5; }
+.tz-minimap .ai { fill: #ffb347; stroke: #1a1a1a; stroke-width: 1.5; }
+.tz-minimap .me { fill: var(--accent); stroke: #fff; stroke-width: 2; }
 .tz-banner { position: absolute; top: 18%; left: 0; right: 0; text-align: center; animation: tz-rise .4s ease-out; }
 .tz-banner .t1 { display: inline-block; padding: 10px 40px; font-size: 34px; font-weight: 800; font-style: italic; letter-spacing: .08em;
   background: linear-gradient(90deg, transparent, rgba(6,12,26,.85) 15%, rgba(6,12,26,.85) 85%, transparent); }

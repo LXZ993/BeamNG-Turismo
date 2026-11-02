@@ -39,8 +39,13 @@
     race: function () {
       emit('TurismoHubToggle', { visible: false });
       emit('TurismoRacePhase', { phase: 'racing' });
-      emit('TurismoHud', { phase: 'racing', pos: 3, total: 8, lap: 2, laps: 3, lapTime: 41.237, lastLap: 62.881, bestLap: 62.881, gapAhead: 0.84, gapBehind: 1.92,
-        nameAhead: 'Henrik Valtonen', nameBehind: 'Mara Lindqvist', progress: 0.42,
+      var trk = []; for (var a = 0; a < 6.283; a += 0.06) trk.push([Math.cos(a) * 400 + Math.cos(3 * a) * 60, Math.sin(a) * 220 + Math.sin(2 * a) * 90]);
+      emit('TurismoTrackMap', { pts: trk, closed: true });
+      for (var q = 0.01; q < 1; q += 0.02) emit('TurismoHud', { phase: 'racing', lap: 1, laps: 3, progress: q, lapTime: q * 62.881, pos: 3, total: 8 });
+      var at = function (q) { var a = q * 6.283; return [Math.cos(a) * 400 + Math.cos(3 * a) * 60, Math.sin(a) * 220 + Math.sin(2 * a) * 90]; };
+      var cars = [0.70, 0.68, 0.65, 0.63, 0.59, 0.54, 0.50, 0.45].map(function (q, i) { var c = at(q); return [c[0], c[1], i === 2 ? 1 : 0, i + 1]; });
+      emit('TurismoHud', { phase: 'racing', cars: cars, pos: 3, total: 8, lap: 2, laps: 3, lapTime: 41.237, lastLap: 62.881, bestLap: 62.881, gapAhead: 0.84, gapBehind: 1.92,
+        nameAhead: 'Henrik Valtonen', nameBehind: 'Mara Lindqvist', progress: 0.65,
         standings: [{ pos: 1, name: 'Tomás Herrera' }, { pos: 2, name: 'Henrik Valtonen', gap: 2.1 }, { pos: 3, name: 'Du', isPlayer: true, gap: 2.9 },
           { pos: 4, name: 'Mara Lindqvist', gap: 4.8 }, { pos: 5, name: 'Kenji Arakawa', gap: 7.2 }, { pos: 6, name: 'Luca Ferrandi', gap: 9.9 }, { pos: 7, name: 'Ana Duarte', gap: 12.4 }, { pos: 8, name: 'Pieter de Vries', gap: 15.0 }] });
       streamCb && streamCb({ electrics: { wheelspeed: 38.2, rpmTacho: 6100, maxrpm: 7200, gear: 4 } });

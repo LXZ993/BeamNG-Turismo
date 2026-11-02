@@ -538,6 +538,24 @@ local function pushHud()
     end
     list[#list + 1] = { pos = i, name = R.names[e.id], car = R.cars[e.id], gap = gapS, isPlayer = (e.id == R.playerId), finished = e.finished }
   end
+  -- minimap: outline once per race (max ~160 points), car dots every update
+  if not R.mapSent and R.poly and #R.poly.pts > 1 then
+    R.mapSent = true
+    local step = math.max(1, math.floor(#R.poly.pts / 160))
+    local outline = {}
+    for i = 1, #R.poly.pts, step do
+      local pt = R.poly.pts[i]
+      outline[#outline + 1] = { math.floor(pt.x * 10 + 0.5) / 10, math.floor(pt.y * 10 + 0.5) / 10 }
+    end
+    hud('TurismoTrackMap', { pts = outline, closed = R.closed and true or false })
+  end
+  local dots = {}
+  for i, e in ipairs(R.standings or {}) do
+    local c = R.ctx[e.id]
+    if c and c.pos and not (R.eliminated and R.eliminated[e.id]) then
+      dots[#dots + 1] = { math.floor(c.pos.x * 10 + 0.5) / 10, math.floor(c.pos.y * 10 + 0.5) / 10, e.id == R.playerId and 1 or 0, i }
+    end
+  end
   local gapAhead = p.ahead and p.ahead.gap / math.max(8, p.speed) or nil
   local gapBehind = p.behind and p.behind.gap / math.max(8, R.ctx[p.behind.id].speed) or nil
   hud('TurismoHud', {
@@ -548,7 +566,7 @@ local function pushHud()
     nameAhead = p.ahead and R.names[p.ahead.id], nameBehind = p.behind and R.names[p.behind.id],
     standings = list, raceTime = R.race and R.race.time or 0,
     progress = R.poly.len > 0 and (p.progress % R.poly.len) / R.poly.len or 0,
-    trackLen = R.poly.len, damage = p.damage,
+    trackLen = R.poly.len, damage = p.damage, cars = dots,
   })
 end
 

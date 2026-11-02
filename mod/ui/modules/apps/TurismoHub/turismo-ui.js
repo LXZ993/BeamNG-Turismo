@@ -152,7 +152,8 @@
     b.on('TurismoSound', function (d) { Audio_.sfx(d.file || d.cue); });
     b.on('TurismoMusic', function (d) { Audio_.music(d.context); });
     b.on('TurismoRacePhase', function (d) { self.onPhase(d); });
-    b.on('TurismoHud', function (d) { self.hud.race = d; self.renderHud(); });
+    b.on('TurismoHud', function (d) { self.trackDelta(d); self.hud.race = d; self.renderHud(); });
+    b.on('TurismoTrackMap', function (d) { self.trackMap = prepMap(d); self.renderHud(); });
     b.on('TurismoSessionHud', function (d) { self.hud.session = d; self.renderHud(); });
     b.on('TurismoModeHud', function (d) { self.hud.mode = d; self.renderHud(); });
     b.on('TurismoCountdown', function (d) { self.onCountdown(d); });
@@ -768,6 +769,7 @@
   App.prototype.onPhase = function (d) {
     var self = this;
     this.phase = d.phase;
+    if (d.phase === 'idle' || d.phase === 'loading') { this.trackMap = null; this._delta = null; }
     if (d.phase === 'idle') { this.hud = {}; this.banner = null; this.lights = null; this.renderHud(); return; }
     var titles = {
       loading: [d.title || 'Rennen', 'Strecke wird geladen …'], intro: [d.track || d.title, (d.laps ? d.laps + (d.laps === 1 ? ' Runde' : ' Runden') + ' · ' : '') + (d.title || '')],
@@ -838,13 +840,14 @@
       if (r.pos) html += '<div class="tz-hbox tz-hpos"><div><div class="lab">Position</div><div class="big tz-num">' + r.pos + '<small>/' + (r.total || '?') + '</small></div></div>' +
         '<div><div class="lab">Runde</div><div class="lap tz-num">' + (r.lap || 1) + '/' + (r.laps || 1) + '</div></div></div>';
       html += '<div class="tz-hbox tz-htimes" style="' + (r.pos ? '' : 'top:22px') + '"><div><span>Runde</span><span class="cur tz-num">' + time(r.lapTime) + '</span></div>' +
+        (r.delta != null ? '<div><span>Δ Beste</span><span class="tz-num ' + (r.delta > 0 ? 'bad' : 'good') + '">' + (r.delta > 0 ? '+' : '−') + num(Math.abs(r.delta), 2) + '</span></div>' : '') +
         '<div><span>Letzte</span><span class="tz-num">' + time(r.lastLap) + '</span></div><div><span>Beste</span><span class="tz-num" style="color:var(--accent2)">' + time(r.bestLap) + '</span></div>' +
         (r.target ? '<div><span>Ziel</span><span class="tz-num">' + time(r.target) + '</span></div>' : '') + '</div>';
       var st = arr(r.standings);
       if (st.length > 1) {
         var me = 0; st.forEach(function (x, i) { if (x.isPlayer) me = i; });
-        var from = Math.max(0, Math.min(st.length - 8, me - 3));
-        html += '<div class="tz-hbox tz-hstand">' + st.slice(from, from + 8).map(function (x) {
+        var rows = 5, from = Math.max(0, Math.min(st.length - rows, me - 2));
+        html += '<div class="tz-hbox tz-hstand">' + st.slice(from, from + rows).map(function (x) {
           return '<div class="' + (x.isPlayer ? 'me' : '') + '"><span class="tz-num">' + x.pos + '</span><span>' + esc(x.isPlayer ? 'Du' : x.name) + '</span><b class="tz-num">' + (x.pos === 1 ? 'Führung' : (x.gap != null ? gap(x.gap) : '')) + '</b></div>';
         }).join('') + '</div>';
       }
@@ -852,6 +855,8 @@
         html += '<div class="tz-hbox tz-hgaps">' + (r.gapAhead != null ? '<div class="g ahead"><b class="tz-num">' + gap(-r.gapAhead) + '</b>' + esc(r.nameAhead || '') + '</div>' : '') +
           (r.gapBehind != null ? '<div class="g behind"><b class="tz-num">' + gap(r.gapBehind) + '</b>' + esc(r.nameBehind || '') + '</div>' : '') + '</div>';
       }
+      if (r.delta != null && this.phase !== 'formation') html += '<div class="tz-hdelta tz-num ' + (r.delta > 0 ? 'bad' : 'good') + '">' + (r.delta > 0 ? '+' : '−') + num(Math.abs(r.delta), 2) + '</div>';
+      if (this.trackMap) html += minimapSvg(this.trackMap, arr(r.cars));
       if (r.progress != null) html += '<div class="tz-hbox tz-hprog"><i style="width:' + (r.progress * 100).toFixed(1) + '%"></i></div>';
     }
     if (h.session && (this.phase === 'practice' || this.phase === 'qualifying')) {
@@ -904,27 +909,78 @@
     this.renderSpeedo();
   };
 
+  var SEGS = 32;
   App.prototype.renderSpeedo = function () {
     var box = this.el.hud.querySelector('[data-el=speedo]');
     if (!box) return;
     var t = this.tele || { speed: (this.hud.test && this.hud.test.speed) || (this.hud.dragRun && this.hud.dragRun.speed) || 0, rpm: 0, maxrpm: 7000, gear: '' };
-    if (!this._speedoBuilt) {
-      box.innerHTML = '<svg viewBox="0 0 230 230"><circle cx="115" cy="115" r="100" fill="rgba(6,12,26,.78)" stroke="rgba(130,170,255,.25)" stroke-width="2"/>' +
-        '<path d="' + arcPath(115, 115, 88, 135, 405) + '" stroke="rgba(255,255,255,.1)" stroke-width="12" fill="none" stroke-linecap="round"/>' +
-        '<path data-el="rpmArc" d="" stroke="url(#tzg)" stroke-width="12" fill="none" stroke-linecap="round"/>' +
-        '<defs><linearGradient id="tzg" x1="0" x2="1"><stop offset="0" stop-color="#7b6cff"/><stop offset=".7" stop-color="#36d1ff"/><stop offset="1" stop-color="#ff5d6c"/></linearGradient></defs></svg>' +
-        '<div class="spd tz-num" data-el="spd">0</div><div class="unit">KM/H</div><div class="gear" data-el="gear">N</div>';
-      this._speedoBuilt = true;
+    var maxrpm = t.maxrpm || 7000, red = 0.88;
+    if (!this._speedoBuilt || this._speedoMax !== maxrpm) {
+      var segs = '', marks = '', k1 = Math.ceil(maxrpm / 1000);
+      for (var i = 0; i < SEGS; i++) segs += '<i class="' + ((i + 1) / SEGS > red ? 'red' : '') + '"></i>';
+      for (var k = 0; k <= k1; k++) if (k * 1000 <= maxrpm) marks += '<span style="left:' + (k * 1000 / maxrpm * 100).toFixed(1) + '%">' + k + '</span>';
+      box.innerHTML = '<div class="row"><div class="gear" data-el="gear">N</div><div class="spdbox"><div class="spd tz-num" data-el="spd">0</div><div class="unit">km/h</div></div></div>' +
+        '<div class="revs" data-el="revs">' + segs + '</div><div class="marks">' + marks + '</div><div class="rpm tz-num"><b data-el="rpm">0</b> U/min ×1000</div>';
+      this._speedoBuilt = true; this._speedoMax = maxrpm;
     }
-    var frac = Math.max(0, Math.min(1, (t.rpm || 0) / (t.maxrpm || 7000)));
-    box.querySelector('[data-el=rpmArc]').setAttribute('d', frac > 0.005 ? arcPath(115, 115, 88, 135, 135 + 270 * frac) : '');
+    var frac = Math.max(0, Math.min(1, (t.rpm || 0) / maxrpm));
+    var lit = Math.round(frac * SEGS), cells = box.querySelector('[data-el=revs]').children;
+    for (var j = 0; j < cells.length; j++) cells[j].classList.toggle('on', j < lit);
     box.querySelector('[data-el=spd]').textContent = Math.round(t.speed || 0);
+    box.querySelector('[data-el=rpm]').textContent = num((t.rpm || 0) / 1000, 1);
     var g = box.querySelector('[data-el=gear]');
     var gear = t.gear;
     if (typeof gear === 'number') gear = gear === 0 ? 'N' : gear < 0 ? 'R' : String(gear);
     g.textContent = gear == null ? '' : gear;
-    g.classList.toggle('shift', frac > 0.92);
+    box.classList.toggle('shift', frac > red);
   };
+
+  // live delta to the best lap: record (lap progress -> lap time) samples, keep the best lap's samples as reference
+  App.prototype.trackDelta = function (d) {
+    if (!d || d.phase !== 'racing' || d.progress == null || d.lapTime == null) { if (d) d.delta = null; return; }
+    var D = this._delta || (this._delta = { lap: d.lap, cur: [], ref: null, refTime: null });
+    if (d.lap !== D.lap) {
+      // previous lap just finished: keep its samples if it is the new best
+      if (d.lastLap != null && d.bestLap != null && Math.abs(d.lastLap - d.bestLap) < 0.002 && D.cur.length > 10 && (D.refTime == null || d.bestLap < D.refTime)) {
+        D.ref = D.cur; D.refTime = d.bestLap;
+      }
+      D.lap = d.lap; D.cur = [];
+    }
+    var last = D.cur[D.cur.length - 1];
+    // ignore the wrap-around jitter near the line (progress still ~1 right after the lap counter switched)
+    if (!(d.lapTime < 4 && d.progress > 0.5) && (!last || d.progress > last[0])) D.cur.push([d.progress, d.lapTime]);
+    d.delta = null;
+    if (D.ref && d.lapTime > 2 && !(d.lapTime < 4 && d.progress > 0.5)) {
+      var ref = D.ref, lo = 0, hi = ref.length - 1;
+      if (d.progress < ref[0][0] || d.progress > ref[hi][0]) return;
+      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (ref[mid][0] <= d.progress) lo = mid; else hi = mid; }
+      var a = ref[lo], b = ref[hi], f = b[0] > a[0] ? (d.progress - a[0]) / (b[0] - a[0]) : 0;
+      d.delta = d.lapTime - (a[1] + (b[1] - a[1]) * f);
+    }
+  };
+
+  function prepMap(d) {
+    var pts = arr(d && d.pts);
+    if (pts.length < 2) return null;
+    var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    pts.forEach(function (p) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+    var size = Math.max(x1 - x0, y1 - y0, 1), pad = 12, S = 176 - 2 * pad;
+    var ox = pad + (S - (x1 - x0) / size * S) / 2, oy = pad + (S - (y1 - y0) / size * S) / 2;
+    // world y points north, screen y points down
+    var tf = function (x, y) { return [ox + (x - x0) / size * S, 176 - (oy + (y - y0) / size * S)]; };
+    var path = pts.map(function (p, i) { var q = tf(p[0], p[1]); return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('') + (d.closed ? 'Z' : '');
+    var st = tf(pts[0][0], pts[0][1]);
+    return { path: path, tf: tf, start: st };
+  }
+  function minimapSvg(m, cars) {
+    var dots = cars.slice().sort(function (a, b) { return a[2] - b[2]; }).map(function (c) {
+      var q = m.tf(c[0], c[1]);
+      return c[2] ? '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="6.5" class="me"/>'
+        : '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="4.5" class="ai"/>';
+    }).join('');
+    return '<div class="tz-hbox tz-minimap"><svg viewBox="0 0 176 176"><path d="' + m.path + '" class="trk2"/><path d="' + m.path + '" class="trk"/>' +
+      '<rect x="' + (m.start[0] - 4).toFixed(1) + '" y="' + (m.start[1] - 4).toFixed(1) + '" width="8" height="8" class="sf"/>' + dots + '</svg></div>';
+  }
 
   function arcPath(cx, cy, r, a0, a1) {
     function pt(a) { var rad = (a - 90) * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; }
