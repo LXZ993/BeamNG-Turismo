@@ -207,6 +207,9 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li><b>Diagnose:</b> Im World-Menü unter Einstellungen, oder in der Konsole <code>dump(extensions.turismo_core.call('diagnostics'))</code>. Zeigt Anzahl Autos, Strecken und Inhaltsfehler.</li>
 <li><b>World-Menü (Stadtkarte):</b> <code>scr_world</code> in <span class="path">turismo-ui.js</span>. Hintergrund <span class="path">art\map_day.png</span> / <span class="path">map_night.png</span> (Nacht von 19 bis 7 Uhr PC-Zeit, <code>isNight</code>). Die Orte stehen in <code>worldPlaces()</code> (Name, Symbol, Ziel, Sperr-Schlüssel aus <code>unlocks</code>), ihre Lage in Prozent in <code>MAP_PLACES</code>. Wer einen Ort verschiebt, ändert auch <code>PLACES</code> in <span class="path">tools\art\make_map.py</span> und baut die Karte neu (dort sind Plätze frei und beleuchtet). Pfeiltasten: <code>mapStep</code>.</li>
 <li><b>Händler, Rennen, Garage, Café:</b> <code>marketGrid</code>/<code>marketCard</code>/<code>showOffer</code> (Autos als helle Karten, Bild aus <code>preview</code> der BeamNG-Konfiguration, sonst Umriss), <code>scr_events</code> (hohe Karten, Farbe je Klasse in <code>HALL_HUE</code>), <code>scr_series</code> (ein Lauf = eine Karte, Pokal aus <span class="path">art\trophy_*.png</span>), <code>scr_garage</code> (Auswahl links, sortierbare Liste rechts), <code>scr_cafe</code> (Hefte auf heller Tafel).</li>
+<li><b>Karriere ohne Karte:</b> Spielstand laden/anlegen lädt keine Karte mehr; das World-Menü läuft über dem BeamNG-Hauptmenü. <code>uiCall('drive')</code> (Knopf „Fahren“) lädt ohne Karte die Heimatkarte (<code>settings.homeLevel</code>) mit dem aktiven Auto (<code>enterCareerWorld(false)</code>), mit Karte schließt es nur das Menü. Rennen, Tests und Freie Fahrt laden ihre Karte selbst.</li>
+<li><b>Namen und Vorschaubilder:</b> <span class="path">tracks.lua</span> übersetzt Titel-Schlüssel (<code>niceName</code>, sonst lesbar aus dem Schlüssel), holt Kartenname und Vorschaubild aus <code>core_levels.getList()</code> (<code>levelInfo</code>, deutsche Namen der Standardkarten in <code>KNOWN_LEVELS</code>) und vereinheitlicht die Schreibweise der Karten (<code>canonicalLevel</code>). Test-Vorschaubilder: <span class="path">ui\modules\apps\TurismoHub\previews\tests\&lt;Test-ID&gt;.jpg</span> (640×360), Liste in der LIESMICH.txt dort.</li>
+<li><b>Aussehen:</b> der Block „GT-Look für alle Menü-Seiten“ am Ende von <span class="path">app.css</span> setzt die Farben (<code>.tz-hub</code>-Variablen); das Fahr-HUD behält seine eigenen, dunklen Farben.</li>
 <li><b>Notfall-Menü:</b> Falls die Oberfläche nicht erscheint, gibt es ein einfaches IMGUI-Menü (Taste „Turismo: Notfall-Menü“).</li>
 <li><b>Prüfliste:</b> <span class="path">docs\PRUEFLISTE.md</span> sagt, was im Spiel zu testen ist.</li>
 </ul>
@@ -593,6 +596,25 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li>Hilfe, Bonuslose, Einstellungen, Changelog und Diagnose liegen als kleine Knöpfe am rechten Rand.</li>
 <li>Die Leiste oben ist schmaler und dunkler.</li>
 <li>Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.</li>
+</ul>
+<h4>Neu: Karriere-Menü ohne Ladezeit</h4>
+<ul>
+<li>Spielstand laden oder neu anlegen öffnet das World-Menü jetzt sofort, direkt über dem BeamNG-Hauptmenü. Es wird keine Karte und kein Standardauto mehr vorher geladen.</li>
+<li>Eine Karte lädt erst, wenn du fahren willst: <b>Fahren</b> oben rechts (deine Heimatkarte mit deinem aktiven Auto), ein Rennen, ein Lizenz-Test oder Freie Fahrt.</li>
+<li>Ohne eigenes Auto sagt dir <b>Fahren</b>, dass du zuerst eins kaufen musst.</li>
+</ul>
+<h4>Neu: echte Namen und Vorschaubilder</h4>
+<ul>
+<li>Strecken und Karten heißen jetzt so wie im Spiel, z. B. „Container Chaos“ und „West Coast, USA“, statt „quickrace.industrial.track_container_chaos.title“ und „west_coast_usa“.</li>
+<li>Karten, die doppelt aufgetaucht sind („Industrial“ und „industrial“), stehen nur noch einmal da.</li>
+<li>Freie Fahrt zeigt jede Karte mit ihrem Vorschaubild aus dem Spiel.</li>
+<li>Lizenz-Tests und Fahrschule haben jetzt eine Bildfläche pro Test. Eigene Bilder legst du in <code>ui\modules\apps\TurismoHub\previews\tests\</code> ab, die Dateinamen stehen in der LIESMICH.txt dort.</li>
+</ul>
+<h4>Neu: ruhigeres Design</h4>
+<ul>
+<li>Alle Menü-Seiten sind hell und schlicht: hellgraue Fläche, weiße Karten, schwarze Schrift, Rot als einzige Akzentfarbe. Die bunten Verläufe und das Leuchten sind weg.</li>
+<li>Die Leiste oben ist dunkel, „Fahren“ ist rot.</li>
+<li>Der Startbildschirm mit den Spielständen ist schwarz-weiß.</li>
 </ul>
 <h4>Neu: Händler, Rennen, Garage und Café im GT-Stil</h4>
 <ul>

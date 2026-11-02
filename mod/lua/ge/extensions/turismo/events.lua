@@ -437,7 +437,8 @@ function M.snapshot()
       races[#races + 1] = {
         idx = i, name = r.name, laps = r.laps or s.laps or 3,
         track = label, trackOk = ok,
-        level = level, trophy = st.trophies and trophy(st, i),
+        level = level, levelTitle = level and extensions.turismo_tracks.levelInfo(level).title or nil,
+        trophy = st.trophies and trophy(st, i),
       }
     end
     local hall = byHall[s.hall] or byHall.spezial

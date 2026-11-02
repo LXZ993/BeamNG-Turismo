@@ -18,6 +18,22 @@
 - The bar at the top is slimmer and darker.
 - For places 1 to 3 the podium screen shows a gold, silver or bronze trophy.
 
+### New: career menu without loading time
+- Loading or creating a save now opens the world menu right away, on top of the BeamNG main menu. No map and no default car are loaded first any more.
+- A map only loads when you want to drive: **Fahren** at the top right (your home map with your active car), a race, a licence test or free drive.
+- Without a car of your own, **Fahren** tells you to buy one first.
+
+### New: real names and preview pictures
+- Tracks and maps now have their in-game names, e.g. "Container Chaos" and "West Coast, USA", instead of "quickrace.industrial.track_container_chaos.title" and "west_coast_usa".
+- Maps that showed up twice ("Industrial" and "industrial") are listed once.
+- Free drive shows every map with its preview picture from the game.
+- Licence tests and the driving school now have a picture area per test. Put your own pictures into `ui\modules\apps\TurismoHub\previews\tests\`; the file names are listed in the LIESMICH.txt there.
+
+### New: calmer design
+- All menu pages are bright and plain: light grey background, white cards, black text, red as the only accent colour. The colourful gradients and glows are gone.
+- The top bar is dark, "Fahren" is red.
+- The title screen with the save slots is black and white.
+
 ### New: dealers, races, garage and café in GT style
 - Used cars, new cars and the classic gallery show cars as bright cards with picture, brand, name, mileage and price. A click opens a window with all data and the buy button. It also says why you can't buy a car right now (licence or money missing).
 - The new-car brands are bright cards instead of tiles.

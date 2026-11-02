@@ -174,19 +174,23 @@ function M.onWorldReadyState(state)
   if state == 2 then M.registerPauseButton() end
 end
 
--- after a save slot was loaded/created in the main menu: load the home map,
--- put the active garage car there and open the world menu
-function M.enterCareerWorld()
+-- The career menu runs on top of BeamNG's main menu without a map. A map is only loaded when
+-- the player wants to drive: "Fahren" in the top bar (home map with the active car), a race,
+-- a test or free drive. openHub = true opens the world menu again once the map is ready.
+function M.enterCareerWorld(openHub)
   if levelLoaded() or not S().isLoaded() then return end
   local st = S().get()
   local home = (st.settings and st.settings.homeLevel) or 'west_coast_usa'
+  U().log('I', 'Heimatkarte wird geladen: %s (Menü danach: %s)', home, tostring(openHub == true))
   M.setHubVisible(false) -- keep the loading screen visible
   X('session').loadLevel(home, function()
-    local function show() M.setHubVisible(true) end
+    local function done()
+      if openHub then M.setHubVisible(true) else loadingCover(false) end
+    end
     if X('garage').active() then
-      X('session').spawnPlayerCar(nil, nil, show)
+      X('session').spawnPlayerCar(nil, nil, done)
     else
-      show()
+      done()
     end
   end)
 end
@@ -284,12 +288,7 @@ handlers.newProfile = function(a)
   st.economy.money = eco.startMoney or st.economy.money
   st.settings = st.settings or { pauseInHub = true, homeLevel = eco.homeLevel or 'west_coast_usa', raceLength = 'normal' }
   S().save()
-  if not levelLoaded() then
-    -- hide the menu right away: otherwise the world menu shows for a moment before BeamNG's loading screen
-    M.setHubVisible(false)
-    loadingCover(true, 'Karriere wird geladen …')
-    X('session').defer(0.3, M.enterCareerWorld)
-  end
+  -- no map is loaded here: the world menu opens directly over the main menu
   return M.snapshotState()
 end
 
@@ -297,12 +296,7 @@ handlers.loadProfile = function(a)
   if not S().load(a.slot) then error('Spielstand konnte nicht geladen werden', 0) end
   local st = S().get()
   st.settings = st.settings or { pauseInHub = true, homeLevel = 'west_coast_usa', raceLength = 'normal' }
-  if not levelLoaded() then
-    -- hide the menu right away: otherwise the world menu shows for a moment before BeamNG's loading screen
-    M.setHubVisible(false)
-    loadingCover(true, 'Karriere wird geladen …')
-    X('session').defer(0.3, M.enterCareerWorld)
-  end
+  -- no map is loaded here: the world menu opens directly over the main menu
   return M.snapshotState()
 end
 
@@ -489,13 +483,17 @@ handlers.freeDrive = function(a)
 end
 handlers.levels = function()
   local res = {}
-  for _, l in ipairs(X('tracks').byLevel()) do res[#res + 1] = { level = l.level, tracks = #l.tracks } end
+  for _, l in ipairs(X('tracks').byLevel()) do
+    local info = X('tracks').levelInfo(l.level)
+    res[#res + 1] = { level = l.level, tracks = #l.tracks, title = info.title, preview = info.preview }
+  end
+  table.sort(res, function(a, b) return tostring(a.title) < tostring(b.title) end)
   return res
 end
 handlers.tracks = function()
   local res = {}
   for _, t in ipairs(X('tracks').all()) do
-    res[#res + 1] = { id = t.id, name = t.name, level = t.level, closed = t.closed, lengthM = t.lengthM,
+    res[#res + 1] = { id = t.id, name = t.name, level = t.level, levelTitle = X('tracks').levelInfo(t.level).title, closed = t.closed, lengthM = t.lengthM,
       grid = t.grid, surface = t.surface, source = t.source, best = S().isLoaded() and S().get().stats.bestLaps[t.id] or nil }
   end
   return res
@@ -560,6 +558,15 @@ function M.bugReport(note)
 end
 
 handlers.hub = function(a) M.setHubVisible(a.visible) return true end
+-- "Fahren" in the top bar: without a map load the home map with the active car first
+handlers.drive = function()
+  if levelLoaded() then M.setHubVisible(false) return true end
+  requireProfile()
+  if not X('garage').active() then error('Du hast noch kein Auto. Kauf eins beim Gebrauchtwagenhändler.', 0) end
+  loadingCover(true, 'Fahrt wird vorbereitet …')
+  X('session').defer(0.2, function() M.enterCareerWorld(false) end)
+  return true
+end
 handlers.sound = function(a) X('audio').play(a.cue) return true end
 
 -- Aktionen, die die UI ständig abfragt: nicht ins Log (sonst wird es unlesbar)

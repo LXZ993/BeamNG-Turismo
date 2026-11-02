@@ -18,6 +18,22 @@
 - Die Leiste oben ist schmaler und dunkler.
 - Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.
 
+### Neu: Karriere-Menü ohne Ladezeit
+- Spielstand laden oder neu anlegen öffnet das World-Menü jetzt sofort, direkt über dem BeamNG-Hauptmenü. Es wird keine Karte und kein Standardauto mehr vorher geladen.
+- Eine Karte lädt erst, wenn du fahren willst: **Fahren** oben rechts (deine Heimatkarte mit deinem aktiven Auto), ein Rennen, ein Lizenz-Test oder Freie Fahrt.
+- Ohne eigenes Auto sagt dir **Fahren**, dass du zuerst eins kaufen musst.
+
+### Neu: echte Namen und Vorschaubilder
+- Strecken und Karten heißen jetzt so wie im Spiel, z. B. „Container Chaos“ und „West Coast, USA“, statt „quickrace.industrial.track_container_chaos.title“ und „west_coast_usa“.
+- Karten, die doppelt aufgetaucht sind („Industrial“ und „industrial“), stehen nur noch einmal da.
+- Freie Fahrt zeigt jede Karte mit ihrem Vorschaubild aus dem Spiel.
+- Lizenz-Tests und Fahrschule haben jetzt eine Bildfläche pro Test. Eigene Bilder legst du in `ui\modules\apps\TurismoHub\previews\tests\` ab, die Dateinamen stehen in der LIESMICH.txt dort.
+
+### Neu: ruhigeres Design
+- Alle Menü-Seiten sind hell und schlicht: hellgraue Fläche, weiße Karten, schwarze Schrift, Rot als einzige Akzentfarbe. Die bunten Verläufe und das Leuchten sind weg.
+- Die Leiste oben ist dunkel, „Fahren“ ist rot.
+- Der Startbildschirm mit den Spielständen ist schwarz-weiß.
+
 ### Neu: Händler, Rennen, Garage und Café im GT-Stil
 - Gebrauchtwagen, Neuwagen und Klassiker-Galerie zeigen die Autos als helle Karten mit Bild, Marke, Name, Kilometern und Preis. Ein Klick öffnet ein Fenster mit allen Daten und dem Kaufen-Knopf. Dort steht auch, warum du ein Auto gerade nicht kaufen kannst (Lizenz fehlt, Geld fehlt).
 - Bei den Neuwagen sind die Marken helle Karten statt Kacheln.
