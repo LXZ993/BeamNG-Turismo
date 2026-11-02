@@ -181,6 +181,12 @@
       Audio_.sfx(act === 'back' ? 'ui_back' : 'ui_click');
       self.act(act, arg, arg2, t);
     });
+    // text fields: tell the game to route the keyboard to the UI while typing
+    // (otherwise BeamNG uses the keys as driving/camera input)
+    function isText(el) { return el && (el.tagName === 'INPUT' || el.tagName === 'TEXTAREA'); }
+    this.root.addEventListener('focusin', function (ev) { if (isText(ev.target) && b.typing) b.typing(true); });
+    this.root.addEventListener('focusout', function (ev) { if (isText(ev.target) && b.typing) b.typing(false); });
+    b.on('CEFTypingLostFocus', function () { var a = document.activeElement; if (isText(a)) a.blur(); });
     this.root.addEventListener('mouseover', function (ev) {
       var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab');
       if (t && t !== self._hover) { self._hover = t; Audio_.sfx('ui_hover'); }
@@ -213,6 +219,7 @@
   App.prototype.showHub = function (visible) {
     this.hubVisible = !!visible;
     this.el.hub.classList.toggle('tz-hidden', !this.hubVisible);
+    if (!this.hubVisible && this.modal) this.closeModal();
     this.root.style.pointerEvents = 'none';
     if (this.hubVisible) {
       var self = this;
@@ -312,7 +319,7 @@
   };
 
   App.prototype.scr_newProfile = function (d, p) {
-    var f = this.ui.newProfile = this.ui.newProfile || { name: 'Fahrer', difficulty: 'normal', progressionMode: 'menu', damageMode: 'realistic', hardcore: false };
+    var f = this.ui.newProfile = this.ui.newProfile || { name: 'Fahrer', progressionMode: 'menu', damageMode: 'realistic', hardcore: false };
     function choice(key, opts) {
       return '<div class="tz-choice">' + opts.map(function (o) {
         return '<div class="' + (String(f[key]) === String(o[0]) ? 'on' : '') + '" data-act="npSet" data-arg="' + key + '" data-arg2="' + o[0] + '">' + esc(o[1]) + '<small>' + esc(o[2]) + '</small></div>';
@@ -321,8 +328,8 @@
     return this.head('Neue Karriere', 'Platz ' + esc(p.arg2 || p.slot || 1)) +
       '<div class="tz-panel tz-form" style="max-width:900px">' +
       '<label>Fahrername</label><input data-el="npName" maxlength="24" value="' + esc(f.name) + '">' +
-      '<label>Schwierigkeit der Gegner</label>' + choice('difficulty', [['easy', 'Leicht', 'Gegner machen mehr Fehler'], ['normal', 'Normal', 'Ausgewogen'], ['hard', 'Schwer', 'Schnelle, clevere Gegner'], ['pro', 'Profi', 'Kaum Fehler, harte Zweikämpfe']]) +
-      '<label>Fortschritt</label>' + choice('progressionMode', [['menu', 'Café-Hefte', 'Geführte Karriere: Hefte schalten Inhalte frei'], ['classic', 'Klassisch', 'Alles offen, nur Lizenzen zählen']]) +
+      '<div class="tz-note">Die Gegner passen sich automatisch an dein Können an: Wer oft gewinnt, bekommt stärkere Gegner, wer hinterherfährt, leichtere.</div>' +
+      '<label>Spielweise</label>' + choice('progressionMode', [['menu', 'Geführt (empfohlen)', 'Im Café bekommst du Aufgabenhefte, die dich Schritt für Schritt durch die Karriere führen und neue Bereiche freischalten'], ['classic', 'Frei', 'Alles ist sofort offen, nur Lizenzen begrenzen die Rennen']]) +
       '<label>Schäden</label>' + choice('damageMode', [['realistic', 'Realistisch', 'Jeder Schaden bleibt bis zur Werkstatt'], ['mechanical', 'Nur Mechanik', 'Defekte bleiben, Blech wird gerichtet'], ['off', 'Aus', 'Auto ist vor jedem Rennen heil']]) +
       '<label>Hardcore-Modus</label>' + choice('hardcore', [['false', 'Aus', 'Schnelle Rennen möglich'], ['true', 'An', 'Immer Rennwochenende mit Training, Qualifying und Einführungsrunde, kein Neustart']]) +
       '<div style="margin-top:20px;display:flex;gap:10px"><button class="tz-btn primary" data-act="createProfile" data-arg="' + esc(p.arg2 || 1) + '">Karriere starten</button>' +
@@ -331,6 +338,7 @@
 
   App.prototype.scr_world = function () {
     var s = this.state, u = (s.unlocks || {});
+    if (s.firstVisit && !this._guideShown) { this._guideShown = true; var self0 = this; setTimeout(function () { self0.showGuide(); }, 300); }
     function locked(key) { return u[key] === false; }
     var cafeSub = s.cafe ? ('Heft: ' + esc(s.cafe.name) + ' · ' + s.cafe.done + '/' + s.cafe.total) : 'Neue Hefte warten';
     var lic = (s.licenses || []).length ? 'Erhalten: ' + esc(s.licenses.join(', ')) : 'Noch keine Lizenz';
@@ -340,20 +348,21 @@
     }
     return '<div class="tz-world">' +
       '<div class="tz-district">Stadtzentrum</div>' +
-      tile('c-cafe big', 's4 r2', 'go', 'cafe', 'Boxenstopp-Café', cafeSub + '<br><br>Hier beginnt jede Etappe deiner Karriere.', 'cafe') +
-      tile('c-race big', 's4 r2', 'go', 'events', 'Rennen', 'Einsteiger bis Extrem, Markenpokale, Langstrecke, Gelände, Drag, Drift und Derby.', 'race') +
-      tile('c-lic', 's4', 'go', 'licenses', 'Lizenzzentrum', lic, 'lic') +
-      tile('c-lic', 's4', 'go', 'trainings', 'Fahrschule', 'Trainings: Bremspunkte, Linien, Drift, Gelände', 'cone') +
+      tile('c-cafe big', 's4 r2', 'go', 'cafe', 'Boxenstopp-Café', '<b>Hier startest du.</b> Der Wirt gibt dir Aufgabenhefte (z. B. „Gewinne drei Rennen“ oder „Sammle diese Autos“). Jedes erledigte Heft bringt Belohnungen und schaltet neue Bereiche frei.<br><br>' + cafeSub, 'cafe') +
+      tile('c-race big', 's4 r2', 'go', 'events', 'Rennen', 'Rennserien von Einsteiger bis Profi: Preisgeld verdienen, Trophäen und Autos gewinnen. Manche Serien brauchen eine Lizenz oder eine bestimmte Fahrzeugklasse.', 'race') +
+      tile('c-lic', 's4', 'go', 'licenses', 'Lizenzzentrum', 'Fahrprüfungen (Anfahren, Bremsen, Kurven …). Lizenzen öffnen höhere Rennserien. ' + lic, 'lic') +
+      tile('c-lic', 's4', 'go', 'trainings', 'Fahrschule', 'Üben ohne Prüfung: Bremspunkte, Ideallinie, Drift, Gelände', 'cone') +
       '<div class="tz-district">Händlerviertel</div>' +
-      tile('c-dealer', 's4', 'go', 'dealers', 'Neuwagen', 'Japan · Europa · Amerika – alle Marken deiner Installation', 'car', 'dealer_new') +
-      tile('c-dealer', 's4', 'go', 'used', 'Gebrauchtwagen', 'Wechselnde Angebote alle paar Tage', 'used', 'dealer_used') +
-      tile('c-dealer', 's4', 'go', 'legends', 'Klassiker-Galerie', 'Seltene Legenden ab Sammlerstufe 4', 'star', 'dealer_legend') +
+      tile('c-dealer', 's4', 'go', 'dealers', 'Neuwagen', 'Neue Autos aller Marken deiner Installation kaufen', 'car', 'dealer_new') +
+      tile('c-dealer', 's4', 'go', 'used', 'Gebrauchtwagen', 'Günstige Autos mit Kilometern – ideal zum Start. Angebote wechseln alle paar Tage', 'used', 'dealer_used') +
+      tile('c-dealer', 's4', 'go', 'legends', 'Klassiker-Galerie', 'Seltene Legenden – öffnet, wenn du genug Autos gesammelt hast (Sammlerstufe 4)', 'star', 'dealer_legend') +
       '<div class="tz-district">Boxengasse</div>' +
-      tile('c-garage', 's4', 'go', 'garage', 'Garage', esc(s.carCount || 0) + ' Fahrzeuge', 'garage') +
-      tile('c-garage', 's4', 'goWorkshop', '', 'Werkstatt & Waschanlage', 'Reparatur, Ölwechsel, Motor, Lack, Umbauten', 'wrench', 'services') +
-      tile('c-fun', 's4', 'go', 'tickets', 'Bonuslose', esc(s.tickets || 0) + ' ungeöffnet', 'ticket') +
+      tile('c-garage', 's4', 'go', 'garage', 'Garage', 'Deine Autos auswählen, ansehen, verkaufen · ' + esc(s.carCount || 0) + ' Fahrzeuge', 'garage') +
+      tile('c-garage', 's4', 'goWorkshop', '', 'Werkstatt & Waschanlage', 'Schäden aus Rennen bleiben am Auto! Hier reparieren, Öl wechseln, waschen, umbauen', 'wrench', 'services') +
+      tile('c-fun', 's4', 'go', 'tickets', 'Bonuslose', 'Gewinnlose aus Heften und Rennen – öffnen für Geld oder Autos · ' + esc(s.tickets || 0) + ' ungeöffnet', 'ticket') +
       '<div class="tz-district">Unterwegs</div>' +
-      tile('c-fun', 's4', 'go', 'world2', 'Freie Fahrt & Strecken', 'Karten erkunden, Tagesziel fahren, eigene Strecken aufnehmen', 'map', 'freeDrive') +
+      tile('c-fun', 's4', 'go', 'world2', 'Freie Fahrt & Strecken', 'Mit deinem Auto frei fahren, Tagesziel (Kilometer) schaffen, eigene Strecken aufnehmen', 'map', 'freeDrive') +
+      tile('c-garage', 's4', 'guide', '', 'So funktioniert’s', 'Kurze Einführung in die Karriere', 'star') +
       tile('c-garage', 's4', 'go', 'settings', 'Einstellungen', 'Renndauer, Intro, Musik, Schäden', 'gear') +
       tile('c-garage', 's4', 'go', 'diag', 'Diagnose', 'Autos, Strecken und Inhalte prüfen', 'rec') +
       '</div>';
@@ -600,11 +609,11 @@
     var s = this.state, m = s.meta || {}, st = s.settings || {};
     function opt(key, val, label, cur) { return '<div class="' + (String(cur) === String(val) ? 'on' : '') + '" data-act="setting" data-arg="' + key + '" data-arg2="' + val + '">' + label + '</div>'; }
     return this.head('Einstellungen') + '<div class="tz-panel tz-form" style="max-width:900px">' +
-      '<label>Gegnerstärke</label><div class="tz-choice">' + ['easy', 'normal', 'hard', 'pro'].map(function (v) { return opt('difficulty', v, DIFF_DE[v], m.difficulty); }).join('') + '</div>' +
+      '<label>Gegnerstärke</label><div class="tz-note">Automatisch – passt sich deinen Ergebnissen an. Aktuell: <b>' + esc(s.aiLevel || 'Fortgeschritten') + '</b></div>' +
       '<label>Renndauer</label><div class="tz-choice">' + opt('raceLength', 'short', 'Kurz', m.raceLength) + opt('raceLength', 'normal', 'Normal', m.raceLength || 'normal') + opt('raceLength', 'long', 'Lang', m.raceLength) + '</div>' +
       '<label>Schäden</label><div class="tz-choice">' + opt('damageMode', 'realistic', 'Realistisch', m.damageMode) + opt('damageMode', 'mechanical', 'Nur Mechanik', m.damageMode) + opt('damageMode', 'off', 'Aus', m.damageMode) + '</div>' +
       '<label>Startkamera-Flug</label><div class="tz-choice">' + opt('skipIntro', 'false', 'Zeigen', !!m.skipIntro) + opt('skipIntro', 'true', 'Überspringen', !!m.skipIntro) + '</div>' +
-      '<label>Gummiband-KI (Aufholhilfe)</label><div class="tz-choice">' + opt('catchUp', 'false', 'Aus', !!m.catchUp) + opt('catchUp', 'true', 'An', !!m.catchUp) + '</div>' +
+
       '<label>Hardcore</label><div class="tz-choice">' + opt('hardcore', 'false', 'Aus', !!m.hardcore) + opt('hardcore', 'true', 'An (immer Rennwochenende, kein Neustart)', !!m.hardcore) + '</div>' +
       '<label>Spiel pausieren im Menü</label><div class="tz-choice">' + opt('pauseInHub', 'true', 'Ja', st.pauseInHub !== false) + opt('pauseInHub', 'false', 'Nein', st.pauseInHub !== false) + '</div>' +
       '<label>Musik-Lautstärke</label><div class="tz-choice">' + [0, 0.2, 0.45, 0.7].map(function (v) { return '<div class="' + (Math.abs(Audio_.musicVol - v) < 0.01 ? 'on' : '') + '" data-act="musicVol" data-arg="' + v + '">' + (v === 0 ? 'Aus' : Math.round(v * 100) + '%') + '</div>'; }).join('') + '</div>' +
@@ -627,6 +636,8 @@
       case 'back': this.back(); break;
       case 'home': this.home(); break;
       case 'close': this.call('hub', { visible: false }); break;
+      case 'guide': this.showGuide(); break;
+      case 'guideDone': this.closeModal(); if (this.state && this.state.firstVisit) { this.state.firstVisit = false; this.call('setting', { key: 'introSeen', value: true }).catch(function () {}); } break;
       case 'go': this.go(arg, { arg2: arg2, carId: arg === 'car' ? arg2 : undefined, brand: arg === 'showroom' ? arg2 : undefined }); break;
       case 'goWorkshop':
         var id = arg || (this.state.activeCar && this.state.activeCar.id);
@@ -641,8 +652,8 @@
       case 'createProfile':
         this.readNp();
         var f = this.ui.newProfile;
-        this.call('newProfile', { slot: +arg, name: f.name || 'Fahrer', difficulty: f.difficulty, progressionMode: f.progressionMode, damageMode: f.damageMode, hardcore: !!f.hardcore })
-          .then(function (s) { self.state = s; self.renderTop(); Audio_.music('menu'); self.stack = [{ name: 'world', params: {} }, { name: 'cafe', params: {} }]; self.load(); });
+        this.call('newProfile', { slot: +arg, name: f.name || 'Fahrer', progressionMode: f.progressionMode, damageMode: f.damageMode, hardcore: !!f.hardcore })
+          .then(function (s) { self.state = s; self.renderTop(); Audio_.music('menu'); self.stack = [{ name: 'world', params: {} }]; self.load(); });
         break;
       case 'setActive': this.call('setActiveCar', { carId: arg }).then(function () { return self.refreshState(); }).then(function () { self.reload(); }); break;
       case 'renameCar': var n = this.root.querySelector('[data-el=nick]'); this.call('renameCar', { carId: arg, name: n ? n.value : '' }).then(function () { self.reload(); }); break;
@@ -722,6 +733,17 @@
 
   // ------------------------------------------------------------------ modal & toasts
   App.prototype.modalShow = function (html) { this.modal = true; this.el.modal.firstChild.innerHTML = html; this.el.modal.classList.remove('tz-hidden'); };
+  App.prototype.showGuide = function () {
+    this.modalShow('<div class="tz-guide"><h2>Willkommen bei Turismo</h2>' +
+      '<p>Du startest mit wenig Geld und ohne Auto. Ziel: dir eine Garage voller Autos erfahren und die großen Meisterschaften gewinnen.</p>' +
+      '<ol><li><b>Boxenstopp-Café</b> – hol dir dein erstes Aufgabenheft. Die Hefte sagen dir immer, was als Nächstes sinnvoll ist.</li>' +
+      '<li><b>Gebrauchtwagen</b> – kauf ein günstiges erstes Auto.</li>' +
+      '<li><b>Lizenzzentrum</b> – mach die erste Lizenz (C). Gelbe Pfosten zeigen das Ziel, eine gelbe Linie den Weg.</li>' +
+      '<li><b>Rennen</b> – fahr Einsteigerserien und verdiene Preisgeld.</li>' +
+      '<li><b>Werkstatt</b> – Schäden bleiben, bis du sie reparierst.</li></ol>' +
+      '<p class="hint">Die Gegner passen sich automatisch an dein Können an. Während der Fahrt kommst du über <b>Esc → Mods → Turismo-Menü</b> zurück.</p>' +
+      '<div style="margin-top:16px;text-align:right"><button class="tz-btn primary" data-act="guideDone">Los geht’s</button></div></div>');
+  };
   App.prototype.closeModal = function () { this.modal = null; this._modalCb = null; this.el.modal.classList.add('tz-hidden'); };
   App.prototype.confirm = function (title, text, cb) {
     this._modalCb = cb;
@@ -782,8 +804,8 @@
     if (d.phase === 'idle') { this.phase = 'idle'; this.hud = {}; this.banner = null; if (d.message) this.toast(d.message, 'error'); this.renderHud(); return; }
     this.phase = 'test';
     this.banner = { t1: d.name, t2: (d.demo ? 'Vorführung · ' : '') + (d.desc || '') };
-    clearTimeout(this._bannerT); this._bannerT = setTimeout(function () { self.banner = null; self.renderHud(); }, 5000);
-    this.hud.testIntro = d;
+    clearTimeout(this._bannerT); this._bannerT = setTimeout(function () { self.banner = null; self.renderHud(); }, 3500);
+    this.hud.testIntro = d; this.hud.test = null;
     Audio_.music('license');
     this.renderHud();
   };
@@ -853,6 +875,14 @@
         (t.penalty ? '<div class="s" style="color:var(--bad)">+' + num(t.penalty, 1) + ' s Strafe</div>' : '') +
         '<div class="tz-targets">' + ['gold', 'silver', 'bronze'].map(function (k) { return tg[k] ? '<span class="' + (cur > tg[k] ? 'lost' : '') + '">' + medalOf(k) + time(tg[k]) + '</span>' : ''; }).join('') + '</div>' +
         (t.gates ? '<div class="s">Tor ' + Math.min(t.gate, t.gates) + ' / ' + t.gates + '</div>' : '') + '</div>';
+      if (t.nextLabel) html += '<div class="tz-hbox tz-nextgate"><div class="s">Nächstes Ziel · folge der gelben Linie</div><div class="v">' + esc(t.nextLabel) +
+        (t.nextDist != null ? ' <small class="tz-num">' + Math.round(t.nextDist) + ' m</small>' : '') + '</div></div>';
+    }
+    // briefing until the test starts: what to do, where to go
+    var ti = h.testIntro;
+    if (ti && this.phase === 'test' && !t) {
+      html += '<div class="tz-hbox tz-brief"><div class="s">Lizenzprüfung</div><div class="v">' + esc(ti.name) + '</div>' +
+        '<p>' + esc(ti.desc || '') + '</p><p class="hint">Die <b>gelben Pfosten</b> markieren das nächste Ziel, die gelbe Linie am Boden zeigt den Weg. Grün = geschafft.</p></div>';
     }
     if (this.phase === 'drag') {
       var tr = this.tree;

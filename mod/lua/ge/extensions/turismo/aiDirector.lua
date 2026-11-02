@@ -48,6 +48,58 @@ M.styles = {
 }
 
 ---------------------------------------------------------------------------
+-- automatic difficulty (no player setting): a hidden driver rating 0..1
+-- follows the player's results and shifts the whole field; beginners also get
+-- a mild, automatic catch-up that fades out as the rating rises.
+---------------------------------------------------------------------------
+M.RATING_START = 0.3
+
+local ANCHORS = { { 0.0, 'easy' }, { 0.4, 'normal' }, { 0.7, 'hard' }, { 1.0, 'pro' } }
+
+function M.autoDifficulty(rating)
+  local u = U()
+  rating = u.clamp(rating or M.RATING_START, 0, 1)
+  for i = 1, #ANCHORS - 1 do
+    local a, b = ANCHORS[i], ANCHORS[i + 1]
+    if rating <= b[1] then
+      local t = (rating - a[1]) / (b[1] - a[1])
+      local A, B = M.difficulty[a[2]], M.difficulty[b[2]]
+      return {
+        skill = A.skill + (B.skill - A.skill) * t,
+        aggr = A.aggr + (B.aggr - A.aggr) * t,
+        mistakes = A.mistakes + (B.mistakes - A.mistakes) * t,
+        rating = rating,
+      }
+    end
+  end
+  local P = M.difficulty.pro
+  return { skill = P.skill, aggr = P.aggr, mistakes = P.mistakes, rating = rating }
+end
+
+-- catch-up strength 0..0.5 (0 = off); never in race weekends or hardcore
+function M.autoCatchUp(rating, format, hardcore)
+  if hardcore or format == 'weekend' then return 0 end
+  return U().clamp((0.45 - (rating or M.RATING_START)) / 0.45, 0, 1) * 0.5
+end
+
+-- after every scored event: win -> harder, back of the field -> easier
+function M.updateRating(meta, pos, count)
+  if not meta or not pos or not count or count < 2 then return meta and meta.aiRating end
+  local score = 1 - (pos - 1) / (count - 1)
+  local r = (meta.aiRating or M.RATING_START) + (score - 0.55) * 0.12
+  meta.aiRating = U().clamp(r, 0.05, 1)
+  return meta.aiRating
+end
+
+-- label for the UI
+function M.ratingLabel(rating)
+  rating = rating or M.RATING_START
+  if rating < 0.2 then return 'Einsteiger' elseif rating < 0.4 then return 'Fortgeschritten'
+  elseif rating < 0.6 then return 'Routiniert' elseif rating < 0.8 then return 'Stark' end
+  return 'Profi'
+end
+
+---------------------------------------------------------------------------
 -- profile -> parameters (pure)
 ---------------------------------------------------------------------------
 function M.resolveProfile(driver, difficultyId)
@@ -57,7 +109,7 @@ function M.resolveProfile(driver, difficultyId)
   for k, v in pairs(tier) do p[k] = driver[k] ~= nil and driver[k] or v end
   p.style = driver.style or 'smooth'
   p.name = driver.name
-  local diff = M.difficulty[difficultyId or 'normal'] or M.difficulty.normal
+  local diff = type(difficultyId) == 'table' and difficultyId or M.difficulty[difficultyId or 'normal'] or M.difficulty.normal
   p.skill = u.clamp(p.skill + diff.skill, 0.05, 1.0)
   p.mistakeMult = diff.mistakes * ((M.styles[p.style] or M.styles.smooth).mistakes or 1)
   p.aggrOffset = diff.aggr + ((M.styles[p.style] or M.styles.smooth).aggr or 0)
@@ -287,9 +339,10 @@ function M.update(dt, ctx)
       end
       -- catch-up: subtle, off by default for "authentic" races
       local catch = 0
-      if opts.catchUp and opts.catchUp ~= 'off' and playerProg and c.progress then
+      local k = type(opts.catchUp) == 'number' and opts.catchUp
+        or (opts.catchUp == 'classic' and 1) or (opts.catchUp == 'light' and 0.5) or 0
+      if k > 0 and playerProg and c.progress then
         local gap = playerProg - c.progress -- positive: player ahead
-        local k = opts.catchUp == 'classic' and 1 or 0.5
         catch = u.clamp(gap / 400, -1, 1) * 0.03 * k
       end
 

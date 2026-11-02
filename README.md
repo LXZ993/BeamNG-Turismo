@@ -25,7 +25,7 @@ Eine eigenständige Karriere im Stil der großen Rennspiel-Klassiker: Café-Heft
 | **Werkzeuge** | Streckenrekorder für eigene Strecken, Diagnose-Seite, automatische Tests |
 
 ## Schnellstart
-Siehe [docs/INSTALL.md](docs/INSTALL.md). Kurz: `turismo_karriere.zip` nach `Dokumente/BeamNG.drive/0.40/mods/` kopieren, Spiel starten und im Hauptmenü **Turismo Karriere** wählen (Banner oben oder unter **Mehr**). Während der Fahrt: `Esc` → **Mods** → **Turismo-Menü**.
+Siehe [docs/INSTALL.md](docs/INSTALL.md). Kurz: `turismo_karriere.zip` nach `Dokumente/BeamNG.drive/0.40/mods/` kopieren, Spiel starten und im Hauptmenü **Turismo Karriere** unter **Mehr** wählen. Während der Fahrt: `Esc` → **Mods** → **Turismo-Menü**.
 
 ## Projektaufbau
 ```

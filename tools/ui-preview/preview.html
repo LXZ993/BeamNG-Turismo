@@ -58,7 +58,12 @@
       emit('TurismoHubToggle', { visible: false });
       emit('TurismoTestPhase', { phase: 'running', name: 'Slalom' });
       app.banner = null;
-      emit('TurismoTestHud', { name: 'Slalom', time: 8.95, penalty: 0, gate: 3, gates: 5, speed: 64, targets: { gold: 8.76, silver: 9.18, bronze: 9.86 } });
+      emit('TurismoTestHud', { name: 'Slalom', time: 8.95, penalty: 0, gate: 3, gates: 5, speed: 64, nextLabel: 'TOR 3', nextDist: 42, targets: { gold: 8.76, silver: 9.18, bronze: 9.86 } });
+    },
+    testBrief: function () {
+      emit('TurismoHubToggle', { visible: false });
+      emit('TurismoTestPhase', { phase: 'intro', name: 'Anfahren und Anhalten', desc: 'Fahre los und halte im markierten Feld an. Je schneller, desto besser.' });
+      app.banner = null; app.renderHud();
     },
     testResult: function () { emit('TurismoHubToggle', { visible: false }); emit('TurismoTestResult', { name: 'Slalom', value: 8.701, medal: 'gold', newBest: true, reward: 5000, targets: { gold: 8.76, silver: 9.18, bronze: 9.86 } }); },
     drag: function () {

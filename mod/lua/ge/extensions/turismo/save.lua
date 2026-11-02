@@ -59,7 +59,7 @@ function M.newProfile(s, playerName, options)
       version = M.SAVE_VERSION,
       created = now,
       playerName = playerName or 'Fahrer',
-      difficulty = options.difficulty or 'normal',
+      aiRating = 0.3, -- automatic opponent strength (turismo_aiDirector.autoDifficulty)
       progressionMode = options.progressionMode or 'menu', -- 'menu' (Café-Hefte) | 'classic' (frei, nur Lizenzen)
       damageMode = options.damageMode or 'realistic',      -- 'realistic' | 'mechanical' | 'off'
     },

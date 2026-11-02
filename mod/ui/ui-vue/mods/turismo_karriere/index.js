@@ -79,6 +79,7 @@ function makeTurismoBridge(b, offs) {
       listen(name, data => { try { cb(data) } catch (e) { console.error(e) } })
     },
     stream(cb) { streamCb = cb },
+    typing(on) { engineLua("setCEFTyping(" + (on ? "true" : "false") + ")") },
   }
 }
 

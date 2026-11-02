@@ -177,6 +177,7 @@ function M.startRace(seriesId, opts)
   if not raceDef then return false, 'Rennen nicht gefunden' end
   local etype = raceDef.type or series.type or 'circuit'
   local meta = S().get().meta
+  local diff = AI().autoDifficulty(meta.aiRating) -- automatic, follows the player's results
   local function finisher(results) return M.onRaceFinished(series, idx, results, car.id) end
   local title = series.name .. (raceDef.name and (' - ' .. raceDef.name) or (' - Lauf ' .. idx))
   local eventRef = series.id .. '#' .. idx .. '#' .. st.season
@@ -187,13 +188,13 @@ function M.startRace(seriesId, opts)
       title = title, eventRef = eventRef, level = raceDef.level or series.level or 'west_coast_usa',
       stripFile = raceDef.stripFile, distance = raceDef.distance or series.distance or 402.34,
       tree = series.tree or 'sportsman', bracket = series.bracket, qualifyingRuns = series.qualifyingRuns or 2,
-      field = U().deepcopy(seasonField(series)), playerCarId = car.id, difficulty = meta.difficulty, onFinish = finisher,
+      field = U().deepcopy(seasonField(series)), playerCarId = car.id, difficulty = diff, onFinish = finisher,
     })
   elseif etype == 'derby' then
     local venues = U().indexBy(D().get('venues') or {}, 'id')
     return extensions.turismo_modes.start({
       type = 'derby', title = title, eventRef = eventRef, arena = venues[raceDef.venue or series.venue or 'derby_arena'],
-      field = U().deepcopy(seasonField(series)), playerCarId = car.id, difficulty = meta.difficulty,
+      field = U().deepcopy(seasonField(series)), playerCarId = car.id, difficulty = diff,
       timeLimit = raceDef.timeLimit or series.timeLimit, onFinish = finisher,
     })
   elseif etype == 'crawl' then
@@ -210,7 +211,7 @@ function M.startRace(seriesId, opts)
       local rng = U().rng(U().hashString(eventRef) + P().day())
       local list = {}
       for _, f in ipairs(field) do
-        local pr = AI().resolveProfile(f.driver, meta.difficulty)
+        local pr = AI().resolveProfile(f.driver, diff)
         list[#list + 1] = { name = f.driver.name, driverId = f.driver.id, time = par * (1.25 - 0.35 * pr.skill) * (0.95 + rng:next() * 0.1) }
       end
       list[#list + 1] = { name = meta.playerName or 'Du', isPlayer = true, time = (not r.failed) and r.value or nil, dnf = r.failed }
@@ -230,7 +231,7 @@ function M.startRace(seriesId, opts)
     return extensions.turismo_modes.start({
       type = etype, title = title, eventRef = eventRef, track = track,
       laps = raceDef.laps or series.laps, runs = raceDef.runs or series.runs,
-      field = field, playerCarId = car.id, difficulty = meta.difficulty,
+      field = field, playerCarId = car.id, difficulty = diff,
       trackFactor = (S().get().trackFactors or {})[track.id], timeLimit = raceDef.timeLimit or series.timeLimit,
       parScore = raceDef.parScore or series.parScore, budget = raceDef.budget or series.budget,
       targetTime = raceDef.targetTime, onFinish = finisher,
@@ -256,8 +257,8 @@ function M.startRace(seriesId, opts)
     qualifying = format == 'weekend',
     field = field, playerCarId = car.id,
     playerGrid = series.playerGrid or 'back',
-    difficulty = meta.difficulty or 'normal',
-    catchUp = (format == 'weekend' or meta.hardcore) and 'off' or (meta.catchUp or 'off'),
+    difficulty = diff,
+    catchUp = AI().autoCatchUp(meta.aiRating, format, meta.hardcore),
     skipIntro = meta.skipIntro,
     trackFactor = (S().get().trackFactors or {})[track.id],
     onFinish = finisher,
@@ -279,6 +280,7 @@ function M.onRaceFinished(series, idx, results, carId)
   for _, r in ipairs(results.list) do if r.isPlayer then player = r end end
   local pos = player and player.pos or #results.list
   local out = { position = pos, money = 0, bonus = {} }
+  AI().updateRating(S().get().meta, pos, #results.list)
 
   -- prize money (GT style: full prize first time a race is won, 1/3 afterwards
   -- for single races; championships always pay full)

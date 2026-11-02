@@ -376,13 +376,27 @@ end
 ---------------------------------------------------------------------------
 -- update
 ---------------------------------------------------------------------------
+-- course markers: tall pillars, a glowing line for the current gate, labels
+-- and a guide line from the car to the next target, so it is always clear
+-- where to drive
+local function gateLabel(i, g)
+  if g.def.label then return tostring(g.def.label) end
+  if g.kind == 'stop' then return 'HIER ANHALTEN' end
+  if i == #T.gates then return 'ZIEL' end
+  return 'TOR ' .. i
+end
+
 local function drawCourse()
   if not debugDrawer or not T.gates then return end
+  local white = ColorF(1, 1, 1, 1)
+  local shadow = ColorI(0, 0, 0, 170)
   for i, g in ipairs(T.gates) do
     local col
-    if i < T.gateIdx then col = ColorF(0.2, 0.9, 0.3, 0.6)
-    elseif i == T.gateIdx then col = ColorF(1.0, 0.8, 0.1, 0.9)
-    else col = ColorF(0.9, 0.9, 0.9, 0.5) end
+    local current = i == T.gateIdx
+    if i < T.gateIdx then col = ColorF(0.2, 0.9, 0.3, 0.45)
+    elseif current then col = ColorF(1.0, 0.8, 0.1, 0.95)
+    else col = ColorF(0.95, 0.95, 0.95, 0.6) end
+    local h = current and 3.2 or 2.2
     if g.kind == 'stop' then
       local c1 = M.toWorld(T.anchor, g.lx - g.w / 2, g.ly)
       local c2 = M.toWorld(T.anchor, g.lx + g.w / 2, g.ly)
@@ -390,21 +404,45 @@ local function drawCourse()
       local c4 = M.toWorld(T.anchor, g.lx - g.w / 2, g.ly + g.len)
       local pts = { c1, c2, c3, c4, c1 }
       for k = 1, 4 do
-        local a, b = pts[k], pts[k + 1]
-        debugDrawer:drawSquarePrism(vec3(a.x, a.y, a.z + 0.02), vec3(b.x, b.y, b.z + 0.02), Point2F(0.05, 0.3), Point2F(0.05, 0.3), col)
+        local p, q = pts[k], pts[k + 1]
+        debugDrawer:drawSquarePrism(vec3(p.x, p.y, p.z + 0.03), vec3(q.x, q.y, q.z + 0.03), Point2F(0.1, 0.45), Point2F(0.1, 0.45), col)
+        debugDrawer:drawCylinder(vec3(p.x, p.y, p.z), vec3(p.x, p.y, p.z + h), 0.18, col)
       end
     else
-      local a, b = g.a, g.b
-      debugDrawer:drawCylinder(vec3(a.x, a.y, a.z), vec3(a.x, a.y, a.z + 1.6), 0.12, col)
-      debugDrawer:drawCylinder(vec3(b.x, b.y, b.z), vec3(b.x, b.y, b.z + 1.6), 0.12, col)
-      if i == T.gateIdx then
-        debugDrawer:drawSquarePrism(vec3(a.x, a.y, a.z + 0.02), vec3(b.x, b.y, b.z + 0.02), Point2F(0.05, 0.25), Point2F(0.05, 0.25), col)
-      end
-      if g.def.label then
-        debugDrawer:drawTextAdvanced(vec3(g.c.x, g.c.y, g.c.z + 2.2), tostring(g.def.label), ColorF(1, 1, 1, 1), true, false, ColorI(0, 0, 0, 160))
+      local p, q = g.a, g.b
+      debugDrawer:drawCylinder(vec3(p.x, p.y, p.z), vec3(p.x, p.y, p.z + h), current and 0.25 or 0.15, col)
+      debugDrawer:drawCylinder(vec3(q.x, q.y, q.z), vec3(q.x, q.y, q.z + h), current and 0.25 or 0.15, col)
+      if current or i == #T.gates then
+        debugDrawer:drawSquarePrism(vec3(p.x, p.y, p.z + 0.03), vec3(q.x, q.y, q.z + 0.03), Point2F(0.1, 0.4), Point2F(0.1, 0.4), col)
+        debugDrawer:drawSquarePrism(vec3(p.x, p.y, p.z + h), vec3(q.x, q.y, q.z + h), Point2F(0.25, 0.25), Point2F(0.25, 0.25), col)
       end
     end
+    if current or i == #T.gates then
+      debugDrawer:drawTextAdvanced(vec3(g.c.x, g.c.y, g.c.z + h + 0.8), gateLabel(i, g), white, true, false, shadow)
+    end
   end
+  -- guide line car -> current target
+  local g = T.gates[T.gateIdx]
+  local v = veh(T.vehId)
+  if g and v then
+    local p = v:getPosition()
+    local target = g.kind == 'stop' and M.toWorld(T.anchor, g.lx, g.ly + g.len * 0.5) or g.c
+    local from = vec3(p.x, p.y, p.z + 0.4)
+    local to = vec3(target.x, target.y, target.z + 0.4)
+    if (to - from):length() > 4 then
+      debugDrawer:drawSquarePrism(from, to, Point2F(0.4, 0.06), Point2F(0.4, 0.06), ColorF(1.0, 0.8, 0.1, 0.35))
+    end
+  end
+end
+
+-- distance from the car to the current target (HUD)
+local function targetDistance()
+  local g = T.gates and T.gates[T.gateIdx]
+  local v = veh(T.vehId)
+  if not g or not v then return nil end
+  local target = g.kind == 'stop' and M.toWorld(T.anchor, g.lx, g.ly + g.len * 0.5) or g.c
+  local p = v:getPosition()
+  return vec3(p.x, p.y, p.z):distance(vec3(target.x, target.y, target.z))
 end
 
 local function updateCourse(dt)
@@ -545,6 +583,8 @@ function M.update(dtReal, dtSim)
       local v = veh(T.vehId)
       hud('TurismoTestHud', {
         time = T.time, penalty = T.penalty, gate = T.gateIdx, gates = T.gates and #T.gates or nil,
+        nextLabel = T.gates and T.gates[T.gateIdx] and gateLabel(T.gateIdx, T.gates[T.gateIdx]) or nil,
+        nextDist = targetDistance(),
         speed = v and v:getVelocity():length() * 3.6 or 0,
         targets = LIC().targetsFor(T.def), name = T.def.name,
       })

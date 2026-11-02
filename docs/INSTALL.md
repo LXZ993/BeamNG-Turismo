@@ -4,8 +4,7 @@
    `Dokumente\BeamNG.drive\0.40\mods\` – bzw. in deinen BeamNG-Userordner unter `current\mods\`
    (bei dir vermutlich `F:\BeamNG\current\mods\`).
 2. **Spiel starten**, im Hauptmenü unter *Mods* prüfen, dass „turismo_karriere“ aktiv ist.
-3. **Karriere starten:** im Hauptmenü oben auf das Banner **„TURISMO KARRIERE ▸“** klicken
-   oder unter **Mehr** den Eintrag **„Turismo Karriere“** wählen.
+3. **Karriere starten:** im Hauptmenü unter **Mehr** den Eintrag **„Turismo Karriere“** wählen.
 4. Spielstand wählen oder **Neue Karriere** anlegen – die Heimatkarte (West Coast USA) lädt,
    danach öffnet sich das World-Menü. Café-Heft 1 führt dich zum ersten Gebrauchtwagen.
 5. **Zurück ins Menü während der Fahrt:** `Esc` → Reiter **Mods** → **Turismo-Menü**.

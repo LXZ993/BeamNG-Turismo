@@ -98,6 +98,9 @@ function M.onWorldReadyState(state)
     levelSpawn = { pos = v:getPosition(), dir = v:getDirectionVector() }
   end
   if pendingLevel then
+    -- the load was started from a menu (e.g. main menu -> Turismo Karriere):
+    -- close BeamNG's menu so it does not stay on top of the drive
+    if ui_menuManager and ui_menuManager.closeMenu then pcall(ui_menuManager.closeMenu) end
     local cb = pendingLevel.cb
     pendingLevel = nil
     defer(0.5, cb)
