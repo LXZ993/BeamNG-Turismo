@@ -2,6 +2,24 @@
 
 ## 0.1.4 (as of 2026-11-02)
 
+### New: licence tests on real tracks
+- Tests now take place on real BeamNG tracks instead of the empty grid map. Licences C and B at the ETK Driver Experience Center (braking, corners, lane change, slalom, hairpin, small circuit, test track), licences A, I and S on Hirochi Raceway, the Automation Test Track and Italy.
+- Every licence has 10 tests, built like in GT: basics first, then sections and sectors, a final exam lap at the end. Rally licence 6, drift licence 5.
+- The licence centre shows all licences at the top, below the selected licence with its progress and its tests as tiles (C-1, C-2 …) with medal.
+- Clicking a test opens the briefing: goal, tip, place, car, standing or rolling start, medal times with reward and your best. Start the test or the demo from there.
+- Rolling start: you arrive at speed, the clock starts at the first gate.
+- On track, orange gates show where to go. Orange arrows on the road lead to the next gate, a direction arrow and the distance are shown at the top.
+- Drive too far off the track and "Back on track!" appears. After 3 seconds the test is failed.
+- Target times are calculated on the real road at the first start, after a demo from the AI driver's time.
+- Every test has room for its own preview image.
+
+### New: driving school as track school
+- The driving school teaches five tracks: ETK test track, Hirochi short course, Automation short course, Italy street circuit and Hirochi long course. Each sector by sector, then the full lap. Every medal pays once.
+
+### Fixed
+- Licence test: the car stood the wrong way round, so the guide line pointed away from it. Cars now face the right way, also when respawned after a repair and the opponents in the derby.
+- The demo in licence tests did not drive off. The AI driver now follows the road through all gates.
+
 ### New: GT-style driving HUD
 - Bottom right: a rev bar with a red zone. In the red, the bar and the gear flash: shift now.
 - Big gear and speed right above the rev bar.

@@ -444,7 +444,7 @@ function M._setup_derby()
       local p, d = slotTransform(i + 1)
       local model, config = U().splitCarKey(f.carKey)
       local ok, v = pcall(core_vehicles.spawnNewVehicle, model, { config = 'vehicles/' .. model .. '/' .. (config or 'base') .. '.pc',
-        pos = p + vec3(0, 0, 0.5), rot = quatFromEuler(0, 0, math.pi) * quatFromDir(d, vec3(0, 0, 1)), autoEnterVehicle = false })
+        pos = p + vec3(0, 0, 0.5), rot = quatFromDir(d, vec3(0, 0, 1)), autoEnterVehicle = false }) -- spawn turns by 180° itself
       if ok and v then
         local vid = v:getID()
         X.cars[#X.cars + 1] = vid

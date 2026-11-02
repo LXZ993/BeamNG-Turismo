@@ -612,38 +612,84 @@
       this.marketGrid(offers, 'legend');
   };
 
+  // ------------------------------------------------------------ Lizenzzentrum & Fahrschule
+  // [turismo-lizenzen v2]
+  // Aufbau wie in GT: oben die Lizenzen, darunter die gewählte Lizenz mit
+  // Fortschritt und ihre Prüfungen als Kacheln mit Vorschaubild
+  // (previews/tests/<id>.jpg, fehlt es, steht eine farbige Kachel mit der
+  // Prüfungsnummer da). Ein Klick öffnet das Briefing.
+  function lcPreview(t, color, code) {
+    return '<div class="tz-lcpv" style="--lc:' + esc(color || '#c8102e') + '"><div class="code">' + esc(code) + '</div>' +
+      '<img src="' + BASE + 'previews/tests/' + esc(t.id) + '.jpg" alt="" onerror="this.remove()"></div>';
+  }
+  function lcFmt(t) { return t.scoring === 'score' ? function (v) { return v == null ? '--' : Math.round(v); } : time; }
+
   App.prototype.scr_licenses = function (d) {
     var lics = arr(d.lics);
-    var tab = this.ui.tab.lic || (lics[0] && lics[0].id);
+    var tab = this.ui.tab.lic || (lics.filter(function (l) { return l.available && !l.owned; })[0] || lics[0] || {}).id;
     var lic = lics.filter(function (l) { return l.id === tab; })[0] || lics[0];
     if (!lic) return this.head('Lizenzzentrum');
-    var html = this.head('Lizenzzentrum', 'Bestehe jeden Test mindestens mit Bronze, um die Lizenz zu erhalten. Alles Gold bringt ein Geschenk.') +
-      '<div class="tz-tabs">' + lics.map(function (l) {
-        return '<div class="tz-tab' + (l.id === tab ? ' on' : '') + '" data-act="tab" data-arg="lic" data-arg2="' + l.id + '">' + esc(l.short || l.id) + ' ' + (l.owned ? '✓' : (l.available ? '' : '🔒')) + '</div>';
+    var tests = arr(lic.tests);
+    return this.head('Lizenzzentrum', 'Bestehe jede Prüfung mindestens mit Bronze, dann gehört dir die Lizenz. Alles Gold bringt ein Geschenk.') +
+      '<div class="tz-lcrow">' + lics.map(function (l) {
+        return '<div class="tz-lcbadge' + (l.id === lic.id ? ' on' : '') + (l.available ? '' : ' locked') + '" style="--lc:' + esc(l.color) + '" data-act="tab" data-arg="lic" data-arg2="' + l.id + '">' +
+          '<b>' + esc(l.short || l.id) + '</b><span>' + (l.owned ? 'Erhalten' : l.available ? l.done + ' / ' + l.total : 'Gesperrt') + '</span></div>';
       }).join('') + '</div>' +
-      '<div class="tz-panel" style="display:flex;align-items:center;gap:20px"><div style="flex:1"><h2 style="margin:0">' + esc(lic.name) + '</h2><div style="color:var(--dim)">' + esc(lic.desc || '') + '</div></div>' +
-      '<div class="tz-stat"><label>Bestanden</label><span>' + lic.done + ' / ' + lic.total + '</span></div><div class="tz-stat"><label>Gold</label><span style="color:var(--gold)">' + lic.gold + '</span></div></div>';
-    if (!lic.available) html += '<div class="tz-panel" style="color:#ffb3ba">' + esc(lic.reason) + '</div>';
-    html += '<div class="tz-grid">' + arr(lic.tests).map(function (t, i) {
-      var tg = t.targets || {};
-      var fmt = t.scoring === 'score' ? function (v) { return v == null ? '--' : Math.round(v); } : time;
-      return '<div class="tz-card"><div style="display:flex;gap:10px;align-items:center"><div style="font-size:22px;font-weight:800;color:var(--dim);width:34px">' + (i + 1) + '</div>' +
-        '<div style="flex:1"><h4>' + esc(t.name) + '</h4><div class="meta">' + esc(t.desc) + '</div></div>' + medalOf(t.medal) + '</div>' +
-        '<div class="tz-targets" style="justify-content:flex-start;margin-top:10px">' + ['gold', 'silver', 'bronze'].map(function (m) { return '<span>' + medalOf(m) + fmt(tg[m]) + '</span>'; }).join('') + '</div>' +
-        '<div class="meta" style="margin-top:6px">Auto: ' + esc(t.ownCar ? 'eigenes Fahrzeug' : t.carName) + ' · Bestwert: ' + fmt(t.best) + (tg.source === 'estimate' ? ' · <i>Zielzeiten geschätzt</i>' : '') + '</div>' +
-        '<div class="row">' + (lic.available ? '<button class="tz-btn primary" data-act="startTest" data-arg="' + t.id + '">Starten</button><button class="tz-btn" data-act="startTest" data-arg="' + t.id + '" data-arg2="demo">Vorführung</button>' : '') + '</div></div>';
-    }).join('') + '</div>';
-    return html;
+      '<div class="tz-lchead" style="--lc:' + esc(lic.color) + '"><div class="plate"><b>' + esc(lic.short || '') + '</b></div>' +
+      '<div class="txt"><h2>' + esc(lic.name) + '</h2><p>' + esc(lic.desc || '') + '</p>' + (lic.available ? '' : '<p class="lock">' + esc(lic.reason || '') + '</p>') + '</div>' +
+      '<div class="prog"><div><label>Bestanden</label><span>' + lic.done + ' / ' + lic.total + '</span></div><div><label>Gold</label><span>' + lic.gold + '</span></div>' +
+      (lic.owned ? '<div class="own">Lizenz erhalten</div>' : '') + '</div></div>' +
+      '<div class="tz-lcgrid">' + tests.map(function (t, i) {
+        var code = (lic.short || lic.id) + '-' + (i + 1);
+        return '<div class="tz-lctest' + (t.medal && t.medal !== 'none' ? ' done' : '') + (t.missing ? ' missing' : '') + '" data-act="testInfo" data-arg="lic" data-arg2="' + t.id + '">' +
+          lcPreview(t, lic.color, code) + '<div class="body"><div class="nr">' + esc(code) + '</div><div class="nm">' + esc(t.name) + '</div>' +
+          '<div class="pl">' + esc(t.place || '') + '</div></div><div class="md">' + medalOf(t.medal) + '</div></div>';
+      }).join('') + '</div>';
   };
 
   App.prototype.scr_trainings = function (d) {
-    return this.head('Fahrschule', 'Freiwillige Übungen. Jede Medaille wird bezahlt.') + '<div class="tz-grid">' + arr(d.list).map(function (t) {
-      var fmt = t.scoring === 'score' ? function (v) { return v == null ? '--' : Math.round(v); } : time;
-      var tg = t.targets || {};
-      return '<div class="tz-card"><div style="display:flex;gap:10px"><div style="flex:1"><h4>' + esc(t.name) + '</h4><div class="meta">' + esc(t.desc) + '</div></div>' + medalOf(t.medal) + '</div>' +
-        '<div class="tz-targets" style="justify-content:flex-start;margin-top:10px">' + ['gold', 'silver', 'bronze'].map(function (m) { return '<span>' + medalOf(m) + fmt(tg[m]) + '</span>'; }).join('') + '</div>' +
-        '<div class="row"><button class="tz-btn primary" data-act="startTest" data-arg="' + t.id + '">Starten</button><span class="meta">Bestwert: ' + fmt(t.best) + '</span></div></div>';
-    }).join('') + '</div>';
+    var list = arr(d.list), groups = [], idx = {};
+    list.forEach(function (t) {
+      var k = t.category || 'Fahrschule';
+      if (!idx[k]) { idx[k] = { name: k, place: t.place, tests: [] }; groups.push(idx[k]); }
+      idx[k].tests.push(t);
+    });
+    return this.head('Fahrschule · Streckenkunde', 'Lerne jede Strecke Sektor für Sektor kennen, dann die ganze Runde. Jede Medaille wird einmal bezahlt.') +
+      groups.map(function (g) {
+        var gold = g.tests.filter(function (t) { return t.medal === 'gold'; }).length;
+        return '<div class="tz-schead"><h3>' + esc(g.name) + '</h3><span>' + esc(g.place || '') + ' · Gold ' + gold + ' / ' + g.tests.length + '</span></div>' +
+          '<div class="tz-lcgrid sc">' + g.tests.map(function (t) {
+            var code = /lap$/.test(t.id) ? 'RUNDE' : 'S' + String(t.id).split('-').pop();
+            return '<div class="tz-lctest' + (t.medal && t.medal !== 'none' ? ' done' : '') + (t.missing ? ' missing' : '') + '" data-act="testInfo" data-arg="school" data-arg2="' + t.id + '">' +
+              lcPreview(t, '#15181e', code) + '<div class="body"><div class="nm">' + esc(t.name) + '</div><div class="pl">' + esc(t.desc || '') + '</div></div>' +
+              '<div class="md">' + medalOf(t.medal) + '</div></div>';
+          }).join('') + '</div>';
+      }).join('');
+  };
+
+  // Briefing (helles Fenster wie beim Händler): Ziel, Tipp, Ort, Auto, Medaillenzeiten
+  App.prototype.showTest = function (kind, id) {
+    var t = null, lic = null;
+    if (kind === 'lic') arr(this.data.lics).forEach(function (l) { arr(l.tests).forEach(function (x, i) { if (x.id === id) { t = x; lic = l; t._nr = i + 1; } }); });
+    else t = arr(this.data.list).filter(function (x) { return x.id === id; })[0];
+    if (!t) return;
+    var fmt = lcFmt(t), tg = t.targets || {};
+    var can = kind !== 'lic' || (lic && lic.available);
+    var code = lic ? (lic.short || lic.id) + '-' + t._nr : (/lap$/.test(t.id) ? 'RUNDE' : 'S' + String(t.id).split('-').pop());
+    function row(l, v) { return v == null || v === '' ? '' : '<tr><th>' + l + '</th><td>' + v + '</td></tr>'; }
+    var src = tg.source === 'demo' ? 'aus der Vorführung' : tg.source === 'route' ? 'auf der echten Strecke berechnet' : 'vorläufig, werden beim ersten Start genauer';
+    this.modalShow('<div class="tz-cdetail tz-tbrief">' + lcPreview(t, lic ? lic.color : '#15181e', code) +
+      '<div class="info"><div class="br">' + esc(lic ? code : (t.category || 'Fahrschule')) + (t.place ? ' · ' + esc(t.place) : '') + '</div><h2>' + esc(t.name) + '</h2>' +
+      '<p class="goal">' + esc(t.goal || t.desc || '') + '</p>' + (t.tip ? '<p class="tip"><b>Tipp:</b> ' + esc(t.tip) + '</p>' : '') +
+      '<table>' + row('Auto', esc(t.ownCar ? 'Dein aktives Auto (Schäden bleiben)' : (t.carName || '–'))) + row('Start', t.rolling ? 'Fliegender Start' : 'Stehender Start') +
+      row('Aufgabe', esc(t.info || '')) + row('Bestwert', fmt(t.best)) + row('Versuche', t.attempts || 0) + '</table>' +
+      '<div class="tz-tmedals">' + ['gold', 'silver', 'bronze'].map(function (m) {
+        return '<div class="' + (t.medal === m ? 'got' : '') + '">' + medalOf(m) + '<b class="tz-num">' + fmt(tg[m]) + '</b><span>' + (t.rewards && t.rewards[m] ? money(t.rewards[m]) : '') + '</span></div>';
+      }).join('') + '</div><div class="src">Zielzeiten ' + src + '</div>' +
+      (t.missing ? '<div class="why">Diese Strecke fehlt auf deiner BeamNG-Installation.</div>' : !can ? '<div class="why">' + esc(lic.reason || 'Gesperrt') + '</div>' : '') +
+      '<div class="actions"><button class="tz-btn" data-act="closeModal">Zurück</button>' +
+      '<button class="tz-btn" ' + (can && !t.missing ? '' : 'disabled') + ' data-act="startTest" data-arg="' + t.id + '" data-arg2="demo">Vorführung</button>' +
+      '<button class="tz-btn primary" ' + (can && !t.missing ? '' : 'disabled') + ' data-act="startTest" data-arg="' + t.id + '">Prüfung starten</button></div></div></div>', 'light');
   };
 
   var HALL_HUE = { einsteiger: 200, amateur: 150, profi: 265, extrem: 350, langstrecke: 30, marken: 210, regional: 175, gelaende: 40, rallye: 40, spezial: 300 };
@@ -865,7 +911,8 @@
           }).then(function () { self.reload(); });
         });
         break;
-      case 'startTest': this.call('startTest', { testId: arg, demo: arg2 === 'demo' }); break;
+      case 'startTest': this.closeModal(); this.call('startTest', { testId: arg, demo: arg2 === 'demo' }); break;
+      case 'testInfo': this.showTest(arg, arg2); break;
       case 'startRace':
         var parts = (arg2 || '').split('|');
         this.call('startRace', { seriesId: arg, raceIndex: +parts[0], carId: parts[1] || undefined, format: parts[2] || undefined });
@@ -1074,14 +1121,17 @@
         (t.penalty ? '<div class="s" style="color:var(--bad)">+' + num(t.penalty, 1) + ' s Strafe</div>' : '') +
         '<div class="tz-targets">' + ['gold', 'silver', 'bronze'].map(function (k) { return tg[k] ? '<span class="' + (cur > tg[k] ? 'lost' : '') + '">' + medalOf(k) + time(tg[k]) + '</span>' : ''; }).join('') + '</div>' +
         (t.gates ? '<div class="s">Tor ' + Math.min(t.gate, t.gates) + ' / ' + t.gates + '</div>' : '') + '</div>';
-      if (t.nextLabel) html += '<div class="tz-hbox tz-nextgate"><div class="s">Nächstes Ziel · folge der gelben Linie</div><div class="v">' + esc(t.nextLabel) +
+      if (t.nextLabel) html += '<div class="tz-hbox tz-nextgate"><div class="s">' + (t.runup ? 'Anlauf · die Zeit startet am ersten Tor' : 'Nächstes Tor · folge den orangen Pfeilen') + '</div><div class="v">' +
+        (t.nextAngle != null ? '<i class="tz-arrow" style="transform:rotate(' + Math.round(t.nextAngle) + 'deg)">▲</i> ' : '') + esc(t.nextLabel) +
         (t.nextDist != null ? ' <small class="tz-num">' + Math.round(t.nextDist) + ' m</small>' : '') + '</div></div>';
+      if (t.offTrack) html += '<div class="tz-hbox tz-offtrack">Zurück auf die Strecke!</div>';
     }
     // briefing until the test starts: what to do, where to go
     var ti = h.testIntro;
     if (ti && this.phase === 'test' && !t) {
       html += '<div class="tz-hbox tz-brief"><div class="s">Lizenzprüfung</div><div class="v">' + esc(ti.name) + '</div>' +
-        '<p>' + esc(ti.desc || '') + '</p><p class="hint">Die <b>gelben Pfosten</b> markieren das nächste Ziel, die gelbe Linie am Boden zeigt den Weg. Grün = geschafft.</p></div>';
+        (ti.place ? '<div class="s">' + esc(ti.place) + '</div>' : '') + '<p>' + esc(ti.desc || '') + '</p>' + (ti.tip ? '<p class="hint"><b>Tipp:</b> ' + esc(ti.tip) + '</p>' : '') +
+        '<p class="hint">Fahre durch die <b>orangen Tore</b>. Die Pfeile auf der Straße zeigen den Weg zum nächsten Tor, grün = geschafft.' + (ti.rolling ? ' Fliegender Start: die Zeit läuft ab dem ersten Tor.' : '') + '</p></div>';
     }
     if (this.phase === 'drag') {
       var tr = this.tree;
@@ -1220,7 +1270,7 @@
         '<div class="tz-targets" style="font-size:16px">' + ['gold', 'silver', 'bronze'].map(function (k) { return tg[k] ? '<span>' + medalOf(k) + time(tg[k]) + '</span>' : ''; }).join('') + '</div>' +
         '<div class="tz-rewards" style="justify-content:center">' + (d.reward ? '<div>Belohnung<b>' + money(d.reward) + '</b></div>' : '') + (d.licenseGranted ? '<div>Lizenz erhalten<b>' + esc(d.licenseGranted) + '</b></div>' : '') +
         (d.giftCar ? '<div>Geschenk<b>' + esc(d.giftCar) + '</b></div>' : '') + '</div>' +
-        '<div style="display:flex;gap:10px;justify-content:center"><button class="tz-btn" data-act="testRetry">Nochmal</button><button class="tz-btn primary" data-act="testClose">Zum Lizenzzentrum</button></div></div>';
+        '<div style="display:flex;gap:10px;justify-content:center"><button class="tz-btn" data-act="testRetry">Nochmal</button><button class="tz-btn primary" data-act="testClose">Zurück zum Menü</button></div></div>';
       Audio_.music('results');
     } else if (r.kind === 'dragRun') {
       var lanes = arr(d.lanes), a = lanes[0] || {}, b = lanes[1];

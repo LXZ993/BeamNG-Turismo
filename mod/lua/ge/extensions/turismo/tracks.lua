@@ -156,6 +156,15 @@ function M.resolve(ref, seed)
   end
   M.all()
   if registry[ref] then return registry[ref] end
+  if ref:find('.race.json', 1, true) then -- exact race file (licence tests)
+    local id = idFromPath(ref)
+    if registry[id] then return registry[id] end
+    local want = U().lower(ref:gsub('^/', ''))
+    for _, t in ipairs(list) do
+      if U().lower(t.file:gsub('^/', '')) == want then return t end
+    end
+    return nil
+  end
   local kind, filterTag = ref:match('^@(%w+):?(.*)$')
   if not kind then return nil end
   local candidates = {}

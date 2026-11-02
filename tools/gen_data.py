@@ -151,109 +151,282 @@ def ttest(tid, name, desc, track, car, laps=1, **kw):
     return t
 
 
+# ---------------------------------------------------------------------------
+# licence tests and driving school on real BeamNG courses (0.40):
+# checkpoints of the game's own race files. ETK-Fahrerzentrum = level
+# driver_training with 13 training courses, then sections and laps of
+# Hirochi Raceway, Automation Test Track and Italien.
+# from/to = checkpoint numbers in driving order (see Handbuch, Lizenzen)
+# ---------------------------------------------------------------------------
+MIS = '/gameplay/missions/'
+def etk(name): return MIS + 'driver_training/campaigns/' + name + '/race.race.json'
+ETK_TRACK = MIS + 'driver_training/timeTrial/001-ardenteExperience/race.race.json'
+HR_SHORT = MIS + 'hirochi_raceway/timeTrial/003-shortcourse/race.race.json'
+HR_MED = MIS + 'hirochi_raceway/timeTrial/004-mediumcourse/race.race.json'
+HR_LONG = MIS + 'hirochi_raceway/timeTrial/005-longcourse/race.race.json'
+HR_FULL = MIS + 'hirochi_raceway/timeTrial/001-forgotten/race.race.json'
+ATT_SHORT = MIS + 'automation_test_track/timeTrial/009-Short/race.race.json'
+ATT_HANDLING = MIS + 'automation_test_track/timeTrial/003-Handling/race.race.json'
+ATT_RACE = MIS + 'automation_test_track/timeTrial/008-Race/race.race.json'
+ATT_OUTSIDE = MIS + 'automation_test_track/timeTrial/006-Outside/race.race.json'
+ATT_MAIN = MIS + 'automation_test_track/aiRace/001-main1/race.race.json'
+ATT_GRAVEL = MIS + 'automation_test_track/timeTrial/007-Gravel/race.race.json'
+ATT_DIRT = MIS + 'automation_test_track/timeTrial/001-dirt1/race.race.json'
+ATT_ALPINE = MIS + 'automation_test_track/rallyStage/001-alpineclimb/race.race.json'
+ATT_DRIFT = MIS + 'automation_test_track/drift/001-handling/race.race.json'
+ITA_STREET = MIS + 'italy/aiRace/001-street/race.race.json'
+ITA_QUARRY = MIS + 'italy/aiRace/005-quarryRace/race.race.json'
+JV_RALLY = MIS + 'johnson_valley/timeTrial/004-rally1/race.race.json'
+HR_DRIFT = MIS + 'hirochi_raceway/drift/001-Pro/race.race.json'
+DT_DRIFT = MIS + 'driver_training/drift/001-basics/race.race.json'
+
+PLACE = {'driver_training': 'ETK-Fahrerzentrum', 'hirochi_raceway': 'Hirochi Raceway', 'automation_test_track': 'Automation Test Track',
+         'italy': 'Italien', 'johnson_valley': 'Johnson Valley'}
+
+
+def ptest(tid, name, goal, tip, race, car, start='standing', speed_kmh=None, finish='gate', **kw):
+    level = race.split('/missions/')[1].split('/')[0]
+    t = {'id': tid, 'name': name, 'desc': goal, 'goal': goal, 'tip': tip, 'type': 'path', 'race': race,
+         'level': level, 'place': PLACE.get(level, level), 'car': car, 'targets': {'mode': 'auto', 'goldFactor': 1.04, 'silverFactor': 1.12, 'bronzeFactor': 1.25}, 'finish': finish,
+         'start': {'kind': start}}
+    if start == 'rolling':
+        t['start']['speed'] = speed_kmh or 60
+        t['start']['back'] = kw.pop('back', 45)
+    t.update(kw)
+    return t
+
+
+def spd(**rules):
+    """speed rules per gate number: spd(g2=dict(min=50))"""
+    return {k[1:]: v for k, v in rules.items()}
+
+
+ETK_RWD = {'criteria': {'drivetrains': ['RWD'], 'liMin': 300, 'liMax': 460}}
+
 licenses = [
     {'id': 'L1', 'name': 'Lizenz C - Clubsport', 'short': 'C', 'color': '#4fa3e0',
-     'desc': 'Die Grundlagen: Beschleunigen, Bremsen, Lenken. Voraussetzung für die ersten Pokale.',
+     'desc': 'Die Grundlagen im ETK-Fahrerzentrum: anfahren, bremsen, lenken. Voraussetzung für die ersten Pokale.',
      'allGoldReward': {'categories': ['street', 'sport'], 'liMax': 420},
      'tests': [
-         ctest('L1-01', 'Anfahren und Anhalten', 'Beschleunige und halte in der markierten Zone an.', startstop(90), STREET_RENTAL),
-         ctest('L1-02', 'Gezielt bremsen', 'Erreiche mindestens 70 km/h am Tor und stoppe in der Zone.', braking_zone(110, 160, 70), STREET_RENTAL),
-         ctest('L1-03', 'Erste Kurve', 'Fahre durch alle Tore einer langgezogenen Rechtskurve.', arc(40, 20, 40, 180, 90, 6, w=8, direction=-1) + [gate(40, 90, 8)], STREET_RENTAL),
-         ctest('L1-04', 'Slalom', 'Fünf Tore im Wechsel - flüssig bleiben.', slalom(5, 20, 3.0), STREET_RENTAL),
-         ctest('L1-05', 'Schikane', 'Links-Rechts ohne Tor zu verpassen.', chicane(), STREET_RENTAL),
-         ctest('L1-06', 'Spurwechsel', 'Ausweichmanöver bei mindestens 50 km/h.', lane_change(70, 50), STREET_RENTAL),
-         ctest('L1-07', 'Haarnadel', 'Eine 180-Grad-Kehre: spät einlenken, früh beschleunigen.', hairpin_right(), STREET_RENTAL),
-         ttest('L1-08', 'Erste Runde', 'Eine saubere Runde ohne Kollision.', circuit(HR, ATT), STREET_RENTAL),
+         ptest('L1-01', 'Anfahren und Anhalten', 'Fahre los und halte in der Zone am Ende der Geraden an.',
+               'Gleichmäßig Gas geben, früh und dosiert bremsen. Zu spät gebremst ist nicht bestanden.',
+               etk('001-acceleationBraking'), STREET_RENTAL, finish='stop', timeLimit=60),
+         ptest('L1-02', 'Bremsen aus 60', 'Mit mindestens 60 km/h durch das mittlere Tor, dann in der Zone anhalten.',
+               'Voll beschleunigen, nach dem Tor sofort fest bremsen. Das ABS hilft, lenke dabei gerade.',
+               etk('001-acceleationBraking'), STREET_RENTAL, finish='stop', speed=spd(g2=dict(min=60)), timeLimit=60),
+         ptest('L1-03', 'Sauber anfahren', 'Fahre los und nimm die zwei Kurven bis ins Ziel.',
+               'Nicht mit durchdrehenden Rädern starten. Vor der Kurve bremsen, nicht in der Kurve.',
+               etk('013-starting'), STREET_RENTAL, timeLimit=60),
+         ptest('L1-04', 'Kurvengrundlagen', 'Fahre durch alle Tore der Kurvenstrecke.',
+               'Außen anfahren, innen den Scheitel treffen, außen hinaus. Erst bremsen, dann lenken.',
+               etk('002-cornering'), STREET_RENTAL, timeLimit=80),
+         ptest('L1-05', 'Spurwechsel', 'Mit mindestens 50 km/h in den Spurwechsel und durch alle Tore.',
+               'Ruhig lenken, nicht ruckartig. Schau zum nächsten Tor, nicht auf das aktuelle.',
+               etk('004-lanechange'), STREET_RENTAL, speed=spd(g2=dict(min=50)), timeLimit=60),
+         ptest('L1-06', 'Enge Straße', 'Folge der engen Straße durch alle Tore.',
+               'Auf engen Straßen zählt die Linie mehr als das Tempo. Kurven nicht abkürzen.',
+               etk('003-tightroad'), STREET_RENTAL, timeLimit=90),
+         ptest('L1-07', 'Haarnadel', 'Nimm die Haarnadelkurve und fahre ins Ziel.',
+               'Weit außen anfahren, spät einlenken, langsam rein und schnell raus.',
+               etk('007-hairpins'), STREET_RENTAL, timeLimit=60),
+         ptest('L1-08', 'Slalom', 'Fahre den Slalom hin und zurück durch alle Tore.',
+               'Rhythmus statt Gewalt: früh einlenken, damit das Auto nicht aufschaukelt.',
+               etk('008-slalom'), STREET_RENTAL, timeLimit=120),
+         ptest('L1-09', 'Kurvengeschwindigkeit', 'Eine Folge schneller Kurven: halte das Tempo, ohne die Strecke zu verlassen.',
+               'Lieber etwas langsamer hinein und früh wieder Gas. Abflug heißt nicht bestanden.',
+               etk('005-cornerspeed'), STREET_RENTAL, timeLimit=120),
+         ptest('L1-10', 'Prüfung: Kleiner Rundkurs', 'Eine Runde auf dem kleinen Rundkurs des Fahrerzentrums.',
+               'Alles zusammen: bremsen vor der Kurve, saubere Linie, kein Kontakt.',
+               etk('006-easycircuit'), STREET_RENTAL, laps=1, timeLimit=150),
      ]},
     {'id': 'L2', 'name': 'Lizenz B - National', 'short': 'B', 'color': '#6fbf73', 'requires': 'L1',
-     'desc': 'Fahrzeugkontrolle bei höherem Tempo und erste Rennstrecken-Aufgaben.',
+     'desc': 'Fahrzeugkontrolle bei höherem Tempo, Heckantrieb, nasse Kurven und die erste Rennstrecke.',
      'allGoldReward': {'categories': ['sport'], 'liMin': 420, 'liMax': 540},
      'tests': [
-         ctest('L2-01', 'Bremspunkt 100', 'Mit mindestens 100 km/h ins Tor, dann in der Zone stoppen.', braking_zone(220, 290, 100), SPORT_RENTAL),
-         ctest('L2-02', 'Doppelte Schikane', 'Zwei Schikanen direkt hintereinander.', chicane(40) + [gate(-5, 158, 5), gate(5, 182, 5), gate(0, 215)], SPORT_RENTAL),
-         ctest('L2-03', 'Schneller Slalom', 'Sieben Tore mit mehr Abstand und mehr Tempo.', slalom(7, 26, 3.5), SPORT_RENTAL),
-         ctest('L2-04', 'Kurvenkombination', 'Links, dann rechts: die Linie zählt.', arc(-35, 20, 35, 0, 90, 5, w=8, direction=1) + arc(-35, 90, 35, 270, 360, 5, w=8, direction=-1), SPORT_RENTAL),
-         ctest('L2-05', 'Ausweichtest 70', 'Spurwechsel bei mindestens 70 km/h.', lane_change(90, 70), SPORT_RENTAL),
-         ctest('L2-06', 'Acht', 'Eine liegende Acht um zwei Kreise.', figure_eight(), SPORT_RENTAL, timeLimit=180),
-         ttest('L2-07', 'Sprint-Abschnitt', 'Eine Sprintprüfung von A nach B.', sprint(ITA, WCU), SPORT_RENTAL),
-         ttest('L2-08', 'Rundenzeit', 'Eine schnelle Runde auf einem Rundkurs.', circuit(HR, WCU), SPORT_RENTAL),
+         ptest('L2-01', 'Bremsen aus 80', 'Mit mindestens 80 km/h durch das mittlere Tor, dann in der Zone anhalten.',
+               'Schnelle Autos brauchen mehr Weg. Bremse hart an, dann löse leicht, um genau zu treffen.',
+               etk('001-acceleationBraking'), SPORT_RENTAL, finish='stop', speed=spd(g2=dict(min=80)), timeLimit=60),
+         ptest('L2-02', 'Wechselnder Grip', 'Fahre geradeaus über die Teststrecke mit wechselndem Grip.',
+               'Wenn ein Rad weniger Grip hat, zieht das Auto zur Seite. Ruhig gegenlenken.',
+               etk('011-diffs'), SPORT_RENTAL, speed=spd(g3=dict(min=50)), timeLimit=60),
+         ptest('L2-03', 'Heckantrieb', 'Eine Runde im Heckantriebler, ohne dreher.',
+               'Am Kurvenausgang das Gas langsam aufmachen, sonst kommt das Heck.',
+               etk('009-rwd'), ETK_RWD, laps=1, timeLimit=150),
+         ptest('L2-04', 'Nasse Kurve', 'Nimm die Kurvenfolge mit wenig Grip.',
+               'Auf nassem Belag weich bremsen und weich lenken. Alles langsamer als gewohnt.',
+               etk('012-wetcorner'), SPORT_RENTAL, timeLimit=90),
+         ptest('L2-05', 'Schneller Slalom', 'Den Slalom hin und zurück mit einem schnelleren Auto.',
+               'Mit mehr Tempo musst du noch früher einlenken.',
+               etk('008-slalom'), SPORT_RENTAL, timeLimit=110),
+         ptest('L2-06', 'Kurvengeschwindigkeit Sport', 'Die schnelle Kurvenfolge mit einem Sportwagen.',
+               'Nutze die ganze Breite der Strecke.',
+               etk('005-cornerspeed'), SPORT_RENTAL, timeLimit=110),
+         ptest('L2-07', 'Fortgeschrittener Kurs', 'Eine Runde auf dem großen Übungskurs.',
+               'Plane jede Kurve vorher: wo bremsen, wo einlenken, wo Gas.',
+               etk('010-advanced'), SPORT_RENTAL, laps=1, timeLimit=150),
+         ptest('L2-08', 'Teststrecke Teil 1', 'Die erste Hälfte der ETK-Teststrecke.',
+               'Die Kehren nach der ersten Geraden kommen schnell. Rechtzeitig bremsen.',
+               ETK_TRACK, SPORT_RENTAL, to=14, timeLimit=150),
+         ptest('L2-09', 'Teststrecke Teil 2', 'Die zweite Hälfte der ETK-Teststrecke mit fliegendem Start.',
+               'Du kommst mit Tempo an. Die Zeit läuft ab dem ersten Tor.',
+               ETK_TRACK, SPORT_RENTAL, start='rolling', speed_kmh=70, **{'from': 14}, timeLimit=150),
+         ptest('L2-10', 'Prüfung: ETK-Teststrecke', 'Die ganze ETK-Teststrecke ohne Fehler.',
+               'Ruhig fahren und keine Strafen sammeln. Das bringt mehr als Risiko.',
+               ETK_TRACK, SPORT_RENTAL, timeLimit=240),
      ]},
     {'id': 'L3', 'name': 'Lizenz A - National Pro', 'short': 'A', 'color': '#b07de8', 'requires': 'L2',
-     'desc': 'Schnelle Autos, präzise Linien. Öffnet die Profi-Liga.',
+     'desc': 'Rennstrecke: Bremspunkte, Kurvenkombinationen und Sektoren auf Hirochi Raceway und dem Automation Test Track.',
      'allGoldReward': {'categories': ['sport', 'touring'], 'liMin': 540, 'liMax': 650},
      'tests': [
-         ctest('L3-01', 'Bremspunkt 140', 'Mit mindestens 140 km/h ins Tor, dann stoppen.', braking_zone(320, 420, 140), FAST_RENTAL, timeLimit=150),
-         ctest('L3-02', 'Hochgeschwindigkeits-Slalom', 'Neun Tore, 32 m Abstand.', slalom(9, 32, 4.0), FAST_RENTAL),
-         ctest('L3-03', 'Ausweichtest 90', 'Spurwechsel mit mindestens 90 km/h.', lane_change(140, 90), FAST_RENTAL),
-         ctest('L3-04', 'Haarnadel-Paar', 'Zwei Kehren hintereinander.', hairpin_right(60, 14) + [gate(28, -60, 8)], FAST_RENTAL),
-         ttest('L3-05', 'Zwei Runden', 'Zwei Runden ohne Kollision.', circuit(HR, ITA, WCU), FAST_RENTAL, laps=2),
-         ttest('L3-06', 'Bergsprint', 'Eine kurvige Sprintstrecke.', sprint(ITA, UTAH), FAST_RENTAL),
-         ttest('L3-07', 'Eigenes Auto', 'Eine Runde mit deinem eigenen Fahrzeug - Schäden bleiben!', circuit(HR, WCU), {'rental': False}),
-         ttest('L3-08', 'Abschlussrunde', 'Die Prüfungsrunde für die A-Lizenz.', circuit(WCU, HR, ATT), FAST_RENTAL),
+         ptest('L3-01', 'Bremspunkt Hirochi', 'Fliegender Start auf der Geraden, dann die Rechtskurve sauber treffen.',
+               'Bremspunkt suchen: lieber zu früh als zu spät, dann in der nächsten Runde später.',
+               HR_SHORT, FAST_RENTAL, start='rolling', speed_kmh=110, **{'from': 2, 'to': 4}, timeLimit=60),
+         ptest('L3-02', 'Linkskombination Hirochi', 'Zwei Linkskurven hintereinander, ohne die Strecke zu verlassen.',
+               'Die erste Kurve opfern, damit du schnell aus der zweiten kommst.',
+               HR_SHORT, FAST_RENTAL, start='rolling', speed_kmh=90, **{'from': 5, 'to': 8}, timeLimit=80),
+         ptest('L3-03', 'Hirochi Sektor 1', 'Erster Sektor des Kurzkurses.', 'Die Zeit läuft ab dem Start.',
+               HR_SHORT, FAST_RENTAL, sector=1, of=3, timeLimit=80),
+         ptest('L3-04', 'Hirochi Sektor 2', 'Zweiter Sektor mit fliegendem Start.', 'Halte das Tempo aus dem Anlauf mit.',
+               HR_SHORT, FAST_RENTAL, sector=2, of=3, start='rolling', speed_kmh=100, timeLimit=80),
+         ptest('L3-05', 'Hirochi Sektor 3', 'Letzter Sektor bis zur Ziellinie.', 'Der Ausgang der letzten Kurve entscheidet über die Zeit auf der Geraden.',
+               HR_SHORT, FAST_RENTAL, sector=3, of=3, start='rolling', speed_kmh=100, timeLimit=80),
+         ptest('L3-06', 'Handling-Kurs Sektor', 'Die erste Hälfte des Handling-Kurses auf dem Automation Test Track.',
+               'Viele Richtungswechsel: Auto nicht überfahren.',
+               ATT_HANDLING, FAST_RENTAL, **{'from': 1, 'to': 6}, timeLimit=80),
+         ptest('L3-07', 'Kurzkurs Automation', 'Eine Runde auf dem kurzen Rundkurs des Automation Test Track.',
+               'Schnelle Kurven: gleichmäßig lenken, nicht nachkorrigieren.',
+               ATT_SHORT, FAST_RENTAL, laps=1, timeLimit=120),
+         ptest('L3-08', 'Eigenes Auto', 'Eine Runde Hirochi Kurzkurs mit deinem eigenen Auto. Schäden bleiben!',
+               'Kenne dein Auto: Bremsweg und Grip sind anders als beim Testwagen.',
+               HR_SHORT, {'rental': False}, laps=1, timeLimit=180),
+         ptest('L3-09', 'Hirochi Mittelkurs Teil', 'Der lange Mittelteil des Mittelkurses mit fliegendem Start.',
+               'Auf der langen Geraden zählt der Kurvenausgang davor.',
+               HR_MED, FAST_RENTAL, start='rolling', speed_kmh=100, **{'from': 3, 'to': 6}, timeLimit=100),
+         ptest('L3-10', 'Prüfung: Hirochi Kurzkurs', 'Eine fehlerfreie Runde auf dem Hirochi Kurzkurs.',
+               'Alles, was du in den Sektoren gelernt hast, in einer Runde.',
+               HR_SHORT, FAST_RENTAL, laps=1, timeLimit=150),
      ]},
     {'id': 'L4', 'name': 'Lizenz I - International', 'short': 'I', 'color': '#e8a33d', 'requires': 'L3',
-     'desc': 'Rennwagen mit viel Grip und Abtrieb. Pflicht für internationale Meisterschaften.',
+     'desc': 'Rennwagen mit viel Grip: lange Bremszonen, schnelle Kombinationen und internationale Strecken.',
      'allGoldReward': {'categories': ['touring', 'gt'], 'liMin': 620, 'liMax': 760},
      'tests': [
-         ctest('L4-01', 'Bremspunkt 180', 'Mit mindestens 180 km/h ins Tor, dann stoppen.', braking_zone(480, 600, 180), RACE_RENTAL, timeLimit=150),
-         ctest('L4-02', 'Rennslalom', 'Elf Tore mit Renntempo.', slalom(11, 36, 4.2), RACE_RENTAL),
-         ctest('L4-03', 'Ausweichtest 110', 'Spurwechsel mit mindestens 110 km/h.', lane_change(220, 110), RACE_RENTAL),
-         ttest('L4-04', 'Rennrunde', 'Eine Runde im Rennwagen.', circuit(HR, ITA), RACE_RENTAL),
-         ttest('L4-05', 'Drei Runden konstant', 'Drei Runden ohne Fehler.', circuit(HR, WCU), RACE_RENTAL, laps=3),
-         ttest('L4-06', 'Sprint im Rennwagen', 'Sprintprüfung mit einem Rennwagen.', sprint(ITA, WCU), RACE_RENTAL),
-         ttest('L4-07', 'Internationale Strecke', 'Eine Runde auf einer weiteren Strecke.', circuit(ATT, ECU, JRI), RACE_RENTAL),
-         ttest('L4-08', 'Prüfungsrunde', 'Die Abschlussprüfung.', circuit(ITA, HR), RACE_RENTAL),
+         ptest('L4-01', 'Haarnadel nach Gerade', 'Mit hohem Tempo von der Geraden in die Haarnadel.',
+               'Bei viel Abtrieb kannst du später bremsen, als du denkst. Aber nicht zu spät.',
+               HR_FULL, RACE_RENTAL, start='rolling', speed_kmh=150, **{'from': 6, 'to': 8}, timeLimit=60),
+         ptest('L4-02', 'Schnelle Kombination', 'Eine schnelle Links-Rechts-Folge auf dem Rennkurs.',
+               'Die Linie für die zweite Kurve beginnt schon in der ersten.',
+               ATT_RACE, RACE_RENTAL, start='rolling', speed_kmh=140, **{'from': 1, 'to': 4}, timeLimit=80),
+         ptest('L4-03', 'Lange Gerade, enge Kurve', 'Nach der langen Geraden die Kehre treffen.',
+               'Je schneller die Gerade, desto wichtiger der Bremspunkt.',
+               ATT_OUTSIDE, RACE_RENTAL, start='rolling', speed_kmh=160, **{'from': 8, 'to': 10}, timeLimit=80),
+         ptest('L4-04', 'Rennkurs Sektor 1', 'Erster Sektor des Rennkurses auf dem Automation Test Track.', 'Konstant bleiben.',
+               ATT_RACE, RACE_RENTAL, sector=1, of=3, timeLimit=100),
+         ptest('L4-05', 'Rennkurs Sektor 2', 'Zweiter Sektor mit fliegendem Start.', 'Nimm Schwung aus dem Anlauf mit.',
+               ATT_RACE, RACE_RENTAL, sector=2, of=3, start='rolling', speed_kmh=130, timeLimit=100),
+         ptest('L4-06', 'Rennkurs Sektor 3', 'Letzter Sektor bis ins Ziel.', 'Der letzte Kurvenausgang zählt doppelt.',
+               ATT_RACE, RACE_RENTAL, sector=3, of=3, start='rolling', speed_kmh=130, timeLimit=100),
+         ptest('L4-07', 'Stadtkurs Italien', 'Eine Runde auf dem engen Stadtkurs in Italien.',
+               'Mauern verzeihen nichts. Lieber zehn Zentimeter Platz lassen.',
+               ITA_STREET, RACE_RENTAL, laps=1, timeLimit=150),
+         ptest('L4-08', 'Hirochi Langkurs', 'Eine Runde auf dem Hirochi Langkurs.', 'Teile dir die Reifen ein.',
+               HR_LONG, RACE_RENTAL, laps=1, timeLimit=200),
+         ptest('L4-09', 'Eigener Rennwagen', 'Eine Runde Rennkurs Automation mit deinem eigenen Auto.',
+               'Dein Auto, deine Schäden.', ATT_RACE, {'rental': False}, laps=1, timeLimit=240),
+         ptest('L4-10', 'Prüfung: Rennkurs Automation', 'Eine fehlerfreie Runde auf dem Rennkurs.',
+               'Bleib sauber, die Zeit kommt von allein.', ATT_RACE, RACE_RENTAL, laps=1, timeLimit=200),
      ]},
     {'id': 'L5', 'name': 'Lizenz S - Super', 'short': 'S', 'color': '#e85d3d', 'requires': 'L4',
-     'desc': 'Nur für die Besten: GT-Rennwagen und Prototypen am Limit.',
+     'desc': 'Nur für die Besten: GT-Rennwagen und Prototypen am Limit, lange Runden ohne Fehler.',
      'allGoldReward': {'categories': ['gt', 'proto'], 'liMin': 720},
      'tests': [
-         ctest('L5-01', 'Bremspunkt 220', 'Mit mindestens 220 km/h ins Tor, dann stoppen.', braking_zone(700, 860, 220), TOP_RENTAL, timeLimit=180),
-         ctest('L5-02', 'Highspeed-Spurwechsel', 'Spurwechsel mit mindestens 130 km/h.', lane_change(300, 130), TOP_RENTAL),
-         ttest('L5-03', 'Prototyp-Runde', 'Eine Runde im schnellsten Auto.', circuit(HR, ITA), TOP_RENTAL),
-         ttest('L5-04', 'Fünf Runden', 'Fünf Runden ohne Kollision.', circuit(HR, WCU), TOP_RENTAL, laps=5),
-         ttest('L5-05', 'Königsetappe', 'Die längste Sprintstrecke.', sprint(ITA, UTAH, WCU), TOP_RENTAL),
-         ttest('L5-06', 'Fremdes Terrain', 'Eine Runde auf einer selten gefahrenen Strecke.', circuit(JRI, ECU, ATT), TOP_RENTAL),
-         ttest('L5-07', 'Eigener Rennwagen', 'Zwei Runden im eigenen Auto.', circuit(HR, ITA), {'rental': False}, laps=2),
-         ttest('L5-08', 'Meisterprüfung', 'Die letzte Prüfung.', circuit(WCU, HR), TOP_RENTAL),
+         ptest('L5-01', 'Vollgas-Bremszone', 'Mit über 200 km/h von der Geraden in die Kehre.',
+               'Bei diesem Tempo ist jeder Meter Bremsweg Zeit.',
+               ATT_OUTSIDE, TOP_RENTAL, start='rolling', speed_kmh=200, **{'from': 8, 'to': 10}, timeLimit=60),
+         ptest('L5-02', 'Hochgeschwindigkeits-Kurven', 'Die schnellen Kurven am Ende des Rennkurses.',
+               'Gefühl für den Abtrieb: je schneller, desto mehr Grip.',
+               ATT_RACE, TOP_RENTAL, start='rolling', speed_kmh=180, **{'from': 6, 'to': 9}, timeLimit=80),
+         ptest('L5-03', 'Außenkurs Sektor 1', 'Erster Sektor des Außenkurses.', 'Lange Geraden, harte Bremszonen.',
+               ATT_OUTSIDE, TOP_RENTAL, sector=1, of=3, timeLimit=100),
+         ptest('L5-04', 'Außenkurs Sektor 2', 'Zweiter Sektor mit fliegendem Start.', 'Die Kehre nach der Geraden ist der Schlüssel.',
+               ATT_OUTSIDE, TOP_RENTAL, sector=2, of=3, start='rolling', speed_kmh=160, timeLimit=100),
+         ptest('L5-05', 'Außenkurs Sektor 3', 'Letzter Sektor bis ins Ziel.', 'Nicht übermütig werden.',
+               ATT_OUTSIDE, TOP_RENTAL, sector=3, of=3, start='rolling', speed_kmh=160, timeLimit=100),
+         ptest('L5-06', 'Hirochi Gesamtkurs', 'Eine Runde auf dem vollständigen Hirochi-Kurs.', 'Die längste Runde der Rennstrecke.',
+               HR_FULL, TOP_RENTAL, laps=1, timeLimit=240),
+         ptest('L5-07', 'Steinbruch Italien', 'Eine Runde auf dem Steinbruch-Kurs in Italien.', 'Wenig Auslauf, viel Staub.',
+               ITA_QUARRY, TOP_RENTAL, laps=1, timeLimit=150),
+         ptest('L5-08', 'Zwei Runden konstant', 'Zwei Runden Hirochi Kurzkurs ohne einen Fehler.', 'Konstanz schlägt die eine schnelle Runde.',
+               HR_SHORT, TOP_RENTAL, laps=2, timeLimit=240),
+         ptest('L5-09', 'Eigener Rennwagen', 'Eine Runde Außenkurs mit deinem eigenen Auto.', 'Schäden bleiben!',
+               ATT_OUTSIDE, {'rental': False}, laps=1, timeLimit=300),
+         ptest('L5-10', 'Meisterprüfung: Großer Kurs', 'Eine fehlerfreie Runde auf dem großen Kurs des Automation Test Track.',
+               'Die letzte Prüfung. Ruhig atmen.', ATT_MAIN, TOP_RENTAL, laps=1, timeLimit=300),
      ]},
     {'id': 'R1', 'name': 'Rallye-Lizenz', 'short': 'R', 'color': '#a0703d', 'requires': 'L1',
-     'desc': 'Lose Untergründe, Sprünge, Gegenlenken. Öffnet Rallye & Gelände.',
+     'desc': 'Lose Untergründe, Kehren und Sprünge. Öffnet Rallye & Gelände.',
      'allGoldReward': {'categories': ['rally', 'offroad']},
      'tests': [
-         ctest('R1-01', 'Schotter-Slalom', 'Slalom auf losem Untergrund.', slalom(6, 22, 3.5), RALLY_RENTAL, venue='crawlpark'),
-         ctest('R1-02', 'Kehre auf Schotter', 'Eine Kehre auf losem Grund.', hairpin_right(50, 12), RALLY_RENTAL, venue='crawlpark'),
-         ttest('R1-03', 'Wertungsprüfung 1', 'Eine kurze Prüfung auf Schotter.', dirt(UTAH, JV), RALLY_RENTAL),
-         ttest('R1-04', 'Wertungsprüfung 2', 'Eine längere Prüfung.', dirt(JV, UTAH, ITA), RALLY_RENTAL),
-         ttest('R1-05', 'Eigenes Rallyeauto', 'Eine Prüfung mit deinem Auto.', dirt(UTAH, JV), {'rental': False}),
+         ptest('R1-01', 'Schotter-Runde klein', 'Eine Runde auf dem kleinen Schotterkurs.', 'Auf Schotter früher bremsen und das Auto rollen lassen.',
+               ATT_DIRT, RALLY_RENTAL, laps=1, timeLimit=90),
+         ptest('R1-02', 'Kehren auf Schotter', 'Die erste Hälfte des Schotterkurses mit den engen Kehren.', 'Mit dem Heck einlenken, früh Gas.',
+               ATT_GRAVEL, RALLY_RENTAL, **{'from': 1, 'to': 5}, timeLimit=90),
+         ptest('R1-03', 'Schotterkurs', 'Eine ganze Runde auf dem Schotterkurs.', 'Gleichmäßig bleiben.',
+               ATT_GRAVEL, RALLY_RENTAL, laps=1, timeLimit=150),
+         ptest('R1-04', 'Bergprüfung Teil 1', 'Der erste Teil der Alpen-Bergprüfung.', 'Bergauf trägt das Auto weniger Schwung in die Kurve.',
+               ATT_ALPINE, RALLY_RENTAL, **{'from': 1, 'to': 6}, timeLimit=150),
+         ptest('R1-05', 'Bergprüfung', 'Die ganze Alpen-Bergprüfung.', 'Kehren eng anfahren, sonst fehlt der Platz.',
+               ATT_ALPINE, RALLY_RENTAL, timeLimit=240),
+         ptest('R1-06', 'Wüstenprüfung', 'Eine Rallye-Prüfung in Johnson Valley mit deinem Auto.', 'Sand bremst. Nicht zu weit vom Weg.',
+               JV_RALLY, {'rental': False}, timeLimit=360, offTrack=60),
      ]},
     {'id': 'D1', 'name': 'Drift-Lizenz', 'short': 'D', 'color': '#e05db0', 'requires': 'L1',
-     'desc': 'Kontrolliert quer: Winkel, Tempo, Linie.',
+     'desc': 'Kontrolliert quer: Winkel, Tempo, Linie. Mit Heckantrieb.',
      'tests': [
-         ctest('D1-01', 'Donut-Kreis', 'Umrunde den Kreis in einer Acht.', figure_eight(15), DRIFT_RENTAL, timeLimit=150),
-         ctest('D1-02', 'Kehren-Drift', 'Kehre mit Schwung.', hairpin_right(50, 16), DRIFT_RENTAL),
-         ctest('D1-03', 'Slalom quer', 'Langsamer, enger Slalom.', slalom(6, 24, 4.5), DRIFT_RENTAL),
-         ttest('D1-04', 'Drift-Runde', 'Eine Runde auf einem engen Kurs.', circuit(IND, HR, WCU), DRIFT_RENTAL),
-         ttest('D1-05', 'Eigenes Driftauto', 'Eine Runde im eigenen Auto.', circuit(IND, HR), {'rental': False}),
+         ptest('D1-01', 'Erster Drift', 'Fahre die kurze Driftstrecke im Fahrerzentrum.', 'Einlenken, kurz Gas, gegenlenken. Nicht drehen.',
+               DT_DRIFT, DRIFT_RENTAL, timeLimit=60),
+         ptest('D1-02', 'Kurvenfolge quer', 'Der erste Teil des Handling-Driftkurses.', 'Gewicht verlagern: kurz anbremsen, dann einlenken.',
+               ATT_DRIFT, DRIFT_RENTAL, **{'from': 1, 'to': 14}, timeLimit=120),
+         ptest('D1-03', 'Handling-Driftkurs', 'Der ganze Handling-Driftkurs.', 'Rhythmus finden.',
+               ATT_DRIFT, DRIFT_RENTAL, timeLimit=240),
+         ptest('D1-04', 'Hirochi Drift', 'Der Driftkurs auf Hirochi Raceway.', 'Schnelle Übergänge von links nach rechts.',
+               HR_DRIFT, DRIFT_RENTAL, timeLimit=200),
+         ptest('D1-05', 'Eigenes Driftauto', 'Der Handling-Driftkurs mit deinem eigenen Auto.', 'Dein Auto, deine Schäden.',
+               ATT_DRIFT, {'rental': False}, timeLimit=300),
      ]},
 ]
+for lic in licenses:
+    for t in lic['tests']:
+        t['licenseId'] = lic['id']
 write('licenses', licenses)
 
 # ---------------------------------------------------------------------------
-# trainings ("Fahrschule")
+# Fahrschule = Streckenkunde (like a circuit experience): every circuit sector
+# by sector, then the whole lap. Medals are paid once; the car is chosen per
+# school so everyone drives the same.
 # ---------------------------------------------------------------------------
-trainings = [
-    dict(ctest('TR-brake1', 'Bremsen 1: Vollbremsung', 'Mit 80 km/h ins Tor, dann so kurz wie möglich stoppen.', braking_zone(150, 190, 80), {'rental': False}), category='Bremsen', dayCost=0),
-    dict(ctest('TR-brake2', 'Bremsen 2: Präzision', 'Kleine Haltezone nach Highspeed-Anfahrt.', [gate(0, 250, 6, minSpeed=120)] + startstop(330, 4, 3), {'rental': False}), category='Bremsen', dayCost=0),
-    dict(ctest('TR-corner1', 'Kurven 1: Konstanter Radius', 'Ein Dreiviertelkreis mit gleichmäßigem Tempo.', arc(30, 20, 30, 180, -90, 9, w=7, direction=-1), {'rental': False}), category='Kurven', dayCost=0),
-    dict(ctest('TR-corner2', 'Kurven 2: Wechselkurven', 'Eine S-Kurve mit Gefühl.', arc(-35, 20, 35, 0, 90, 5, w=7, direction=1) + arc(-35, 90, 35, 270, 360, 5, w=7, direction=-1), {'rental': False}), category='Kurven', dayCost=0),
-    dict(ctest('TR-slalom', 'Slalom-Meister', 'Zwölf Tore - wer bleibt im Rhythmus?', slalom(12, 22, 3.2), {'rental': False}), category='Kontrolle', dayCost=0),
-    dict(ctest('TR-moose', 'Elchtest', 'Spurwechsel mit 80 km/h.', lane_change(110, 80), {'rental': False}), category='Kontrolle', dayCost=0),
-    dict(ctest('TR-eight', 'Liegende Acht', 'Zwei Kreise, eine Linie.', figure_eight(16), {'rental': False}, timeLimit=200), category='Kontrolle', dayCost=0),
-    dict(ttest('TR-lap-hr', 'Rundentraining Rennstrecke', 'Eine fehlerfreie Runde mit deinem Auto.', circuit(HR, WCU), {'rental': False}), category='Strecke', dayCost=0),
-    dict(ttest('TR-lap-it', 'Rundentraining Bergstrecke', 'Eine Sprintprüfung mit deinem Auto.', sprint(ITA, UTAH), {'rental': False}), category='Strecke', dayCost=0),
-    dict(ttest('TR-lap-3', 'Konstanz-Training', 'Drei Runden ohne Kollision.', circuit(HR, ITA), {'rental': False}, laps=3), category='Strecke', dayCost=0),
+schools = [
+    ('etk', 'ETK-Teststrecke', ETK_TRACK, 4, False, SPORT_RENTAL,
+     ['Die Gerade und die ersten Kehren.', 'Die schnellen Wechselkurven.', 'Der kurvige Mittelteil.', 'Der Weg ins Ziel.']),
+    ('hrk', 'Hirochi Kurzkurs', HR_SHORT, 3, True, FAST_RENTAL,
+     ['Start-Ziel-Gerade und erste Kurve.', 'Die Linkskombination.', 'Die letzten Kurven vor der Geraden.']),
+    ('att', 'Automation Kurzkurs', ATT_SHORT, 3, True, FAST_RENTAL,
+     ['Die schnellen ersten Kurven.', 'Der Mittelteil.', 'Zurück zur Ziellinie.']),
+    ('ita', 'Stadtkurs Italien', ITA_STREET, 3, True, SPORT_RENTAL,
+     ['Durch die engen Gassen.', 'Die Kurven am Platz.', 'Die Gerade und die Schlusskurven.']),
+    ('hrl', 'Hirochi Langkurs', HR_LONG, 3, True, RACE_RENTAL,
+     ['Die ersten Kurven.', 'Die lange Gegengerade.', 'Die Schlussrunde.']),
 ]
+trainings = []
+for sid, sname, race, of, closed, car, texts in schools:
+    for i in range(1, of + 1):
+        t = ptest(f'TR-{sid}-{i}', f'Sektor {i}', texts[i - 1], 'Lerne den Abschnitt: Bremspunkte, Einlenkpunkte, Kurvenausgang.',
+                  race, car, sector=i, of=of, start='rolling' if i > 1 else 'standing', speed_kmh=80, timeLimit=180)
+        t.update(category=sname, school=sid, dayCost=0)
+        trainings.append(t)
+    t = ptest(f'TR-{sid}-lap', 'Ganze Runde' if closed else 'Ganze Strecke', 'Alle Sektoren zusammen.',
+              'Jetzt zählt, was du in den Sektoren gelernt hast.', race, car, timeLimit=360, **({'laps': 1} if closed else {}))
+    t.update(category=sname, school=sid, dayCost=0)
+    trainings.append(t)
 write('trainings', trainings)
 
 # ---------------------------------------------------------------------------

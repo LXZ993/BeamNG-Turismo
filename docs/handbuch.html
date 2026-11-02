@@ -385,31 +385,53 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 </section>
 
 <section id="lizenzen">
-<h2><span class="n">7</span> Lizenzen und Tests <span class="tag">data\turismo\licenses.json</span></h2>
-<p>7 Lizenzen (C, B, A, I, S, Rallye, Drift) mit zusammen 50 Tests.</p>
+<h2><span class="n">7</span> Lizenzen und Prüfungen <span class="tag">data\turismo\licenses.json</span></h2>
+<p>7 Lizenzen mit zusammen 61 Prüfungen: C, B, A, I, S mit je 10, Rallye 6, Drift 5. Aufbau wie in GT: erst Grundlagen, dann Abschnitte und Sektoren echter Strecken, am Ende eine Prüfungsrunde.
+Lizenz C und B finden im <b>ETK-Fahrerzentrum</b> statt (Karte <code>driver_training</code>, die Übungsstrecken von BeamNG), A, I und S auf Hirochi Raceway, dem Automation Test Track und in Italien.</p>
+<p>Die Tore einer Prüfung sind die <b>Checkpoints aus den race-Dateien des Spiels</b>, z. B. <code>/gameplay/missions/driver_training/campaigns/008-slalom/race.race.json</code>. Darum liegen sie immer auf der Straße. Welche Dateien es gibt, steht in <code>F:\BeamNG\current\turismo_dump\index.txt</code> (Abzug deiner 0.40.4-Installation).</p>
 <table>
 <tr><th>Feld (Lizenz)</th><th>Bedeutung</th></tr>
 <tr><td><code>id</code></td><td>z. B. <code>L1</code>. Wird in <code>requires</code> von Serien benutzt. Nicht ändern.</td></tr>
-<tr><td><code>name</code>, <code>short</code>, <code>color</code>, <code>desc</code></td><td>Anzeige</td></tr>
-<tr><td><code>allGoldReward</code></td><td>Geschenkauto für alle Tests in Gold (<a href="#kriterien">Kriterien</a>)</td></tr>
-<tr><td><code>tests</code></td><td>Liste der Tests</td></tr>
+<tr><td><code>name</code>, <code>short</code>, <code>color</code>, <code>desc</code></td><td>Anzeige. <code>short</code> ist der Buchstabe auf der Plakette und in der Prüfungsnummer (C-1, C-2 …).</td></tr>
+<tr><td><code>requires</code></td><td>Lizenz, die vorher nötig ist</td></tr>
+<tr><td><code>allGoldReward</code></td><td>Geschenkauto für alle Prüfungen in Gold (<a href="#kriterien">Kriterien</a>)</td></tr>
+<tr><td><code>tests</code></td><td>Liste der Prüfungen</td></tr>
 </table>
 <table>
-<tr><th>Feld (Test)</th><th>Bedeutung</th></tr>
-<tr><td><code>id</code>, <code>name</code>, <code>desc</code></td><td>Kennung und Anzeige</td></tr>
-<tr><td><code>type</code></td><td><code>gates</code> (Tore auf dem Testgelände) oder <code>track</code> (Rundenzeit auf einer Strecke)</td></tr>
-<tr><td><code>venue</code></td><td>Ort aus <a href="#orte">venues.json</a></td></tr>
-<tr><td><code>course</code></td><td>Tore: <code>kind</code> (<code>gate</code> oder <code>stop</code>), <code>x</code>/<code>y</code> = Meter rechts/vorwärts vom Startpunkt, <code>w</code> = Breite, <code>len</code> = Länge der Stoppzone, <code>label</code></td></tr>
-<tr><td><code>car</code></td><td>Leihwagen nach <code>criteria</code>, oder <code>"rental": false</code> = eigenes Auto</td></tr>
-<tr><td><code>targets</code></td><td>Zielzeiten. <code>{"mode": "estimate"}</code> = automatisch aus Strecke und Auto geschätzt, sonst <code>gold</code>/<code>silver</code>/<code>bronze</code> in Sekunden</td></tr>
-<tr><td><code>timeLimit</code></td><td>Abbruch nach x Sekunden</td></tr>
+<tr><th>Feld (Prüfung)</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code></td><td>z. B. <code>L1-03</code>. Auch der Name des Vorschaubilds: <code>ui\modules\apps\TurismoHub\previews\tests\L1-03.jpg</code> (16:9). Fehlt das Bild, zeigt das Menü eine farbige Kachel mit der Nummer.</td></tr>
+<tr><td><code>name</code></td><td>Titel</td></tr>
+<tr><td><code>goal</code></td><td>Ziel, steht im Briefing und auf der Strecke (<code>desc</code> = gleicher Text für alte Stellen)</td></tr>
+<tr><td><code>tip</code></td><td>Tipp im Briefing</td></tr>
+<tr><td><code>place</code></td><td>Ortsname in der Anzeige, z. B. „ETK-Fahrerzentrum“</td></tr>
+<tr><td><code>type</code></td><td><code>path</code> = Tore aus einer race-Datei (alle neuen Prüfungen). Alt: <code>gates</code> (Tore in Metern vom Startpunkt eines <a href="#orte">Orts</a>), <code>track</code> (Runden mit BeamNGs Rennlogik).</td></tr>
+<tr><td><code>race</code></td><td>race-Datei. Auch eine Liste: die erste vorhandene wird genommen.</td></tr>
+<tr><td><code>level</code></td><td>Karte, die geladen wird (sonst aus dem Pfad der race-Datei)</td></tr>
+<tr><td><code>from</code>, <code>to</code></td><td>Abschnitt: von Checkpoint Nr. bis Nr. (in Fahrtrichtung gezählt, 1 = Start). Ohne Angabe die ganze Strecke.</td></tr>
+<tr><td><code>sector</code>, <code>of</code></td><td>Statt from/to: Sektor x von y, die Checkpoints werden gleichmäßig aufgeteilt.</td></tr>
+<tr><td><code>laps</code></td><td>Runden auf einem Rundkurs. Start auf dem Startplatz der Datei, Ziel = Checkpoint 1.</td></tr>
+<tr><td><code>start</code></td><td><code>{"kind": "standing"}</code> = Auto steht am ersten Checkpoint, Zeit läuft ab „Los“. <code>{"kind": "rolling", "speed": 110, "back": 45}</code> = fliegender Start: Auto startet 45 m vor dem ersten Tor mit 110 km/h, die Zeit läuft ab dem ersten Tor.</td></tr>
+<tr><td><code>finish</code></td><td><code>gate</code> = Ziel ist das letzte Tor. <code>stop</code> = danach in einer Haltezone anhalten (<code>stopAfter</code> m hinter dem Tor, Größe <code>stopLen</code> × <code>stopW</code>).</td></tr>
+<tr><td><code>speed</code></td><td>Tempo an einem Tor, Nummer in der Liste der Tore: <code>{"2": {"min": 60}}</code> oder <code>{"3": {"max": 80}}</code></td></tr>
+<tr><td><code>offTrack</code></td><td>Wie weit (m) du von der Linie zwischen zwei Checkpoints weg darfst. Ohne Angabe 10 m + Torbreite + 22 % des Abstands. Länger als 3 s draußen = nicht bestanden.</td></tr>
+<tr><td><code>car</code></td><td>Leihwagen nach <code>criteria</code>, oder <code>"rental": false</code> = eigenes Auto (Schäden bleiben)</td></tr>
+<tr><td><code>targets</code></td><td>Zielzeiten. <code>{"mode": "auto", "goldFactor": 1.04, "silverFactor": 1.12, "bronzeFactor": 1.25}</code>: Referenzzeit × Faktor. Referenz = Zeit der Vorführung, sonst beim ersten Start auf der echten Straße berechnet, sonst grob aus den Checkpoints geschätzt. Feste Zeiten: <code>gold</code>/<code>silver</code>/<code>bronze</code> in Sekunden.</td></tr>
+<tr><td><code>timeLimit</code></td><td>Nicht bestanden nach x Sekunden</td></tr>
 </table>
-<pre><code>"targets": { "gold": 21.5, "silver": 23.0, "bronze": 25.0 }</code></pre>
+<p><b>Sicher ändern:</b> Einen Abschnitt verschieben = <code>from</code>/<code>to</code> ändern. Eine Prüfung leichter machen = <code>bronzeFactor</code> erhöhen. Neue Prüfung = Block kopieren, neue <code>id</code>. Die Checkpoint-Nummern einer Strecke siehst du im Spiel: Prüfung starten, die Tore sind der Reihe nach nummeriert (oben „Tor 3 / 8“).</p>
+<pre><code>{ "id": "L1-02", "name": "Bremsen aus 60", "type": "path",
+  "race": "/gameplay/missions/driver_training/campaigns/001-acceleationBraking/race.race.json",
+  "start": {"kind": "standing"}, "finish": "stop", "speed": {"2": {"min": 60}},
+  "car": {"criteria": {"categories": ["street"], "liMin": 230, "liMax": 340}},
+  "targets": {"mode": "auto", "goldFactor": 1.04, "silverFactor": 1.12, "bronzeFactor": 1.25}, "timeLimit": 60 }</code></pre>
+<p>Im Log (<a href="#log">turismo.log</a>) steht bei jedem Start <code>tests: start L1-02 (path)</code>, die berechnete Strecke (<code>route … m</code>) und die Referenzzeit.</p>
 </section>
 
 <section id="trainings">
-<h2><span class="n">8</span> Fahrschule (Trainings) <span class="tag">data\turismo\trainings.json</span></h2>
-<p>10 freiwillige Übungen. Aufbau wie ein Lizenztest, dazu <code>category</code> (Gruppe in der Anzeige) und <code>dayCost</code> (wie viele Spieltage das Training kostet, 0 = keine).</p>
+<h2><span class="n">8</span> Fahrschule (Streckenkunde) <span class="tag">data\turismo\trainings.json</span></h2>
+<p>Die Fahrschule bringt dir Strecken bei, Sektor für Sektor und dann die ganze Runde: ETK-Teststrecke (4 Sektoren), Hirochi Kurzkurs, Automation Kurzkurs, Stadtkurs Italien, Hirochi Langkurs (je 3). 22 Aufgaben.
+Felder wie bei den <a href="#lizenzen">Prüfungen</a>, dazu <code>category</code> (Name der Strecke, Gruppe in der Anzeige), <code>school</code> (Kürzel, Teil der ID <code>TR-hrk-2</code>) und <code>dayCost</code> (Spieltage, 0 = keine). Jede Medaille wird einmal bezahlt (Beträge aus <code>economy.json</code> <code>testRewards</code>).</p>
+<p>Neue Strecke: in <code>tools/gen_data.py</code> eine Zeile in <code>schools</code> ergänzen (Kürzel, Name, race-Datei, Anzahl Sektoren, Rundkurs ja/nein, Auto, Texte) und <code>python3 tools/gen_data.py</code> ausführen.</p>
 </section>
 
 <section id="cafe">
@@ -466,6 +488,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <tr><td><code>radius</code></td><td>Größe der Arena (Derby)</td></tr>
 </table>
 <p>Liegt ein Test ungünstig, stell dich an die gewünschte Stelle und nutze im Menü „Testgelände hier festlegen“ (Aktion <code>calibrateVenue</code>).</p>
+<p>Lizenzprüfungen und Fahrschule brauchen keine Orte mehr, sie nutzen die race-Dateien der Strecken. Orte gelten noch für Crawling und Derby.</p>
 </section>
 
 <section id="eigene-dateien">
@@ -576,6 +599,27 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <details class="cl">
 <summary><b>0.1.4</b> <small>Stand 02.11.2026</small></summary>
 <div>
+<h4>Neu: Lizenzprüfungen auf echten Strecken</h4>
+<ul>
+<li>Die Prüfungen finden jetzt auf echten BeamNG-Strecken statt, nicht mehr auf der leeren Gridmap. Lizenz C und B im ETK-Fahrerzentrum (Bremsen, Kurven, Spurwechsel, Slalom, Haarnadel, Rundkurs, Teststrecke), Lizenz A, I und S auf Hirochi Raceway, dem Automation Test Track und in Italien.</li>
+<li>Jede Lizenz hat 10 Prüfungen, aufgebaut wie in GT: erst Grundlagen, dann Abschnitte und Sektoren, am Ende eine Prüfungsrunde. Rallye-Lizenz 6, Drift-Lizenz 5.</li>
+<li>Das Lizenzzentrum zeigt oben alle Lizenzen, darunter die gewählte Lizenz mit Fortschritt und ihre Prüfungen als Kacheln (C-1, C-2 …) mit Medaille.</li>
+<li>Ein Klick auf eine Prüfung öffnet das Briefing: Ziel, Tipp, Ort, Auto, stehender oder fliegender Start, Medaillenzeiten mit Belohnung und dein Bestwert. Dort startest du die Prüfung oder die Vorführung.</li>
+<li>Fliegender Start: Du kommst mit Tempo an, die Zeit läuft ab dem ersten Tor.</li>
+<li>Auf der Strecke zeigen orange Tore, wo du durch musst. Orange Pfeile auf der Straße zeigen den Weg zum nächsten Tor, oben stehen ein Richtungspfeil und die Entfernung.</li>
+<li>Fährst du zu weit von der Strecke weg, erscheint „Zurück auf die Strecke!“. Nach 3 Sekunden ist die Prüfung nicht bestanden.</li>
+<li>Die Zielzeiten werden beim ersten Start auf der echten Straße berechnet, nach einer Vorführung aus der Zeit des KI-Fahrers.</li>
+<li>Jede Prüfung hat Platz für ein eigenes Vorschaubild.</li>
+</ul>
+<h4>Neu: Fahrschule als Streckenkunde</h4>
+<ul>
+<li>Die Fahrschule bringt dir fünf Strecken bei: ETK-Teststrecke, Hirochi Kurzkurs, Automation Kurzkurs, Stadtkurs Italien und Hirochi Langkurs. Jede Sektor für Sektor, dann die ganze Runde. Jede Medaille wird einmal bezahlt.</li>
+</ul>
+<h4>Fehler behoben</h4>
+<ul>
+<li>Lizenztest: Das Auto stand verkehrt herum, deshalb zeigte die Linie vom Auto weg. Autos stehen jetzt richtig herum, auch beim Neusetzen nach einer Reparatur und die Gegner im Derby.</li>
+<li>Die Vorführung im Lizenztest fuhr nicht los. Der KI-Fahrer folgt jetzt der Straße durch alle Tore.</li>
+</ul>
 <h4>Neu: Fahr-HUD im GT-Stil</h4>
 <ul>
 <li>Unten rechts ein Drehzahlband mit roter Zone. Im roten Bereich blinken Band und Gang: jetzt schalten.</li>

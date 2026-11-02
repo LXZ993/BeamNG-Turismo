@@ -14,7 +14,7 @@ M.VERSION = '0.1.4' -- muss zu data/turismo/build.json "modVersion" und CHANGELO
 M.MODULES = {
   'turismo_logger', 'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',
   'turismo_profile', 'turismo_garage', 'turismo_condition', 'turismo_services', 'turismo_dealer',
-  'turismo_licenses', 'turismo_tracks', 'turismo_aiDirector', 'turismo_race', 'turismo_tests',
+  'turismo_licenses', 'turismo_tracks', 'turismo_courses', 'turismo_aiDirector', 'turismo_race', 'turismo_tests',
   'turismo_modes', 'turismo_drag', 'turismo_events', 'turismo_cafe', 'turismo_progression',
   'turismo_audio', 'turismo_session', 'turismo_imguiHub',
 }
@@ -402,12 +402,7 @@ handlers.licenses = function() requireProfile() return X('licenses').snapshot() 
 handlers.trainings = function()
   requireProfile()
   local res = {}
-  local results = S().get().licenses.results
-  for _, t in ipairs(X('data').get('trainings') or {}) do
-    local r = results[t.id] or {}
-    res[#res + 1] = { id = t.id, name = t.name, desc = t.desc, category = t.category, medal = r.medal or 'none',
-      best = r.best, targets = X('licenses').targetsFor(t), scoring = t.scoring or 'time' }
-  end
+  for _, t in ipairs(X('data').get('trainings') or {}) do res[#res + 1] = X('licenses').testInfo(t) end
   return res
 end
 handlers.startTest = function(a)

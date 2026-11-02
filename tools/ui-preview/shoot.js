@@ -8,7 +8,7 @@ const path = require('path');
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
-  await page.route('file:///ui/**', r => r.fulfill({ path: path.resolve(__dirname, '../../mod' + new URL(r.request().url()).pathname) }));
+  await page.route('file:///ui/**', r => { const f = path.resolve(__dirname, '../../mod' + new URL(r.request().url()).pathname); return require('fs').existsSync(f) ? r.fulfill({ path: f }) : r.fulfill({ status: 404, body: '' }); });
   await page.addInitScript(t => { window.TURISMO_CHANGELOG = t; }, require('fs').readFileSync(path.resolve(__dirname, '../../CHANGELOG.md'), 'utf8'));
   await page.goto('file://' + path.resolve(__dirname, 'preview.html'));
   await page.waitForTimeout(300);
@@ -19,6 +19,8 @@ const path = require('path');
     ['02c_world_locked', 'window.TURISMO_NIGHT = false; preview.hub(); setTimeout(function () { window.__turismoApp.mapSelect("legends"); }, 50)'],
     ['03_cafe', 'preview.hub("cafe")'],
     ['04_licenses', 'preview.hub("licenses")'],
+    ['04b_license_brief', 'preview.hub("licenses"); setTimeout(function () { var a = window.__turismoApp; a.showTest("lic", a.data.lics[0].tests[1].id); }, 200)'],
+    ['04c_school', 'preview.hub("trainings")'],
     ['05_events', 'preview.hub("events")'],
     ['06_series', 'preview.hub("series", {arg2: "einsteiger"})'],
     ['07_used', 'preview.hub("used")'],

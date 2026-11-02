@@ -18,6 +18,7 @@ M.defaults = {
   owned = {},        -- licenseId -> day obtained
   results = {},      -- testId -> {medal, best, attempts}
   calibration = {},  -- testId -> reference time from demo run (for 'auto' targets)
+  routeEstimate = {}, -- testId -> reference time computed on the real road (first start)
   allGoldRewarded = {},
 }
 
@@ -63,6 +64,10 @@ function M.targetsFor(test)
   if t.gold and t.mode ~= 'estimate' and t.mode ~= 'auto' then return t end
   local ref = ls() and ls().calibration[test.id]
   local source = 'demo'
+  if not ref and ls() and ls().routeEstimate then
+    ref = ls().routeEstimate[test.id]
+    source = 'route'
+  end
   if not ref then
     local info = M.testCar(test)
     if info then
@@ -176,7 +181,49 @@ end
 
 function M.setCalibration(testId, time)
   ls().calibration[testId] = time
+  U().log('I', 'licenses: %s calibrated by demo run: %.2f s', tostring(testId), time)
   S().markDirty()
+end
+
+function M.setRouteEstimate(testId, time)
+  local st = ls()
+  st.routeEstimate = st.routeEstimate or {}
+  st.routeEstimate[testId] = time
+  U().log('I', 'licenses: %s reference time on the road: %.2f s', tostring(testId), time)
+  S().markDirty()
+end
+
+-- everything the briefing screen shows for one test (licence or driving school)
+function M.testInfo(t)
+  local r = ls().results[t.id] or {}
+  local info = {
+    id = t.id, name = t.name, desc = t.desc, goal = t.goal, tip = t.tip, place = t.place, type = t.type,
+    category = t.category, school = t.school,
+    medal = r.medal or 'none', best = r.best, attempts = r.attempts or 0,
+    targets = M.targetsFor(t), scoring = t.scoring or 'time',
+    carName = (M.testCar(t) or {}).name, ownCar = t.car and t.car.rental == false,
+    rolling = t.start and t.start.kind == 'rolling' or nil,
+    rewards = t.rewards or D().economy().testRewards,
+  }
+  if t.type == 'path' and extensions.turismo_courses then
+    local c = extensions.turismo_courses.resolve(t.race)
+    if c then
+      local gates = extensions.turismo_tests.pathGates(t, c)
+      local n = 0
+      for _, g in ipairs(gates) do if g.kind ~= 'stop' then n = n + 1 end end
+      local parts = { string.format('%d Tore', n) }
+      if t.laps then parts[#parts + 1] = t.laps == 1 and '1 Runde' or (t.laps .. ' Runden') end
+      if t.finish == 'stop' then parts[#parts + 1] = 'Anhalten in der Zone' end
+      for k, rule in pairs(t.speed or {}) do
+        if rule.min then parts[#parts + 1] = string.format('Tor %s mit mind. %d km/h', k, rule.min) end
+        if rule.max then parts[#parts + 1] = string.format('Tor %s mit höchstens %d km/h', k, rule.max) end
+      end
+      info.info = table.concat(parts, ', ')
+    else
+      info.missing = true
+    end
+  end
+  return info
 end
 
 function M.snapshot()
@@ -185,15 +232,7 @@ function M.snapshot()
     local avail, why = M.isAvailable(lic)
     local done, gold, total = M.progress(lic)
     local tests = {}
-    for _, t in ipairs(lic.tests or {}) do
-      local r = ls().results[t.id] or {}
-      tests[#tests + 1] = {
-        id = t.id, name = t.name, desc = t.desc, type = t.type,
-        medal = r.medal or 'none', best = r.best, attempts = r.attempts or 0,
-        targets = M.targetsFor(t), scoring = t.scoring or 'time',
-        carName = (M.testCar(t) or {}).name, ownCar = t.car and t.car.rental == false,
-      }
-    end
+    for _, t in ipairs(lic.tests or {}) do tests[#tests + 1] = M.testInfo(t) end
     res[#res + 1] = {
       id = lic.id, name = lic.name, short = lic.short, desc = lic.desc, color = lic.color,
       owned = M.has(lic.id), available = avail, reason = why,

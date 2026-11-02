@@ -4,7 +4,7 @@
   "name": "Lizenz C - Clubsport",
   "short": "C",
   "color": "#4fa3e0",
-  "desc": "Die Grundlagen: Beschleunigen, Bremsen, Lenken. Voraussetzung für die ersten Pokale.",
+  "desc": "Die Grundlagen im ETK-Fahrerzentrum: anfahren, bremsen, lenken. Voraussetzung für die ersten Pokale.",
   "allGoldReward": {
    "categories": [
     "street",
@@ -16,19 +16,13 @@
    {
     "id": "L1-01",
     "name": "Anfahren und Anhalten",
-    "desc": "Beschleunige und halte in der markierten Zone an.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "stop",
-      "x": 0,
-      "y": 90,
-      "w": 4,
-      "len": 6,
-      "label": "STOP"
-     }
-    ],
+    "desc": "Fahre los und halte in der Zone am Ende der Geraden an.",
+    "goal": "Fahre los und halte in der Zone am Ende der Geraden an.",
+    "tip": "Gleichmäßig Gas geben, früh und dosiert bremsen. Zu spät gebremst ist nicht bestanden.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/001-acceleationBraking/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -39,34 +33,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "stop",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 60,
+    "licenseId": "L1"
    },
    {
     "id": "L1-02",
-    "name": "Gezielt bremsen",
-    "desc": "Erreiche mindestens 70 km/h am Tor und stoppe in der Zone.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 110,
-      "w": 6,
-      "minSpeed": 70,
-      "label": "min 70"
-     },
-     {
-      "kind": "stop",
-      "x": 0,
-      "y": 160,
-      "w": 4,
-      "len": 6,
-      "label": "STOP"
-     }
-    ],
+    "name": "Bremsen aus 60",
+    "desc": "Mit mindestens 60 km/h durch das mittlere Tor, dann in der Zone anhalten.",
+    "goal": "Mit mindestens 60 km/h durch das mittlere Tor, dann in der Zone anhalten.",
+    "tip": "Voll beschleunigen, nach dem Tor sofort fest bremsen. Das ABS hilft, lenke dabei gerade.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/001-acceleationBraking/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -77,73 +65,33 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "stop",
+    "start": {
+     "kind": "standing"
+    },
+    "speed": {
+     "2": {
+      "min": 60
+     }
+    },
+    "timeLimit": 60,
+    "licenseId": "L1"
    },
    {
     "id": "L1-03",
-    "name": "Erste Kurve",
-    "desc": "Fahre durch alle Tore einer langgezogenen Rechtskurve.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 20.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 1.36,
-      "y": 30.35,
-      "w": 8,
-      "heading": -345.0
-     },
-     {
-      "kind": "gate",
-      "x": 5.36,
-      "y": 40.0,
-      "w": 8,
-      "heading": -330.0
-     },
-     {
-      "kind": "gate",
-      "x": 11.72,
-      "y": 48.28,
-      "w": 8,
-      "heading": -315.0
-     },
-     {
-      "kind": "gate",
-      "x": 20.0,
-      "y": 54.64,
-      "w": 8,
-      "heading": -300.0
-     },
-     {
-      "kind": "gate",
-      "x": 29.65,
-      "y": 58.64,
-      "w": 8,
-      "heading": -285.0
-     },
-     {
-      "kind": "gate",
-      "x": 40.0,
-      "y": 60.0,
-      "w": 8,
-      "heading": -270.0
-     },
-     {
-      "kind": "gate",
-      "x": 40,
-      "y": 90,
-      "w": 8
-     }
-    ],
+    "name": "Sauber anfahren",
+    "desc": "Fahre los und nimm die zwei Kurven bis ins Ziel.",
+    "goal": "Fahre los und nimm die zwei Kurven bis ins Ziel.",
+    "tip": "Nicht mit durchdrehenden Rädern starten. Vor der Kurve bremsen, nicht in der Kurve.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/013-starting/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -154,48 +102,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 60,
+    "licenseId": "L1"
    },
    {
     "id": "L1-04",
-    "name": "Slalom",
-    "desc": "Fünf Tore im Wechsel - flüssig bleiben.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 3.0,
-      "y": 30,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.0,
-      "y": 50,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.0,
-      "y": 70,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.0,
-      "y": 90,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.0,
-      "y": 110,
-      "w": 4.5
-     }
-    ],
+    "name": "Kurvengrundlagen",
+    "desc": "Fahre durch alle Tore der Kurvenstrecke.",
+    "goal": "Fahre durch alle Tore der Kurvenstrecke.",
+    "tip": "Außen anfahren, innen den Scheitel treffen, außen hinaus. Erst bremsen, dann lenken.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/002-cornering/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -206,42 +134,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 80,
+    "licenseId": "L1"
    },
    {
     "id": "L1-05",
-    "name": "Schikane",
-    "desc": "Links-Rechts ohne Tor zu verpassen.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 40,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": -5,
-      "y": 68,
-      "w": 5
-     },
-     {
-      "kind": "gate",
-      "x": 5,
-      "y": 92,
-      "w": 5
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 125,
-      "w": 6
-     }
-    ],
+    "name": "Spurwechsel",
+    "desc": "Mit mindestens 50 km/h in den Spurwechsel und durch alle Tore.",
+    "goal": "Mit mindestens 50 km/h in den Spurwechsel und durch alle Tore.",
+    "tip": "Ruhig lenken, nicht ruckartig. Schau zum nächsten Tor, nicht auf das aktuelle.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/004-lanechange/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -252,56 +166,33 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "speed": {
+     "2": {
+      "min": 50
+     }
+    },
+    "timeLimit": 60,
+    "licenseId": "L1"
    },
    {
     "id": "L1-06",
-    "name": "Spurwechsel",
-    "desc": "Ausweichmanöver bei mindestens 50 km/h.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 70,
-      "w": 3.2,
-      "label": "Einfahrt",
-      "minSpeed": 50
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 80,
-      "w": 3.2
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 93,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 103,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 118,
-      "w": 3.4
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 130,
-      "w": 3.4
-     }
-    ],
+    "name": "Enge Straße",
+    "desc": "Folge der engen Straße durch alle Tore.",
+    "goal": "Folge der engen Straße durch alle Tore.",
+    "tip": "Auf engen Straßen zählt die Linie mehr als das Tempo. Kurven nicht abkürzen.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/003-tightroad/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -312,79 +203,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 90,
+    "licenseId": "L1"
    },
    {
     "id": "L1-07",
     "name": "Haarnadel",
-    "desc": "Eine 180-Grad-Kehre: spät einlenken, früh beschleunigen.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 30,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 60.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 1.88,
-      "y": 67.0,
-      "w": 8,
-      "heading": -330.0
-     },
-     {
-      "kind": "gate",
-      "x": 7.0,
-      "y": 72.12,
-      "w": 8,
-      "heading": -300.0
-     },
-     {
-      "kind": "gate",
-      "x": 14.0,
-      "y": 74.0,
-      "w": 8,
-      "heading": -270.0
-     },
-     {
-      "kind": "gate",
-      "x": 21.0,
-      "y": 72.12,
-      "w": 8,
-      "heading": -240.0
-     },
-     {
-      "kind": "gate",
-      "x": 26.12,
-      "y": 67.0,
-      "w": 8,
-      "heading": -210.0
-     },
-     {
-      "kind": "gate",
-      "x": 28.0,
-      "y": 60.0,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": 28,
-      "y": 20,
-      "w": 8
-     }
-    ],
+    "desc": "Nimm die Haarnadelkurve und fahre ins Ziel.",
+    "goal": "Nimm die Haarnadelkurve und fahre ins Ziel.",
+    "tip": "Weit außen anfahren, spät einlenken, langsam rein und schnell raus.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/007-hairpins/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -395,22 +235,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 60,
+    "licenseId": "L1"
    },
    {
     "id": "L1-08",
-    "name": "Erste Runde",
-    "desc": "Eine saubere Runde ohne Kollision.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:automation_test_track",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Slalom",
+    "desc": "Fahre den Slalom hin und zurück durch alle Tore.",
+    "goal": "Fahre den Slalom hin und zurück durch alle Tore.",
+    "tip": "Rhythmus statt Gewalt: früh einlenken, damit das Auto nicht aufschaukelt.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/008-slalom/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -421,9 +267,82 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 120,
+    "licenseId": "L1"
+   },
+   {
+    "id": "L1-09",
+    "name": "Kurvengeschwindigkeit",
+    "desc": "Eine Folge schneller Kurven: halte das Tempo, ohne die Strecke zu verlassen.",
+    "goal": "Eine Folge schneller Kurven: halte das Tempo, ohne die Strecke zu verlassen.",
+    "tip": "Lieber etwas langsamer hinein und früh wieder Gas. Abflug heißt nicht bestanden.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/005-cornerspeed/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
+    "car": {
+     "criteria": {
+      "categories": [
+       "street"
+      ],
+      "liMin": 230,
+      "liMax": 340
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 120,
+    "licenseId": "L1"
+   },
+   {
+    "id": "L1-10",
+    "name": "Prüfung: Kleiner Rundkurs",
+    "desc": "Eine Runde auf dem kleinen Rundkurs des Fahrerzentrums.",
+    "goal": "Eine Runde auf dem kleinen Rundkurs des Fahrerzentrums.",
+    "tip": "Alles zusammen: bremsen vor der Kurve, saubere Linie, kein Kontakt.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/006-easycircuit/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
+    "car": {
+     "criteria": {
+      "categories": [
+       "street"
+      ],
+      "liMin": 230,
+      "liMax": 340
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "L1"
    }
   ]
  },
@@ -433,7 +352,7 @@
   "short": "B",
   "color": "#6fbf73",
   "requires": "L1",
-  "desc": "Fahrzeugkontrolle bei höherem Tempo und erste Rennstrecken-Aufgaben.",
+  "desc": "Fahrzeugkontrolle bei höherem Tempo, Heckantrieb, nasse Kurven und die erste Rennstrecke.",
   "allGoldReward": {
    "categories": [
     "sport"
@@ -444,28 +363,14 @@
   "tests": [
    {
     "id": "L2-01",
-    "name": "Bremspunkt 100",
-    "desc": "Mit mindestens 100 km/h ins Tor, dann in der Zone stoppen.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 220,
-      "w": 6,
-      "minSpeed": 100,
-      "label": "min 100"
-     },
-     {
-      "kind": "stop",
-      "x": 0,
-      "y": 290,
-      "w": 4,
-      "len": 6,
-      "label": "STOP"
-     }
-    ],
+    "name": "Bremsen aus 80",
+    "desc": "Mit mindestens 80 km/h durch das mittlere Tor, dann in der Zone anhalten.",
+    "goal": "Mit mindestens 80 km/h durch das mittlere Tor, dann in der Zone anhalten.",
+    "tip": "Schnelle Autos brauchen mehr Weg. Bremse hart an, dann löse leicht, um genau zu treffen.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/001-acceleationBraking/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -477,60 +382,33 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "stop",
+    "start": {
+     "kind": "standing"
+    },
+    "speed": {
+     "2": {
+      "min": 80
+     }
+    },
+    "timeLimit": 60,
+    "licenseId": "L2"
    },
    {
     "id": "L2-02",
-    "name": "Doppelte Schikane",
-    "desc": "Zwei Schikanen direkt hintereinander.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 40,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": -5,
-      "y": 68,
-      "w": 5
-     },
-     {
-      "kind": "gate",
-      "x": 5,
-      "y": 92,
-      "w": 5
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 125,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": -5,
-      "y": 158,
-      "w": 5
-     },
-     {
-      "kind": "gate",
-      "x": 5,
-      "y": 182,
-      "w": 5
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 215,
-      "w": 6
-     }
-    ],
+    "name": "Wechselnder Grip",
+    "desc": "Fahre geradeaus über die Teststrecke mit wechselndem Grip.",
+    "goal": "Fahre geradeaus über die Teststrecke mit wechselndem Grip.",
+    "tip": "Wenn ein Rad weniger Grip hat, zieht das Auto zur Seite. Ruhig gegenlenken.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/011-diffs/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -542,167 +420,66 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "speed": {
+     "3": {
+      "min": 50
+     }
+    },
+    "timeLimit": 60,
+    "licenseId": "L2"
    },
    {
     "id": "L2-03",
-    "name": "Schneller Slalom",
-    "desc": "Sieben Tore mit mehr Abstand und mehr Tempo.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 30,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.5,
-      "y": 56,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 82,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.5,
-      "y": 108,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 134,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.5,
-      "y": 160,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 186,
-      "w": 4.5
-     }
-    ],
+    "name": "Heckantrieb",
+    "desc": "Eine Runde im Heckantriebler, ohne dreher.",
+    "goal": "Eine Runde im Heckantriebler, ohne dreher.",
+    "tip": "Am Kurvenausgang das Gas langsam aufmachen, sonst kommt das Heck.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/009-rwd/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
-      "categories": [
-       "sport",
-       "street"
+      "drivetrains": [
+       "RWD"
       ],
-      "liMin": 400,
-      "liMax": 520
+      "liMin": 300,
+      "liMax": 460
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "L2"
    },
    {
     "id": "L2-04",
-    "name": "Kurvenkombination",
-    "desc": "Links, dann rechts: die Linie zählt.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 20.0,
-      "w": 8,
-      "heading": 0.0
-     },
-     {
-      "kind": "gate",
-      "x": -1.71,
-      "y": 30.82,
-      "w": 8,
-      "heading": -18.0
-     },
-     {
-      "kind": "gate",
-      "x": -6.68,
-      "y": 40.57,
-      "w": 8,
-      "heading": -36.0
-     },
-     {
-      "kind": "gate",
-      "x": -14.43,
-      "y": 48.32,
-      "w": 8,
-      "heading": -54.0
-     },
-     {
-      "kind": "gate",
-      "x": -24.18,
-      "y": 53.29,
-      "w": 8,
-      "heading": -72.0
-     },
-     {
-      "kind": "gate",
-      "x": -35.0,
-      "y": 55.0,
-      "w": 8,
-      "heading": -90.0
-     },
-     {
-      "kind": "gate",
-      "x": -35.0,
-      "y": 55.0,
-      "w": 8,
-      "heading": -450.0
-     },
-     {
-      "kind": "gate",
-      "x": -24.18,
-      "y": 56.71,
-      "w": 8,
-      "heading": -468.0
-     },
-     {
-      "kind": "gate",
-      "x": -14.43,
-      "y": 61.68,
-      "w": 8,
-      "heading": -486.0
-     },
-     {
-      "kind": "gate",
-      "x": -6.68,
-      "y": 69.43,
-      "w": 8,
-      "heading": -504.0
-     },
-     {
-      "kind": "gate",
-      "x": -1.71,
-      "y": 79.18,
-      "w": 8,
-      "heading": -522.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 90.0,
-      "w": 8,
-      "heading": -540.0
-     }
-    ],
+    "name": "Nasse Kurve",
+    "desc": "Nimm die Kurvenfolge mit wenig Grip.",
+    "goal": "Nimm die Kurvenfolge mit wenig Grip.",
+    "tip": "Auf nassem Belag weich bremsen und weich lenken. Alles langsamer als gewohnt.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/012-wetcorner/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -714,56 +491,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 90,
+    "licenseId": "L2"
    },
    {
     "id": "L2-05",
-    "name": "Ausweichtest 70",
-    "desc": "Spurwechsel bei mindestens 70 km/h.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 90,
-      "w": 3.2,
-      "label": "Einfahrt",
-      "minSpeed": 70
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 100,
-      "w": 3.2
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 113,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 123,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 138,
-      "w": 3.4
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 150,
-      "w": 3.4
-     }
-    ],
+    "name": "Schneller Slalom",
+    "desc": "Den Slalom hin und zurück mit einem schnelleren Auto.",
+    "goal": "Den Slalom hin und zurück mit einem schnelleren Auto.",
+    "tip": "Mit mehr Tempo musst du noch früher einlenken.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/008-slalom/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -775,172 +524,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 110,
+    "licenseId": "L2"
    },
    {
     "id": "L2-06",
-    "name": "Acht",
-    "desc": "Eine liegende Acht um zwei Kreise.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 3.44,
-      "y": 40.58,
-      "w": 8,
-      "heading": -324.0
-     },
-     {
-      "kind": "gate",
-      "x": 12.44,
-      "y": 47.12,
-      "w": 8,
-      "heading": -288.0
-     },
-     {
-      "kind": "gate",
-      "x": 23.56,
-      "y": 47.12,
-      "w": 8,
-      "heading": -252.0
-     },
-     {
-      "kind": "gate",
-      "x": 32.56,
-      "y": 40.58,
-      "w": 8,
-      "heading": -216.0
-     },
-     {
-      "kind": "gate",
-      "x": 36.0,
-      "y": 30.0,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": 32.56,
-      "y": 19.42,
-      "w": 8,
-      "heading": -144.0
-     },
-     {
-      "kind": "gate",
-      "x": 23.56,
-      "y": 12.88,
-      "w": 8,
-      "heading": -108.0
-     },
-     {
-      "kind": "gate",
-      "x": 12.44,
-      "y": 12.88,
-      "w": 8,
-      "heading": -72.0
-     },
-     {
-      "kind": "gate",
-      "x": 3.44,
-      "y": 19.42,
-      "w": 8,
-      "heading": -36.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.0,
-      "w": 8,
-      "heading": 0.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.01,
-      "w": 8,
-      "heading": 0.0
-     },
-     {
-      "kind": "gate",
-      "x": -3.44,
-      "y": 40.59,
-      "w": 8,
-      "heading": -36.0
-     },
-     {
-      "kind": "gate",
-      "x": -12.44,
-      "y": 47.13,
-      "w": 8,
-      "heading": -72.0
-     },
-     {
-      "kind": "gate",
-      "x": -23.56,
-      "y": 47.13,
-      "w": 8,
-      "heading": -108.0
-     },
-     {
-      "kind": "gate",
-      "x": -32.56,
-      "y": 40.59,
-      "w": 8,
-      "heading": -144.0
-     },
-     {
-      "kind": "gate",
-      "x": -36.0,
-      "y": 30.01,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": -32.56,
-      "y": 19.43,
-      "w": 8,
-      "heading": -216.0
-     },
-     {
-      "kind": "gate",
-      "x": -23.56,
-      "y": 12.89,
-      "w": 8,
-      "heading": -252.0
-     },
-     {
-      "kind": "gate",
-      "x": -12.44,
-      "y": 12.89,
-      "w": 8,
-      "heading": -288.0
-     },
-     {
-      "kind": "gate",
-      "x": -3.44,
-      "y": 19.43,
-      "w": 8,
-      "heading": -324.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.01,
-      "w": 8,
-      "heading": -360.0
-     }
-    ],
+    "name": "Kurvengeschwindigkeit Sport",
+    "desc": "Die schnelle Kurvenfolge mit einem Sportwagen.",
+    "goal": "Die schnelle Kurvenfolge mit einem Sportwagen.",
+    "tip": "Nutze die ganze Breite der Strecke.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/005-cornerspeed/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -952,22 +557,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 180
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 110,
+    "licenseId": "L2"
    },
    {
     "id": "L2-07",
-    "name": "Sprint-Abschnitt",
-    "desc": "Eine Sprintprüfung von A nach B.",
-    "type": "track",
-    "track": [
-     "@sprint:italy",
-     "@sprint:west_coast_usa",
-     "@sprint:tarmac",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Fortgeschrittener Kurs",
+    "desc": "Eine Runde auf dem großen Übungskurs.",
+    "goal": "Eine Runde auf dem großen Übungskurs.",
+    "tip": "Plane jede Kurve vorher: wo bremsen, wo einlenken, wo Gas.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/campaigns/010-advanced/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -979,22 +590,29 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "L2"
    },
    {
     "id": "L2-08",
-    "name": "Rundenzeit",
-    "desc": "Eine schnelle Runde auf einem Rundkurs.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:west_coast_usa",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Teststrecke Teil 1",
+    "desc": "Die erste Hälfte der ETK-Teststrecke.",
+    "goal": "Die erste Hälfte der ETK-Teststrecke.",
+    "tip": "Die Kehren nach der ersten Geraden kommen schnell. Rechtzeitig bremsen.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/timeTrial/001-ardenteExperience/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "categories": [
@@ -1006,9 +624,87 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "to": 14,
+    "timeLimit": 150,
+    "licenseId": "L2"
+   },
+   {
+    "id": "L2-09",
+    "name": "Teststrecke Teil 2",
+    "desc": "Die zweite Hälfte der ETK-Teststrecke mit fliegendem Start.",
+    "goal": "Die zweite Hälfte der ETK-Teststrecke mit fliegendem Start.",
+    "tip": "Du kommst mit Tempo an. Die Zeit läuft ab dem ersten Tor.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/timeTrial/001-ardenteExperience/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
+    "car": {
+     "criteria": {
+      "categories": [
+       "sport",
+       "street"
+      ],
+      "liMin": 400,
+      "liMax": 520
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 70,
+     "back": 45
+    },
+    "from": 14,
+    "timeLimit": 150,
+    "licenseId": "L2"
+   },
+   {
+    "id": "L2-10",
+    "name": "Prüfung: ETK-Teststrecke",
+    "desc": "Die ganze ETK-Teststrecke ohne Fehler.",
+    "goal": "Die ganze ETK-Teststrecke ohne Fehler.",
+    "tip": "Ruhig fahren und keine Strafen sammeln. Das bringt mehr als Risiko.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/timeTrial/001-ardenteExperience/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
+    "car": {
+     "criteria": {
+      "categories": [
+       "sport",
+       "street"
+      ],
+      "liMin": 400,
+      "liMax": 520
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 240,
+    "licenseId": "L2"
    }
   ]
  },
@@ -1018,7 +714,7 @@
   "short": "A",
   "color": "#b07de8",
   "requires": "L2",
-  "desc": "Schnelle Autos, präzise Linien. Öffnet die Profi-Liga.",
+  "desc": "Rennstrecke: Bremspunkte, Kurvenkombinationen und Sektoren auf Hirochi Raceway und dem Automation Test Track.",
   "allGoldReward": {
    "categories": [
     "sport",
@@ -1030,28 +726,14 @@
   "tests": [
    {
     "id": "L3-01",
-    "name": "Bremspunkt 140",
-    "desc": "Mit mindestens 140 km/h ins Tor, dann stoppen.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 320,
-      "w": 6,
-      "minSpeed": 140,
-      "label": "min 140"
-     },
-     {
-      "kind": "stop",
-      "x": 0,
-      "y": 420,
-      "w": 4,
-      "len": 6,
-      "label": "STOP"
-     }
-    ],
+    "name": "Bremspunkt Hirochi",
+    "desc": "Fliegender Start auf der Geraden, dann die Rechtskurve sauber treffen.",
+    "goal": "Fliegender Start auf der Geraden, dann die Rechtskurve sauber treffen.",
+    "tip": "Bremspunkt suchen: lieber zu früh als zu spät, dann in der nächsten Runde später.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1063,72 +745,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 150
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 110,
+     "back": 45
+    },
+    "from": 2,
+    "to": 4,
+    "timeLimit": 60,
+    "licenseId": "L3"
    },
    {
     "id": "L3-02",
-    "name": "Hochgeschwindigkeits-Slalom",
-    "desc": "Neun Tore, 32 m Abstand.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 4.0,
-      "y": 30,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.0,
-      "y": 62,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.0,
-      "y": 94,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.0,
-      "y": 126,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.0,
-      "y": 158,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.0,
-      "y": 190,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.0,
-      "y": 222,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.0,
-      "y": 254,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.0,
-      "y": 286,
-      "w": 4.5
-     }
-    ],
+    "name": "Linkskombination Hirochi",
+    "desc": "Zwei Linkskurven hintereinander, ohne die Strecke zu verlassen.",
+    "goal": "Zwei Linkskurven hintereinander, ohne die Strecke zu verlassen.",
+    "tip": "Die erste Kurve opfern, damit du schnell aus der zweiten kommst.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1140,56 +782,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 90,
+     "back": 45
+    },
+    "from": 5,
+    "to": 8,
+    "timeLimit": 80,
+    "licenseId": "L3"
    },
    {
     "id": "L3-03",
-    "name": "Ausweichtest 90",
-    "desc": "Spurwechsel mit mindestens 90 km/h.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 140,
-      "w": 3.2,
-      "label": "Einfahrt",
-      "minSpeed": 90
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 150,
-      "w": 3.2
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 163,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 173,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 188,
-      "w": 3.4
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 200,
-      "w": 3.4
-     }
-    ],
+    "name": "Hirochi Sektor 1",
+    "desc": "Erster Sektor des Kurzkurses.",
+    "goal": "Erster Sektor des Kurzkurses.",
+    "tip": "Die Zeit läuft ab dem Start.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1201,85 +819,30 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "sector": 1,
+    "of": 3,
+    "timeLimit": 80,
+    "licenseId": "L3"
    },
    {
     "id": "L3-04",
-    "name": "Haarnadel-Paar",
-    "desc": "Zwei Kehren hintereinander.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 30,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 60.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 1.88,
-      "y": 67.0,
-      "w": 8,
-      "heading": -330.0
-     },
-     {
-      "kind": "gate",
-      "x": 7.0,
-      "y": 72.12,
-      "w": 8,
-      "heading": -300.0
-     },
-     {
-      "kind": "gate",
-      "x": 14.0,
-      "y": 74.0,
-      "w": 8,
-      "heading": -270.0
-     },
-     {
-      "kind": "gate",
-      "x": 21.0,
-      "y": 72.12,
-      "w": 8,
-      "heading": -240.0
-     },
-     {
-      "kind": "gate",
-      "x": 26.12,
-      "y": 67.0,
-      "w": 8,
-      "heading": -210.0
-     },
-     {
-      "kind": "gate",
-      "x": 28.0,
-      "y": 60.0,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": 28,
-      "y": 20,
-      "w": 8
-     },
-     {
-      "kind": "gate",
-      "x": 28,
-      "y": -60,
-      "w": 8
-     }
-    ],
+    "name": "Hirochi Sektor 2",
+    "desc": "Zweiter Sektor mit fliegendem Start.",
+    "goal": "Zweiter Sektor mit fliegendem Start.",
+    "tip": "Halte das Tempo aus dem Anlauf mit.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1291,23 +854,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 100,
+     "back": 45
+    },
+    "sector": 2,
+    "of": 3,
+    "timeLimit": 80,
+    "licenseId": "L3"
    },
    {
     "id": "L3-05",
-    "name": "Zwei Runden",
-    "desc": "Zwei Runden ohne Kollision.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:italy",
-     "@circuit:west_coast_usa",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 2,
+    "name": "Hirochi Sektor 3",
+    "desc": "Letzter Sektor bis zur Ziellinie.",
+    "goal": "Letzter Sektor bis zur Ziellinie.",
+    "tip": "Der Ausgang der letzten Kurve entscheidet über die Zeit auf der Geraden.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1319,22 +891,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 100,
+     "back": 45
+    },
+    "sector": 3,
+    "of": 3,
+    "timeLimit": 80,
+    "licenseId": "L3"
    },
    {
     "id": "L3-06",
-    "name": "Bergsprint",
-    "desc": "Eine kurvige Sprintstrecke.",
-    "type": "track",
-    "track": [
-     "@sprint:italy",
-     "@sprint:utah",
-     "@sprint:tarmac",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Handling-Kurs Sektor",
+    "desc": "Die erste Hälfte des Handling-Kurses auf dem Automation Test Track.",
+    "goal": "Die erste Hälfte des Handling-Kurses auf dem Automation Test Track.",
+    "tip": "Viele Richtungswechsel: Auto nicht überfahren.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/003-Handling/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1346,43 +928,91 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "from": 1,
+    "to": 6,
+    "timeLimit": 80,
+    "licenseId": "L3"
    },
    {
     "id": "L3-07",
-    "name": "Eigenes Auto",
-    "desc": "Eine Runde mit deinem eigenen Fahrzeug - Schäden bleiben!",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:west_coast_usa",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
+    "name": "Kurzkurs Automation",
+    "desc": "Eine Runde auf dem kurzen Rundkurs des Automation Test Track.",
+    "goal": "Eine Runde auf dem kurzen Rundkurs des Automation Test Track.",
+    "tip": "Schnelle Kurven: gleichmäßig lenken, nicht nachkorrigieren.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/009-Short/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
+    "car": {
+     "criteria": {
+      "categories": [
+       "sport",
+       "touring"
+      ],
+      "liMin": 520,
+      "liMax": 650
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
     "laps": 1,
+    "timeLimit": 120,
+    "licenseId": "L3"
+   },
+   {
+    "id": "L3-08",
+    "name": "Eigenes Auto",
+    "desc": "Eine Runde Hirochi Kurzkurs mit deinem eigenen Auto. Schäden bleiben!",
+    "goal": "Eine Runde Hirochi Kurzkurs mit deinem eigenen Auto. Schäden bleiben!",
+    "tip": "Kenne dein Auto: Bremsweg und Grip sind anders als beim Testwagen.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "rental": false
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 180,
+    "licenseId": "L3"
    },
    {
-    "id": "L3-08",
-    "name": "Abschlussrunde",
-    "desc": "Die Prüfungsrunde für die A-Lizenz.",
-    "type": "track",
-    "track": [
-     "@circuit:west_coast_usa",
-     "@circuit:hirochi_raceway",
-     "@circuit:automation_test_track",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "id": "L3-09",
+    "name": "Hirochi Mittelkurs Teil",
+    "desc": "Der lange Mittelteil des Mittelkurses mit fliegendem Start.",
+    "goal": "Der lange Mittelteil des Mittelkurses mit fliegendem Start.",
+    "tip": "Auf der langen Geraden zählt der Kurvenausgang davor.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/004-mediumcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1394,9 +1024,55 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 100,
+     "back": 45
+    },
+    "from": 3,
+    "to": 6,
+    "timeLimit": 100,
+    "licenseId": "L3"
+   },
+   {
+    "id": "L3-10",
+    "name": "Prüfung: Hirochi Kurzkurs",
+    "desc": "Eine fehlerfreie Runde auf dem Hirochi Kurzkurs.",
+    "goal": "Eine fehlerfreie Runde auf dem Hirochi Kurzkurs.",
+    "tip": "Alles, was du in den Sektoren gelernt hast, in einer Runde.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
+    "car": {
+     "criteria": {
+      "categories": [
+       "sport",
+       "touring"
+      ],
+      "liMin": 520,
+      "liMax": 650
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "L3"
    }
   ]
  },
@@ -1406,7 +1082,7 @@
   "short": "I",
   "color": "#e8a33d",
   "requires": "L3",
-  "desc": "Rennwagen mit viel Grip und Abtrieb. Pflicht für internationale Meisterschaften.",
+  "desc": "Rennwagen mit viel Grip: lange Bremszonen, schnelle Kombinationen und internationale Strecken.",
   "allGoldReward": {
    "categories": [
     "touring",
@@ -1418,28 +1094,14 @@
   "tests": [
    {
     "id": "L4-01",
-    "name": "Bremspunkt 180",
-    "desc": "Mit mindestens 180 km/h ins Tor, dann stoppen.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 480,
-      "w": 6,
-      "minSpeed": 180,
-      "label": "min 180"
-     },
-     {
-      "kind": "stop",
-      "x": 0,
-      "y": 600,
-      "w": 4,
-      "len": 6,
-      "label": "STOP"
-     }
-    ],
+    "name": "Haarnadel nach Gerade",
+    "desc": "Mit hohem Tempo von der Geraden in die Haarnadel.",
+    "goal": "Mit hohem Tempo von der Geraden in die Haarnadel.",
+    "tip": "Bei viel Abtrieb kannst du später bremsen, als du denkst. Aber nicht zu spät.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/001-forgotten/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1451,84 +1113,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 150
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 150,
+     "back": 45
+    },
+    "from": 6,
+    "to": 8,
+    "timeLimit": 60,
+    "licenseId": "L4"
    },
    {
     "id": "L4-02",
-    "name": "Rennslalom",
-    "desc": "Elf Tore mit Renntempo.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 4.2,
-      "y": 30,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.2,
-      "y": 66,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.2,
-      "y": 102,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.2,
-      "y": 138,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.2,
-      "y": 174,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.2,
-      "y": 210,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.2,
-      "y": 246,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.2,
-      "y": 282,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.2,
-      "y": 318,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.2,
-      "y": 354,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.2,
-      "y": 390,
-      "w": 4.5
-     }
-    ],
+    "name": "Schnelle Kombination",
+    "desc": "Eine schnelle Links-Rechts-Folge auf dem Rennkurs.",
+    "goal": "Eine schnelle Links-Rechts-Folge auf dem Rennkurs.",
+    "tip": "Die Linie für die zweite Kurve beginnt schon in der ersten.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1540,56 +1150,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 140,
+     "back": 45
+    },
+    "from": 1,
+    "to": 4,
+    "timeLimit": 80,
+    "licenseId": "L4"
    },
    {
     "id": "L4-03",
-    "name": "Ausweichtest 110",
-    "desc": "Spurwechsel mit mindestens 110 km/h.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 220,
-      "w": 3.2,
-      "label": "Einfahrt",
-      "minSpeed": 110
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 230,
-      "w": 3.2
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 243,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 253,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 268,
-      "w": 3.4
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 280,
-      "w": 3.4
-     }
-    ],
+    "name": "Lange Gerade, enge Kurve",
+    "desc": "Nach der langen Geraden die Kehre treffen.",
+    "goal": "Nach der langen Geraden die Kehre treffen.",
+    "tip": "Je schneller die Gerade, desto wichtiger der Bremspunkt.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/006-Outside/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1601,22 +1187,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 160,
+     "back": 45
+    },
+    "from": 8,
+    "to": 10,
+    "timeLimit": 80,
+    "licenseId": "L4"
    },
    {
     "id": "L4-04",
-    "name": "Rennrunde",
-    "desc": "Eine Runde im Rennwagen.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:italy",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Rennkurs Sektor 1",
+    "desc": "Erster Sektor des Rennkurses auf dem Automation Test Track.",
+    "goal": "Erster Sektor des Rennkurses auf dem Automation Test Track.",
+    "tip": "Konstant bleiben.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1628,22 +1224,30 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "sector": 1,
+    "of": 3,
+    "timeLimit": 100,
+    "licenseId": "L4"
    },
    {
     "id": "L4-05",
-    "name": "Drei Runden konstant",
-    "desc": "Drei Runden ohne Fehler.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:west_coast_usa",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 3,
+    "name": "Rennkurs Sektor 2",
+    "desc": "Zweiter Sektor mit fliegendem Start.",
+    "goal": "Zweiter Sektor mit fliegendem Start.",
+    "tip": "Nimm Schwung aus dem Anlauf mit.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1655,22 +1259,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 130,
+     "back": 45
+    },
+    "sector": 2,
+    "of": 3,
+    "timeLimit": 100,
+    "licenseId": "L4"
    },
    {
     "id": "L4-06",
-    "name": "Sprint im Rennwagen",
-    "desc": "Sprintprüfung mit einem Rennwagen.",
-    "type": "track",
-    "track": [
-     "@sprint:italy",
-     "@sprint:west_coast_usa",
-     "@sprint:tarmac",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Rennkurs Sektor 3",
+    "desc": "Letzter Sektor bis ins Ziel.",
+    "goal": "Letzter Sektor bis ins Ziel.",
+    "tip": "Der letzte Kurvenausgang zählt doppelt.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1682,23 +1296,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 130,
+     "back": 45
+    },
+    "sector": 3,
+    "of": 3,
+    "timeLimit": 100,
+    "licenseId": "L4"
    },
    {
     "id": "L4-07",
-    "name": "Internationale Strecke",
-    "desc": "Eine Runde auf einer weiteren Strecke.",
-    "type": "track",
-    "track": [
-     "@circuit:automation_test_track",
-     "@circuit:east_coast_usa",
-     "@circuit:jungle_rock_island",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Stadtkurs Italien",
+    "desc": "Eine Runde auf dem engen Stadtkurs in Italien.",
+    "goal": "Eine Runde auf dem engen Stadtkurs in Italien.",
+    "tip": "Mauern verzeihen nichts. Lieber zehn Zentimeter Platz lassen.",
+    "type": "path",
+    "race": "/gameplay/missions/italy/aiRace/001-street/race.race.json",
+    "level": "italy",
+    "place": "Italien",
     "car": {
      "criteria": {
       "categories": [
@@ -1710,22 +1333,29 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "L4"
    },
    {
     "id": "L4-08",
-    "name": "Prüfungsrunde",
-    "desc": "Die Abschlussprüfung.",
-    "type": "track",
-    "track": [
-     "@circuit:italy",
-     "@circuit:hirochi_raceway",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Hirochi Langkurs",
+    "desc": "Eine Runde auf dem Hirochi Langkurs.",
+    "goal": "Eine Runde auf dem Hirochi Langkurs.",
+    "tip": "Teile dir die Reifen ein.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/005-longcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1737,9 +1367,79 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 200,
+    "licenseId": "L4"
+   },
+   {
+    "id": "L4-09",
+    "name": "Eigener Rennwagen",
+    "desc": "Eine Runde Rennkurs Automation mit deinem eigenen Auto.",
+    "goal": "Eine Runde Rennkurs Automation mit deinem eigenen Auto.",
+    "tip": "Dein Auto, deine Schäden.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
+    "car": {
+     "rental": false
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 240,
+    "licenseId": "L4"
+   },
+   {
+    "id": "L4-10",
+    "name": "Prüfung: Rennkurs Automation",
+    "desc": "Eine fehlerfreie Runde auf dem Rennkurs.",
+    "goal": "Eine fehlerfreie Runde auf dem Rennkurs.",
+    "tip": "Bleib sauber, die Zeit kommt von allein.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
+    "car": {
+     "criteria": {
+      "categories": [
+       "touring",
+       "gt"
+      ],
+      "liMin": 600,
+      "liMax": 760
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 200,
+    "licenseId": "L4"
    }
   ]
  },
@@ -1749,7 +1449,7 @@
   "short": "S",
   "color": "#e85d3d",
   "requires": "L4",
-  "desc": "Nur für die Besten: GT-Rennwagen und Prototypen am Limit.",
+  "desc": "Nur für die Besten: GT-Rennwagen und Prototypen am Limit, lange Runden ohne Fehler.",
   "allGoldReward": {
    "categories": [
     "gt",
@@ -1760,28 +1460,14 @@
   "tests": [
    {
     "id": "L5-01",
-    "name": "Bremspunkt 220",
-    "desc": "Mit mindestens 220 km/h ins Tor, dann stoppen.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 700,
-      "w": 6,
-      "minSpeed": 220,
-      "label": "min 220"
-     },
-     {
-      "kind": "stop",
-      "x": 0,
-      "y": 860,
-      "w": 4,
-      "len": 6,
-      "label": "STOP"
-     }
-    ],
+    "name": "Vollgas-Bremszone",
+    "desc": "Mit über 200 km/h von der Geraden in die Kehre.",
+    "goal": "Mit über 200 km/h von der Geraden in die Kehre.",
+    "tip": "Bei diesem Tempo ist jeder Meter Bremsweg Zeit.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/006-Outside/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1792,56 +1478,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 180
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 200,
+     "back": 45
+    },
+    "from": 8,
+    "to": 10,
+    "timeLimit": 60,
+    "licenseId": "L5"
    },
    {
     "id": "L5-02",
-    "name": "Highspeed-Spurwechsel",
-    "desc": "Spurwechsel mit mindestens 130 km/h.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 300,
-      "w": 3.2,
-      "label": "Einfahrt",
-      "minSpeed": 130
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 310,
-      "w": 3.2
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 323,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 3.6,
-      "y": 333,
-      "w": 3.6
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 348,
-      "w": 3.4
-     },
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 360,
-      "w": 3.4
-     }
-    ],
+    "name": "Hochgeschwindigkeits-Kurven",
+    "desc": "Die schnellen Kurven am Ende des Rennkurses.",
+    "goal": "Die schnellen Kurven am Ende des Rennkurses.",
+    "tip": "Gefühl für den Abtrieb: je schneller, desto mehr Grip.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/008-Race/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1852,22 +1514,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 180,
+     "back": 45
+    },
+    "from": 6,
+    "to": 9,
+    "timeLimit": 80,
+    "licenseId": "L5"
    },
    {
     "id": "L5-03",
-    "name": "Prototyp-Runde",
-    "desc": "Eine Runde im schnellsten Auto.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:italy",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Außenkurs Sektor 1",
+    "desc": "Erster Sektor des Außenkurses.",
+    "goal": "Erster Sektor des Außenkurses.",
+    "tip": "Lange Geraden, harte Bremszonen.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/006-Outside/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1878,22 +1550,30 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "sector": 1,
+    "of": 3,
+    "timeLimit": 100,
+    "licenseId": "L5"
    },
    {
     "id": "L5-04",
-    "name": "Fünf Runden",
-    "desc": "Fünf Runden ohne Kollision.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:west_coast_usa",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 5,
+    "name": "Außenkurs Sektor 2",
+    "desc": "Zweiter Sektor mit fliegendem Start.",
+    "goal": "Zweiter Sektor mit fliegendem Start.",
+    "tip": "Die Kehre nach der Geraden ist der Schlüssel.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/006-Outside/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1904,23 +1584,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 160,
+     "back": 45
+    },
+    "sector": 2,
+    "of": 3,
+    "timeLimit": 100,
+    "licenseId": "L5"
    },
    {
     "id": "L5-05",
-    "name": "Königsetappe",
-    "desc": "Die längste Sprintstrecke.",
-    "type": "track",
-    "track": [
-     "@sprint:italy",
-     "@sprint:utah",
-     "@sprint:west_coast_usa",
-     "@sprint:tarmac",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Außenkurs Sektor 3",
+    "desc": "Letzter Sektor bis ins Ziel.",
+    "goal": "Letzter Sektor bis ins Ziel.",
+    "tip": "Nicht übermütig werden.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/006-Outside/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -1931,23 +1620,32 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "rolling",
+     "speed": 160,
+     "back": 45
+    },
+    "sector": 3,
+    "of": 3,
+    "timeLimit": 100,
+    "licenseId": "L5"
    },
    {
     "id": "L5-06",
-    "name": "Fremdes Terrain",
-    "desc": "Eine Runde auf einer selten gefahrenen Strecke.",
-    "type": "track",
-    "track": [
-     "@circuit:jungle_rock_island",
-     "@circuit:east_coast_usa",
-     "@circuit:automation_test_track",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Hirochi Gesamtkurs",
+    "desc": "Eine Runde auf dem vollständigen Hirochi-Kurs.",
+    "goal": "Eine Runde auf dem vollständigen Hirochi-Kurs.",
+    "tip": "Die längste Runde der Rennstrecke.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/001-forgotten/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "categories": [
@@ -1958,42 +1656,122 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 240,
+    "licenseId": "L5"
    },
    {
     "id": "L5-07",
-    "name": "Eigener Rennwagen",
-    "desc": "Zwei Runden im eigenen Auto.",
-    "type": "track",
-    "track": [
-     "@circuit:hirochi_raceway",
-     "@circuit:italy",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
+    "name": "Steinbruch Italien",
+    "desc": "Eine Runde auf dem Steinbruch-Kurs in Italien.",
+    "goal": "Eine Runde auf dem Steinbruch-Kurs in Italien.",
+    "tip": "Wenig Auslauf, viel Staub.",
+    "type": "path",
+    "race": "/gameplay/missions/italy/aiRace/005-quarryRace/race.race.json",
+    "level": "italy",
+    "place": "Italien",
+    "car": {
+     "criteria": {
+      "categories": [
+       "gt",
+       "proto"
+      ],
+      "liMin": 700
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "L5"
+   },
+   {
+    "id": "L5-08",
+    "name": "Zwei Runden konstant",
+    "desc": "Zwei Runden Hirochi Kurzkurs ohne einen Fehler.",
+    "goal": "Zwei Runden Hirochi Kurzkurs ohne einen Fehler.",
+    "tip": "Konstanz schlägt die eine schnelle Runde.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/timeTrial/003-shortcourse/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
+    "car": {
+     "criteria": {
+      "categories": [
+       "gt",
+       "proto"
+      ],
+      "liMin": 700
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
     "laps": 2,
+    "timeLimit": 240,
+    "licenseId": "L5"
+   },
+   {
+    "id": "L5-09",
+    "name": "Eigener Rennwagen",
+    "desc": "Eine Runde Außenkurs mit deinem eigenen Auto.",
+    "goal": "Eine Runde Außenkurs mit deinem eigenen Auto.",
+    "tip": "Schäden bleiben!",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/006-Outside/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "rental": false
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 300,
+    "licenseId": "L5"
    },
    {
-    "id": "L5-08",
-    "name": "Meisterprüfung",
-    "desc": "Die letzte Prüfung.",
-    "type": "track",
-    "track": [
-     "@circuit:west_coast_usa",
-     "@circuit:hirochi_raceway",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "id": "L5-10",
+    "name": "Meisterprüfung: Großer Kurs",
+    "desc": "Eine fehlerfreie Runde auf dem großen Kurs des Automation Test Track.",
+    "goal": "Eine fehlerfreie Runde auf dem großen Kurs des Automation Test Track.",
+    "tip": "Die letzte Prüfung. Ruhig atmen.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/aiRace/001-main1/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -2004,9 +1782,18 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 300,
+    "licenseId": "L5"
    }
   ]
  },
@@ -2016,7 +1803,7 @@
   "short": "R",
   "color": "#a0703d",
   "requires": "L1",
-  "desc": "Lose Untergründe, Sprünge, Gegenlenken. Öffnet Rallye & Gelände.",
+  "desc": "Lose Untergründe, Kehren und Sprünge. Öffnet Rallye & Gelände.",
   "allGoldReward": {
    "categories": [
     "rally",
@@ -2026,48 +1813,14 @@
   "tests": [
    {
     "id": "R1-01",
-    "name": "Schotter-Slalom",
-    "desc": "Slalom auf losem Untergrund.",
-    "type": "gates",
-    "venue": "crawlpark",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 30,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.5,
-      "y": 52,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 74,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.5,
-      "y": 96,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 3.5,
-      "y": 118,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -3.5,
-      "y": 140,
-      "w": 4.5
-     }
-    ],
+    "name": "Schotter-Runde klein",
+    "desc": "Eine Runde auf dem kleinen Schotterkurs.",
+    "goal": "Eine Runde auf dem kleinen Schotterkurs.",
+    "tip": "Auf Schotter früher bremsen und das Auto rollen lassen.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/001-dirt1/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -2082,79 +1835,29 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 90,
+    "licenseId": "R1"
    },
    {
     "id": "R1-02",
-    "name": "Kehre auf Schotter",
-    "desc": "Eine Kehre auf losem Grund.",
-    "type": "gates",
-    "venue": "crawlpark",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 20,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 50.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 1.61,
-      "y": 56.0,
-      "w": 8,
-      "heading": -330.0
-     },
-     {
-      "kind": "gate",
-      "x": 6.0,
-      "y": 60.39,
-      "w": 8,
-      "heading": -300.0
-     },
-     {
-      "kind": "gate",
-      "x": 12.0,
-      "y": 62.0,
-      "w": 8,
-      "heading": -270.0
-     },
-     {
-      "kind": "gate",
-      "x": 18.0,
-      "y": 60.39,
-      "w": 8,
-      "heading": -240.0
-     },
-     {
-      "kind": "gate",
-      "x": 22.39,
-      "y": 56.0,
-      "w": 8,
-      "heading": -210.0
-     },
-     {
-      "kind": "gate",
-      "x": 24.0,
-      "y": 50.0,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": 24,
-      "y": 10,
-      "w": 8
-     }
-    ],
+    "name": "Kehren auf Schotter",
+    "desc": "Die erste Hälfte des Schotterkurses mit den engen Kehren.",
+    "goal": "Die erste Hälfte des Schotterkurses mit den engen Kehren.",
+    "tip": "Mit dem Heck einlenken, früh Gas.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/007-Gravel/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -2169,24 +1872,30 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "from": 1,
+    "to": 5,
+    "timeLimit": 90,
+    "licenseId": "R1"
    },
    {
     "id": "R1-03",
-    "name": "Wertungsprüfung 1",
-    "desc": "Eine kurze Prüfung auf Schotter.",
-    "type": "track",
-    "track": [
-     "@any:utah",
-     "@any:johnson_valley",
-     "@sprint:dirt",
-     "@circuit:dirt",
-     "@any:dirt",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Schotterkurs",
+    "desc": "Eine ganze Runde auf dem Schotterkurs.",
+    "goal": "Eine ganze Runde auf dem Schotterkurs.",
+    "tip": "Gleichmäßig bleiben.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/timeTrial/007-Gravel/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -2201,25 +1910,29 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "laps": 1,
+    "timeLimit": 150,
+    "licenseId": "R1"
    },
    {
     "id": "R1-04",
-    "name": "Wertungsprüfung 2",
-    "desc": "Eine längere Prüfung.",
-    "type": "track",
-    "track": [
-     "@any:johnson_valley",
-     "@any:utah",
-     "@any:italy",
-     "@sprint:dirt",
-     "@circuit:dirt",
-     "@any:dirt",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Bergprüfung Teil 1",
+    "desc": "Der erste Teil der Alpen-Bergprüfung.",
+    "goal": "Der erste Teil der Alpen-Bergprüfung.",
+    "tip": "Bergauf trägt das Auto weniger Schwung in die Kurve.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/rallyStage/001-alpineclimb/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "categories": [
@@ -2234,31 +1947,82 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "from": 1,
+    "to": 6,
+    "timeLimit": 150,
+    "licenseId": "R1"
    },
    {
     "id": "R1-05",
-    "name": "Eigenes Rallyeauto",
-    "desc": "Eine Prüfung mit deinem Auto.",
-    "type": "track",
-    "track": [
-     "@any:utah",
-     "@any:johnson_valley",
-     "@sprint:dirt",
-     "@circuit:dirt",
-     "@any:dirt",
-     "@sprint:"
-    ],
-    "laps": 1,
+    "name": "Bergprüfung",
+    "desc": "Die ganze Alpen-Bergprüfung.",
+    "goal": "Die ganze Alpen-Bergprüfung.",
+    "tip": "Kehren eng anfahren, sonst fehlt der Platz.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/rallyStage/001-alpineclimb/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
+    "car": {
+     "criteria": {
+      "categories": [
+       "rally",
+       "offroad",
+       "street"
+      ],
+      "drivetrains": [
+       "AWD",
+       "4WD"
+      ]
+     }
+    },
+    "targets": {
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
+    },
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 240,
+    "licenseId": "R1"
+   },
+   {
+    "id": "R1-06",
+    "name": "Wüstenprüfung",
+    "desc": "Eine Rallye-Prüfung in Johnson Valley mit deinem Auto.",
+    "goal": "Eine Rallye-Prüfung in Johnson Valley mit deinem Auto.",
+    "tip": "Sand bremst. Nicht zu weit vom Weg.",
+    "type": "path",
+    "race": "/gameplay/missions/johnson_valley/timeTrial/004-rally1/race.race.json",
+    "level": "johnson_valley",
+    "place": "Johnson Valley",
     "car": {
      "rental": false
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 360,
+    "offTrack": 60,
+    "licenseId": "R1"
    }
   ]
  },
@@ -2268,170 +2032,18 @@
   "short": "D",
   "color": "#e05db0",
   "requires": "L1",
-  "desc": "Kontrolliert quer: Winkel, Tempo, Linie.",
+  "desc": "Kontrolliert quer: Winkel, Tempo, Linie. Mit Heckantrieb.",
   "tests": [
    {
     "id": "D1-01",
-    "name": "Donut-Kreis",
-    "desc": "Umrunde den Kreis in einer Acht.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 2.86,
-      "y": 38.82,
-      "w": 8,
-      "heading": -324.0
-     },
-     {
-      "kind": "gate",
-      "x": 10.36,
-      "y": 44.27,
-      "w": 8,
-      "heading": -288.0
-     },
-     {
-      "kind": "gate",
-      "x": 19.64,
-      "y": 44.27,
-      "w": 8,
-      "heading": -252.0
-     },
-     {
-      "kind": "gate",
-      "x": 27.14,
-      "y": 38.82,
-      "w": 8,
-      "heading": -216.0
-     },
-     {
-      "kind": "gate",
-      "x": 30.0,
-      "y": 30.0,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": 27.14,
-      "y": 21.18,
-      "w": 8,
-      "heading": -144.0
-     },
-     {
-      "kind": "gate",
-      "x": 19.64,
-      "y": 15.73,
-      "w": 8,
-      "heading": -108.0
-     },
-     {
-      "kind": "gate",
-      "x": 10.36,
-      "y": 15.73,
-      "w": 8,
-      "heading": -72.0
-     },
-     {
-      "kind": "gate",
-      "x": 2.86,
-      "y": 21.18,
-      "w": 8,
-      "heading": -36.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.0,
-      "w": 8,
-      "heading": 0.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.01,
-      "w": 8,
-      "heading": 0.0
-     },
-     {
-      "kind": "gate",
-      "x": -2.86,
-      "y": 38.83,
-      "w": 8,
-      "heading": -36.0
-     },
-     {
-      "kind": "gate",
-      "x": -10.36,
-      "y": 44.28,
-      "w": 8,
-      "heading": -72.0
-     },
-     {
-      "kind": "gate",
-      "x": -19.64,
-      "y": 44.28,
-      "w": 8,
-      "heading": -108.0
-     },
-     {
-      "kind": "gate",
-      "x": -27.14,
-      "y": 38.83,
-      "w": 8,
-      "heading": -144.0
-     },
-     {
-      "kind": "gate",
-      "x": -30.0,
-      "y": 30.01,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": -27.14,
-      "y": 21.19,
-      "w": 8,
-      "heading": -216.0
-     },
-     {
-      "kind": "gate",
-      "x": -19.64,
-      "y": 15.74,
-      "w": 8,
-      "heading": -252.0
-     },
-     {
-      "kind": "gate",
-      "x": -10.36,
-      "y": 15.74,
-      "w": 8,
-      "heading": -288.0
-     },
-     {
-      "kind": "gate",
-      "x": -2.86,
-      "y": 21.19,
-      "w": 8,
-      "heading": -324.0
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 30.01,
-      "w": 8,
-      "heading": -360.0
-     }
-    ],
+    "name": "Erster Drift",
+    "desc": "Fahre die kurze Driftstrecke im Fahrerzentrum.",
+    "goal": "Fahre die kurze Driftstrecke im Fahrerzentrum.",
+    "tip": "Einlenken, kurz Gas, gegenlenken. Nicht drehen.",
+    "type": "path",
+    "race": "/gameplay/missions/driver_training/drift/001-basics/race.race.json",
+    "level": "driver_training",
+    "place": "ETK-Fahrerzentrum",
     "car": {
      "criteria": {
       "drivetrains": [
@@ -2442,79 +2054,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 150
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 60,
+    "licenseId": "D1"
    },
    {
     "id": "D1-02",
-    "name": "Kehren-Drift",
-    "desc": "Kehre mit Schwung.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 0,
-      "y": 20,
-      "w": 6
-     },
-     {
-      "kind": "gate",
-      "x": 0.0,
-      "y": 50.0,
-      "w": 8,
-      "heading": -360.0
-     },
-     {
-      "kind": "gate",
-      "x": 2.14,
-      "y": 58.0,
-      "w": 8,
-      "heading": -330.0
-     },
-     {
-      "kind": "gate",
-      "x": 8.0,
-      "y": 63.86,
-      "w": 8,
-      "heading": -300.0
-     },
-     {
-      "kind": "gate",
-      "x": 16.0,
-      "y": 66.0,
-      "w": 8,
-      "heading": -270.0
-     },
-     {
-      "kind": "gate",
-      "x": 24.0,
-      "y": 63.86,
-      "w": 8,
-      "heading": -240.0
-     },
-     {
-      "kind": "gate",
-      "x": 29.86,
-      "y": 58.0,
-      "w": 8,
-      "heading": -210.0
-     },
-     {
-      "kind": "gate",
-      "x": 32.0,
-      "y": 50.0,
-      "w": 8,
-      "heading": -180.0
-     },
-     {
-      "kind": "gate",
-      "x": 32,
-      "y": 10,
-      "w": 8
-     }
-    ],
+    "name": "Kurvenfolge quer",
+    "desc": "Der erste Teil des Handling-Driftkurses.",
+    "goal": "Der erste Teil des Handling-Driftkurses.",
+    "tip": "Gewicht verlagern: kurz anbremsen, dann einlenken.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/drift/001-handling/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "drivetrains": [
@@ -2525,54 +2086,30 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "from": 1,
+    "to": 14,
+    "timeLimit": 120,
+    "licenseId": "D1"
    },
    {
     "id": "D1-03",
-    "name": "Slalom quer",
-    "desc": "Langsamer, enger Slalom.",
-    "type": "gates",
-    "venue": "testgelaende",
-    "course": [
-     {
-      "kind": "gate",
-      "x": 4.5,
-      "y": 30,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.5,
-      "y": 54,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.5,
-      "y": 78,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.5,
-      "y": 102,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": 4.5,
-      "y": 126,
-      "w": 4.5
-     },
-     {
-      "kind": "gate",
-      "x": -4.5,
-      "y": 150,
-      "w": 4.5
-     }
-    ],
+    "name": "Handling-Driftkurs",
+    "desc": "Der ganze Handling-Driftkurs.",
+    "goal": "Der ganze Handling-Driftkurs.",
+    "tip": "Rhythmus finden.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/drift/001-handling/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "criteria": {
       "drivetrains": [
@@ -2583,23 +2120,28 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "timeLimit": 120
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 240,
+    "licenseId": "D1"
    },
    {
     "id": "D1-04",
-    "name": "Drift-Runde",
-    "desc": "Eine Runde auf einem engen Kurs.",
-    "type": "track",
-    "track": [
-     "@circuit:industrial",
-     "@circuit:hirochi_raceway",
-     "@circuit:west_coast_usa",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "name": "Hirochi Drift",
+    "desc": "Der Driftkurs auf Hirochi Raceway.",
+    "goal": "Der Driftkurs auf Hirochi Raceway.",
+    "tip": "Schnelle Übergänge von links nach rechts.",
+    "type": "path",
+    "race": "/gameplay/missions/hirochi_raceway/drift/001-Pro/race.race.json",
+    "level": "hirochi_raceway",
+    "place": "Hirochi Raceway",
     "car": {
      "criteria": {
       "drivetrains": [
@@ -2610,29 +2152,43 @@
      }
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 200,
+    "licenseId": "D1"
    },
    {
     "id": "D1-05",
     "name": "Eigenes Driftauto",
-    "desc": "Eine Runde im eigenen Auto.",
-    "type": "track",
-    "track": [
-     "@circuit:industrial",
-     "@circuit:hirochi_raceway",
-     "@circuit:tarmac",
-     "@circuit:"
-    ],
-    "laps": 1,
+    "desc": "Der Handling-Driftkurs mit deinem eigenen Auto.",
+    "goal": "Der Handling-Driftkurs mit deinem eigenen Auto.",
+    "tip": "Dein Auto, deine Schäden.",
+    "type": "path",
+    "race": "/gameplay/missions/automation_test_track/drift/001-handling/race.race.json",
+    "level": "automation_test_track",
+    "place": "Automation Test Track",
     "car": {
      "rental": false
     },
     "targets": {
-     "mode": "estimate"
+     "mode": "auto",
+     "goldFactor": 1.04,
+     "silverFactor": 1.12,
+     "bronzeFactor": 1.25
     },
-    "cleanLap": true
+    "finish": "gate",
+    "start": {
+     "kind": "standing"
+    },
+    "timeLimit": 300,
+    "licenseId": "D1"
    }
   ]
  }

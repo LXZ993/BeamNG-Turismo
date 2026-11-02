@@ -2,6 +2,24 @@
 
 ## 0.1.4 (Stand 02.11.2026)
 
+### Neu: Lizenzprüfungen auf echten Strecken
+- Die Prüfungen finden jetzt auf echten BeamNG-Strecken statt, nicht mehr auf der leeren Gridmap. Lizenz C und B im ETK-Fahrerzentrum (Bremsen, Kurven, Spurwechsel, Slalom, Haarnadel, Rundkurs, Teststrecke), Lizenz A, I und S auf Hirochi Raceway, dem Automation Test Track und in Italien.
+- Jede Lizenz hat 10 Prüfungen, aufgebaut wie in GT: erst Grundlagen, dann Abschnitte und Sektoren, am Ende eine Prüfungsrunde. Rallye-Lizenz 6, Drift-Lizenz 5.
+- Das Lizenzzentrum zeigt oben alle Lizenzen, darunter die gewählte Lizenz mit Fortschritt und ihre Prüfungen als Kacheln (C-1, C-2 …) mit Medaille.
+- Ein Klick auf eine Prüfung öffnet das Briefing: Ziel, Tipp, Ort, Auto, stehender oder fliegender Start, Medaillenzeiten mit Belohnung und dein Bestwert. Dort startest du die Prüfung oder die Vorführung.
+- Fliegender Start: Du kommst mit Tempo an, die Zeit läuft ab dem ersten Tor.
+- Auf der Strecke zeigen orange Tore, wo du durch musst. Orange Pfeile auf der Straße zeigen den Weg zum nächsten Tor, oben stehen ein Richtungspfeil und die Entfernung.
+- Fährst du zu weit von der Strecke weg, erscheint „Zurück auf die Strecke!“. Nach 3 Sekunden ist die Prüfung nicht bestanden.
+- Die Zielzeiten werden beim ersten Start auf der echten Straße berechnet, nach einer Vorführung aus der Zeit des KI-Fahrers.
+- Jede Prüfung hat Platz für ein eigenes Vorschaubild.
+
+### Neu: Fahrschule als Streckenkunde
+- Die Fahrschule bringt dir fünf Strecken bei: ETK-Teststrecke, Hirochi Kurzkurs, Automation Kurzkurs, Stadtkurs Italien und Hirochi Langkurs. Jede Sektor für Sektor, dann die ganze Runde. Jede Medaille wird einmal bezahlt.
+
+### Fehler behoben
+- Lizenztest: Das Auto stand verkehrt herum, deshalb zeigte die Linie vom Auto weg. Autos stehen jetzt richtig herum, auch beim Neusetzen nach einer Reparatur und die Gegner im Derby.
+- Die Vorführung im Lizenztest fuhr nicht los. Der KI-Fahrer folgt jetzt der Straße durch alle Tore.
+
 ### Neu: Fahr-HUD im GT-Stil
 - Unten rechts ein Drehzahlband mit roter Zone. Im roten Bereich blinken Band und Gang: jetzt schalten.
 - Großer Gang und Geschwindigkeit direkt über dem Drehzahlband.

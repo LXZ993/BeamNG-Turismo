@@ -114,8 +114,9 @@ end
 local function vehicleTransform(t)
   local fwd = t.rot * vec3(0, 1, 0)
   local pos = t.pos - fwd * 2.4 + vec3(0, 0, 0.4)
-  local rot = quatFromEuler(0, 0, math.pi) * t.rot
-  return pos, rot
+  -- no 180° turn here: BeamNG's spawn (spawn.lua setVehicleObject) already
+  -- turns the rotation itself; turning twice made test cars face backwards
+  return pos, t.rot
 end
 
 local function currentTransform(v)
@@ -146,7 +147,7 @@ local function spawnVehicle(model, config, transform, extraOpts)
     pos, rot = vehicleTransform(transform)
   elseif levelSpawn then
     pos = levelSpawn.pos
-    rot = quatFromEuler(0, 0, math.pi) * quatFromDir(levelSpawn.dir, vec3(0, 0, 1))
+    rot = quatFromDir(levelSpawn.dir, vec3(0, 0, 1))
   end
   local opts = { config = 'vehicles/' .. model .. '/' .. (config or 'base') .. '.pc', autoEnterVehicle = true, pos = pos, rot = rot }
   for k, v in pairs(extraOpts or {}) do opts[k] = v end

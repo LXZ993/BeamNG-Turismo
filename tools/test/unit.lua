@@ -142,9 +142,56 @@ H.test('toWorld/toLocal roundtrip', function()
 end)
 H.test('faster car estimates faster course time', function()
   local test = D.test('L1-03')
-  local slow = T.estimateCourseTime(test, VDB.get('piccolina/base'))
-  local fast = T.estimateCourseTime(test, VDB.get('sbr/base'))
+  local slow = T.estimateTime(test, VDB.get('piccolina/base'))
+  local fast = T.estimateTime(test, VDB.get('sbr/base'))
   H.truthy(fast < slow, fast .. ' < ' .. slow)
+end)
+
+print('== courses (real BeamNG checkpoints)')
+local CO = extensions.turismo_courses
+H.test('courses: order by segments, sections, sectors, laps', function()
+  local data = { startNode = 3, classification = { closed = true },
+    pathnodes = { { oldId = 1, pos = { 0, 100, 0 }, radius = 5 }, { oldId = 2, pos = { 100, 100, 0 }, radius = 5 },
+      { oldId = 3, pos = { 0, 0, 0 }, radius = 5 }, { oldId = 4, pos = { 100, 0, 0 }, radius = 5 } },
+    segments = { { from = 3, to = 4 }, { from = 4, to = 2 }, { from = 2, to = 1 }, { from = 1, to = 3 } } }
+  local c = CO.fromData(data, 'x')
+  H.eq(c.nodes[1].x, 0) H.eq(c.nodes[1].y, 0) H.eq(c.nodes[2].x, 100) H.eq(c.nodes[2].y, 0)
+  H.truthy(c.closed) H.near(c.length, 400, 1e-6)
+  local g = CO.section(c, { from = 3, to = 1 })
+  H.eq(#g, 3) H.eq(g[3].node, 1)
+  local lap = CO.section(c, { laps = 2 })
+  H.eq(#lap, 8) H.eq(lap[4].node, 1) H.eq(lap[8].node, 1)
+  H.near(CO.turnAt(c, 2), 90, 1e-6)
+  local pos, dir = CO.startPose(g, 'standing')
+  H.near(pos.x, 100, 1e-6) H.near(pos.y, 100, 1e-6) H.near(dir.x, -1, 1e-6)
+end)
+H.test('path test: gates, stop box, passing a checkpoint', function()
+  local test = D.test('L1-01')
+  local c = CO.resolve(test.race)
+  H.truthy(c, 'fixture course')
+  local gates = T.pathGates(test, c)
+  H.eq(gates[#gates].kind, 'stop')
+  local g = gates[2]
+  H.truthy(T.passedNode(g, { x = g.x - 20, y = g.y }, { x = g.x + 20, y = g.y }), 'drive through')
+  H.truthy(not T.passedNode(g, { x = g.x - 20, y = g.y + 30 }, { x = g.x + 20, y = g.y + 30 }), 'drive past')
+  local s = gates[#gates]
+  H.truthy(T.inStop(s, s.x, s.y), 'centre of the stop box')
+  H.truthy(not T.inStop(s, s.x + s.fx * 10, s.y + s.fy * 10), 'beyond the box')
+  H.eq(T.levelOfFile(test.race), 'driver_training')
+end)
+H.test('every path test resolves its course and sections are not empty', function()
+  for _, kind in ipairs({ 'licenses', 'trainings' }) do
+    local list = kind == 'licenses' and {} or D.get('trainings')
+    if kind == 'licenses' then for _, l in ipairs(D.get('licenses')) do for _, t in ipairs(l.tests) do list[#list + 1] = t end end end
+    for _, t in ipairs(list) do
+      if t.type == 'path' then
+        local c = CO.resolve(t.race)
+        H.truthy(c, 'course for ' .. t.id)
+        H.truthy(#T.pathGates(t, c) >= 2, 'gates for ' .. t.id)
+        H.truthy(t.goal and t.tip and t.place, 'briefing texts for ' .. t.id)
+      end
+    end
+  end
 end)
 
 print('== drag')
