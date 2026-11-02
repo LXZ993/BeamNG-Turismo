@@ -3,7 +3,7 @@
 
 Aufruf: python3 tools/art/make_logo.py OUTDIR
   OUTDIR/<name>.svg + <name>_steps.json  (für VectorCraft, siehe build.sh)
-Schrift: Inter Display (SIL Open Font License 1.1, rsms.me/inter), als Pfade umgewandelt,
+Schrift der endgültigen Fassung (runde8): Russo One (OFL 1.1, tools/art/fonts/). Ältere Runden: Inter Display (OFL), als Pfade umgewandelt,
 breiter gezogen und schräg gestellt. Im Mod steckt keine Schriftdatei, nur die Pfade.
 Benötigt: pip install fonttools; Inter liegt unter /usr/share/fonts/opentype/inter/
 (oder FONT_DIR=... setzen).
@@ -543,7 +543,9 @@ def mark8_width(size, wide=1.04, gap=0.02):
 def main8(out):
     os.makedirs(out, exist_ok=True)
     items = {}
-    looks = (("dunkel", "#0B0D10", SILVER_B, "#F2F3F5", "#8A96A3"), ("hell", "#F2F3F5", STEEL, "#1B2633", "#5A5F67"))
+    looks = (("dunkel", "#0B0D10", SILVER_B, "#F2F3F5", "#8A96A3"), ("hell", "#F2F3F5", STEEL, "#1B2633", "#5A5F67"),
+             # ohne Hintergrund (für den Mod, werden danach zugeschnitten)
+             ("frei_dunkel", None, SILVER_B, "#F2F3F5", "#8A96A3"), ("frei_hell", None, STEEL, "#1B2633", "#5A5F67"))
     for bgname, bg, bcols, fg, sub in looks:
         # Komplettlogo
         d = Doc(1100, 640, bg)
