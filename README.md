@@ -1,6 +1,6 @@
 # Turismo – Karriere-Mod für BeamNG.drive 0.40
 
-Eine eigenständige Karriere im Stil der großen Rennspiel-Klassiker: Café-Hefte als roter Faden, Lizenzen, Händler, Werkstatt mit **dauerhaften Schäden**, Rennserien in neun Hallen und eine deutlich klügere KI mit Fahrercharakteren. Alle Namen, Texte, Grafiken, Sounds und Musikstücke sind eigene Arbeit.
+Eine eigenständige Karriere im Stil der großen Rennspiel-Klassiker: Café-Hefte als roter Faden, Lizenzen, Händler, Werkstatt mit **dauerhaften Schäden**, Rennserien in neun Hallen und eine deutlich klügere KI mit Fahrercharakteren. Alle Namen, Texte, Grafiken und Sounds sind eigene Arbeit; die Musik ist von Kevin MacLeod (CC BY 4.0, siehe [CREDITS.md](CREDITS.md)).
 
 ![World-Menü](docs/screenshots/02_world.png)
 
@@ -21,7 +21,7 @@ Eine eigenständige Karriere im Stil der großen Rennspiel-Klassiker: Café-Heft
 | **Schäden** | Teilezustand wird nach jedem Rennen gespeichert und beim nächsten Einsatz wiederhergestellt – nichts repariert sich von selbst |
 | **KI** | 90 Fahrer mit Stufe (Rookie bis Legende) und Stil (sauber, aggressiv, defensiv, Spätbremser): Patzer, Angriffe, Verteidigung, Blaue Flagge, Ermüdung, Schadensfahrweise, Bergung |
 | **Oberfläche** | World-Menü, eigenes Fahrer-HUD (Position, Runden, Abstände, Tacho/Drehzahl), Startampel, Drag-Baum, Ergebnis-Screens, Notfall-Menü (IMGUI) |
-| **Audio** | 20 synthetisierte UI-/Renn-Sounds, 10 eigene Musikstücke (Lounge, Funk, Rock, Electro) |
+| **Audio** | 20 synthetisierte UI-/Renn-Sounds, 18 Musikstücke von Kevin MacLeod (Lounge, Bossa, Funk, Rock, Electro; CC BY 4.0) |
 | **Werkzeuge** | Streckenrekorder für eigene Strecken, Diagnose-Seite, automatische Tests |
 
 ## Schnellstart
@@ -43,7 +43,7 @@ docs/                        Design, Prüfliste, offene Fragen, Roadmap
 ```
 python3 tools/gen_data.py     # Inhalte neu erzeugen
 python3 tools/gen_sfx.py      # Soundeffekte
-python3 tools/gen_music.py    # Musik
+python3 tools/import_music.py <mp3-ordner>   # Musik (MP3s von incompetech.com -> OGG + playlist.json)
 luajit tools/test/unit.lua    # Logik-Tests (25)
 luajit tools/test/smoke.lua   # Karrierestart-Test (21)
 node tools/ui-preview/shoot.js out/   # UI-Screenshots

@@ -84,7 +84,9 @@
       var self = this;
       if (self.ctxName !== context) return;
       var tr = list[self.idx % list.length];
-      var file = (self.playlist.tracks && self.playlist.tracks[tr]) ? self.playlist.tracks[tr].file : tr;
+      var info = (self.playlist.tracks && self.playlist.tracks[tr]) || null;
+      var file = info ? info.file : tr;
+      if (info && info.title && self.onTrack) { try { self.onTrack(info); } catch (e) { } }
       try {
         var a = new Audio(BASE + 'audio/music/' + file);
         a.volume = 0; self.current = a;
@@ -94,6 +96,7 @@
         var iv = setInterval(function () { v = Math.min(target, v + target / 20); a.volume = v; if (v >= target) clearInterval(iv); }, 60);
       } catch (e) { }
     },
+    onTrack: null, // set by App: shows "now playing" with artist + licence (CC BY attribution)
     fadeOut: function (done) {
       var a = this.current; this.current = null;
       if (!a) { done(); return; }
@@ -119,6 +122,8 @@
     this.ui = { tab: {} };
     this.build();
     this.wire();
+    var self = this;
+    Audio_.onTrack = function (t) { self.toast('\u266A ' + t.title + ' \u2013 ' + t.artist + (t.license ? ' (' + t.license + ')' : ''), 'music'); };
   }
 
   App.prototype.build = function () {

@@ -159,7 +159,7 @@
 .tz-toasts { position: absolute; top: 76px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 5; pointer-events: none; }
 .tz-toast { padding: 10px 20px; border-radius: 30px; background: rgba(8,16,34,.94); border: 1px solid var(--line); box-shadow: var(--shadow);
   animation: tz-rise .25s ease-out; font-weight: 600; text-align: center; }
-.tz-toast.money { border-color: var(--money); } .tz-toast.error { border-color: var(--bad); } .tz-toast.license, .tz-toast.cafe { border-color: var(--accent); }
+.tz-toast.money { border-color: var(--money); } .tz-toast.music { font-size: 13px; opacity: .9; } .tz-toast.error { border-color: var(--bad); } .tz-toast.license, .tz-toast.cafe { border-color: var(--accent); }
 
 /* modal */
 .tz-modal { position: absolute; inset: 0; background: rgba(2,6,14,.7); display: flex; align-items: center; justify-content: center; pointer-events: auto; z-index: 4; animation: tz-fade .2s; }
