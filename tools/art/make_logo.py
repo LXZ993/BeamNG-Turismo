@@ -9,6 +9,8 @@ Benötigt: pip install fonttools; Inter liegt unter /usr/share/fonts/opentype/in
 (oder FONT_DIR=... setzen).
 """
 import json, math, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from bt_emblem import emblem_paths, emblem_width
 from fontTools.ttLib import TTFont
 from fontTools.pens.svgPathPen import SVGPathPen
 from fontTools.pens.transformPen import TransformPen
@@ -199,5 +201,80 @@ def main(out):
     print(len(items), "Grafiken nach", out)
 
 
+# ---------- Runde 2: BT-Emblem im Stil eines großen Spiele-Logos (Alex: "mehr wie GT, aber eigenständig") ----------
+FORMS = {"d": "schlitz", "e": "platte", "f": "band"}
+
+
+def emblem(d, cx, top, scale, form, dark, mono=None):
+    w = emblem_width(scale)
+    b, t = emblem_paths(cx - w / 2, top, scale, form=form)
+    bfill = mono or (d.lin([(0, "#FFFFFF"), (1, "#AEB4BC")]) if dark else d.lin([(0, "#3A3F47"), (1, "#121417")]))
+    nb = d.path(b, bfill, 'fill-rule="evenodd"')
+    nt = d.path(t, mono or d.lin([(0, "#FF2338"), (1, "#B80018")]), 'fill-rule="evenodd"')
+    if not mono:
+        d.shadow(nb, blur=6, dy=4, opacity=0.25)
+        d.shadow(nt, blur=6, dy=4, opacity=0.25)
+    return w
+
+
+def centered_text(d, s, cy, size, fill, **kw):
+    dp, w = text_path(s, size, **kw)
+    d.body.append(f'<g transform="translate({(d.w - w) / 2:.1f} {cy:.1f})"><path id="{d.uid("t")}" d="{dp}" fill="{fill}"/></g>')
+    return w
+
+
+def stacked(v, dark, bg=True):
+    """Emblem oben, Schriftzug darunter, rote Ideallinie, Untertitel (Aufbau wie ein Spieltitel)."""
+    d = Doc(1200, 760, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    emblem(d, 600, 70, 1.45, FORMS[v], dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    w = centered_text(d, "BEAM TURISMO", 520, 104, fg, weight="Black", wide=1.18, slant=14, track=0.0)
+    x0 = (d.w - w) / 2
+    n = d.path(swoosh(x0 - 10, x0 + w + 30, 572, 22, 11), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 640, 26, SILVER if dark else "#5A5F67", weight="Bold", wide=1.15, slant=14, track=0.32)
+    return d
+
+
+def wide(v, dark, bg=True):
+    """Querformat für Menüleiste: Emblem links, Schriftzug rechts."""
+    d = Doc(1400, 300, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    ew = emblem(d, 60 + emblem_width(0.95) / 2, 55, 0.95, FORMS[v], dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    x = 60 + ew + 40
+    w = d.text("BEAM TURISMO", x, 190, 104, fg, weight="Black", wide=1.18, slant=14)
+    d.path(swoosh(x - 6, x + w + 20, 236, 14, 9), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    d.w = int(x + w + 60)
+    return d
+
+
+def icon2(v):
+    d = Doc(256, 256)
+    s = 230 / emblem_width(1)
+    b, t = emblem_paths((256 - emblem_width(s)) / 2, 128 - 100 * s, s, form=FORMS[v])
+    d.path(b, "#FFFFFF", 'fill-rule="evenodd"', name="icon")
+    d.path(t, RED, 'fill-rule="evenodd"')
+    return d
+
+
+def main2(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for v in FORMS:
+        for dark in (False, True):
+            t = "dunkel" if dark else "hell"
+            items[f"logo_{v}_{t}"] = stacked(v, dark)
+            items[f"logo_{v}_auf_{t}"] = stacked(v, dark, False)
+            items[f"leiste_{v}_auf_{t}"] = wide(v, dark, False)
+        items[f"icon_{v}"] = icon2(v)
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
 if __name__ == "__main__":
-    main(sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo")
+    out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
+    if len(sys.argv) > 2 and sys.argv[2] == "runde1":
+        main(out)
+    else:
+        main2(out)

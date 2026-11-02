@@ -35,7 +35,8 @@ patch('ui/ui-vue/mods/turismo_karriere/PauseCard.vue', [
 
 patch('ui/modules/apps/TurismoHub/turismo-ui.js', [
 ('''<div class="logo">TURISMO</div>''', '''<img class="logo" src="' + BASE + 'art/logo_auf_dunkel.png" alt="Beam Turismo">'''),
-('''<div class="tz-logo" data-act="home"><b>T</b>URISMO<small>KARRIERE</small></div>''', '''<div class="tz-logo" data-act="home"><img src="' + BASE + 'art/logo_auf_dunkel.png" alt="Beam Turismo"></div>'''),
+('''<div class="tz-logo" data-act="home"><b>T</b>URISMO<small>KARRIERE</small></div>''', '''<div class="tz-logo" data-act="home"><img src="' + BASE + 'art/logo_leiste.png" alt="Beam Turismo"></div>'''),
+('''<div class="tz-logo" data-act="home"><img src="' + BASE + 'art/logo_auf_dunkel.png" alt="Beam Turismo"></div>''', '''<div class="tz-logo" data-act="home"><img src="' + BASE + 'art/logo_leiste.png" alt="Beam Turismo"></div>'''),
 ('''<div class="tz-bigLogo"><b>T</b>URISMO</div><div class="tz-sub">DIE KARRIERE · FÜR BEAMNG.DRIVE</div>''', '''<div class="tz-bigLogo"><img src="' + BASE + 'art/logo_auf_dunkel.png" alt="Beam Turismo"></div>'''),
 ("""'Turismo – Die Karriere · ein Fan-Mod für BeamNG.drive'""", """'Beam Turismo · eine Karriere für BeamNG.drive (Fan-Mod)'"""),
 ("""<h2 style="margin:0 0 6px">Turismo</h2>""", """<h2 style="margin:0 0 6px">Beam Turismo</h2>"""),
