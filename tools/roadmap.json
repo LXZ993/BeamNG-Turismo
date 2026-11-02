@@ -1,0 +1,10 @@
+{
+  "_hinweis": "Roadmap von Turismo Karriere. Zwischenstände zählen die letzte Stelle hoch (0.1.3 -> 0.1.4). Erst wenn ein Meilenstein auf \"fertig\": true steht, bekommt die nächste Version seine Nummer (z. B. 0.2.0). Reihenfolge und Titel darfst du ändern; \"fertig\" setzt Claude, wenn das Feature drin ist. Nach jeder Änderung: python3 tools/handbuch_sync.py",
+  "meilensteine": [
+    { "version": "0.1.0", "titel": "Erste Version: Karriere, Lizenzen, 53 Serien, Händler, Werkstatt, Schäden, KI-Fahrer", "fertig": true },
+    { "version": "0.2.0", "titel": "Nach dem Test am PC: Fehler aus der Prüfliste, Feintuning KI, Zielzeiten und Wirtschaft, eigene Drag-Configs, feste Streckenliste für 0.40, Musik mit Credits", "fertig": false },
+    { "version": "0.3.0", "titel": "Boxenstopps in Langstreckenrennen, stehender Start nach der Einführungsrunde, Wetter und Tageszeit pro Lauf, Anhänger für Transport-Aufträge, Tuning-Teile einzeln", "fertig": false },
+    { "version": "0.4.0", "titel": "Hub-Karte mit Orten und Fahrten zwischen den Terminen, Showroom mit 3D-Vorschau, Sammlerbuch, Rivalen mit Geschichte", "fertig": false },
+    { "version": "1.0", "titel": "Komplette Karriere", "fertig": false }
+  ]
+}

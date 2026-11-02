@@ -39,6 +39,12 @@ tools/                       Generatoren (Inhalte, Sounds, Musik), Tests, UI-Vor
 docs/                        Design, Prüfliste, offene Fragen, Roadmap
 ```
 
+## Handbuch, Changelog, Log
+- **Handbuch:** [docs/handbuch.html](docs/handbuch.html) – wo was steht und wie du Inhalte selbst änderst (im Browser öffnen).
+- **Changelog:** [CHANGELOG.md](CHANGELOG.md) (Deutsch), [CHANGELOG_EN.md](CHANGELOG_EN.md) (Englisch).
+- **Roadmap:** [tools/roadmap.json](tools/roadmap.json).
+- **Log:** `settings/turismo/logs/turismo.log` im BeamNG-Userordner. Bei Fehlern „Turismo: Fehlerbericht erstellen“ und `bugreport.txt` schicken.
+
 ## Entwicklung
 ```
 python3 tools/gen_data.py     # Inhalte neu erzeugen
@@ -47,5 +53,6 @@ python3 tools/gen_music.py    # Musik
 luajit tools/test/unit.lua    # Logik-Tests (25)
 luajit tools/test/smoke.lua   # Karrierestart-Test (21)
 node tools/ui-preview/shoot.js out/   # UI-Screenshots
+python3 tools/handbuch_sync.py # Changelog + Roadmap ins Handbuch
 bash tools/build.sh           # Zip bauen
 ```

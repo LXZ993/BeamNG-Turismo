@@ -1,0 +1,6 @@
+{
+  "_hinweis": "modVersion steht im Log-Kopf und muss zu CHANGELOG.md (oberste Version) und turismo_core.VERSION passen. Bei jeder Test- oder Release-Version hochzählen. log: D = alles (Debug), I = normal, W = nur Warnungen, E = nur Fehler. Siehe Handbuch, Kapitel Log-System.",
+  "modVersion": "0.1.3",
+  "release": false,
+  "log": { "level": "I", "maxKb": 512, "files": 4, "statusMinutes": 5, "perMinute": 30 }
+}
