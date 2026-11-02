@@ -66,6 +66,8 @@ local function tabProfile()
     if st.cafe then im.Text(string.format('Café-Heft: %s (%d/%d)', st.cafe.name, st.cafe.done, st.cafe.total)) end
     im.Text(string.format('Tagesziel: %.1f / %d km', st.dailyKm or 0, st.dailyGoal or 42))
     if im.Button('Speichern') then run('save') end
+    im.SameLine()
+    if im.Button('Fehlerbericht erstellen') then run('bugReport', {}) end
     im.Separator()
   end
   im.Text('Spielstände')
