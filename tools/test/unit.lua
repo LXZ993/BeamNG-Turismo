@@ -323,6 +323,63 @@ H.test('automatic difficulty follows results, catch-up only for beginners', func
   H.truthy(math.abs(p.skill - 0.55) < 1e-6)
 end)
 
+print('== logger')
+H.test('logger: own log file, repeats merged, rotation, bug report', function()
+  local L = extensions.turismo_logger
+  local dir = os.tmpname() .. '_logs/'
+  os.execute('mkdir -p "' .. dir .. '"')
+  L._reset(dir)
+  local cfg = L._config()
+  local oldKb = cfg.maxKb
+  L.start()
+  extensions.turismo_util.log('I', 'hallo %d', 1)
+  for _ = 1, 5 do extensions.turismo_util.log('W', 'gleich') end
+  extensions.turismo_util.log('I', 'danach')
+  L.flush()
+  local f = io.open(dir .. 'turismo.log') local text = f:read('*a') f:close()
+  H.truthy(text:find('Sitzung', 1, true), 'session header')
+  H.truthy(text:find('I hallo 1', 1, true), 'line written')
+  H.truthy(text:find('5x wiederholt', 1, true), 'repeats merged')
+  -- a failing hook is caught and logged with game state
+  local wrapped = L.wrap('test.boom', function() error('kaputt') end)
+  local r, err = wrapped()
+  H.eq(r, nil)
+  H.truthy(tostring(err):find('kaputt', 1, true))
+  L.flush()
+  f = io.open(dir .. 'turismo.log') text = f:read('*a') f:close()
+  H.truthy(text:find('FEHLER in test.boom', 1, true), 'error logged')
+  H.truthy(text:find('Zustand:', 1, true), 'context logged')
+  -- rotation
+  cfg.maxKb = 1
+  for i = 1, 60 do extensions.turismo_util.log('I', 'zeile %d %s', i, string.rep('x', 40)) end
+  L.flush()
+  H.truthy(io.open(dir .. 'turismo.1.log') ~= nil, 'rotated file exists')
+  cfg.maxKb = oldKb
+  -- bug report via UI action
+  local res = call('bugReport', { note = 'test' })
+  H.truthy(res.path:find('bugreport.txt', 1, true))
+  f = io.open(res.path) text = f:read('*a') f:close()
+  H.truthy(text:find('Fehlerbericht', 1, true) and text:find('Notiz: test', 1, true))
+  H.truthy(text:find('Spielstand', 1, true))
+  os.execute('rm -rf "' .. dir .. '"')
+  L._reset('settings/turismo/logs/')
+end)
+
+H.test('uiCall: expected refusals are warnings, code errors are logged with traceback', function()
+  local res = C.uiCall('nichtDa', {}, 1)
+  H.eq(res.ok, false)
+  H.truthy(res.error:find('Unbekannte Aktion', 1, true))
+end)
+
+H.test('version numbers match (core, build.json, CHANGELOG.md)', function()
+  local build = jsonReadFile('/data/turismo/build.json')
+  H.eq(build.modVersion, C.VERSION)
+  local f = io.open('CHANGELOG.md') local cl = f:read('*a') f:close()
+  H.eq(cl:match('\n## ([%d%.]+)'), C.VERSION)
+  f = io.open('CHANGELOG_EN.md') cl = f:read('*a') f:close()
+  H.eq(cl:match('\n## ([%d%.]+)'), C.VERSION)
+end)
+
 print(string.format('== %d ok, %d failed', H.passed, H.failed))
 for _, l in ipairs(H.logs) do if l:sub(1, 1) == 'E' then print('  log ' .. l) end end
 os.exit(H.failed == 0 and 0 or 1)

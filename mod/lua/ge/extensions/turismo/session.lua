@@ -73,6 +73,7 @@ function M.loadLevel(level, cb)
   if not ok then
     U().log('E', 'session: level load failed: %s', tostring(err))
     pendingLevel = nil
+    if extensions.turismo_core and extensions.turismo_core.loadingCover then extensions.turismo_core.loadingCover(false) end
     toast('Level konnte nicht geladen werden: ' .. tostring(level), 'error')
   end
 end

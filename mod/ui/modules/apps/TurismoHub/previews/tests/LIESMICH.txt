@@ -1,0 +1,83 @@
+Turismo Karriere: Vorschaubilder für Lizenz-Tests und Fahrschule
+
+Lege hier pro Test ein Bild ab: <Test-ID>.jpg, am besten 640 x 360 Pixel (16:9).
+Solange ein Bild fehlt, zeigt das Menü einen grauen Platzhalter. Das Spiel muss nicht neu gestartet werden,
+es reicht, das Menü neu zu öffnen (Strg+F5 lädt die Oberfläche neu).
+
+Tipp: Im Test ein Foto mit der BeamNG-Fotomodus-Kamera machen, zuschneiden, als JPG speichern.
+
+Lizenz C – Lizenz C - Clubsport
+  L1-01.jpg   Anfahren und Anhalten
+  L1-02.jpg   Gezielt bremsen
+  L1-03.jpg   Erste Kurve
+  L1-04.jpg   Slalom
+  L1-05.jpg   Schikane
+  L1-06.jpg   Spurwechsel
+  L1-07.jpg   Haarnadel
+  L1-08.jpg   Erste Runde
+
+Lizenz B – Lizenz B - National
+  L2-01.jpg   Bremspunkt 100
+  L2-02.jpg   Doppelte Schikane
+  L2-03.jpg   Schneller Slalom
+  L2-04.jpg   Kurvenkombination
+  L2-05.jpg   Ausweichtest 70
+  L2-06.jpg   Acht
+  L2-07.jpg   Sprint-Abschnitt
+  L2-08.jpg   Rundenzeit
+
+Lizenz A – Lizenz A - National Pro
+  L3-01.jpg   Bremspunkt 140
+  L3-02.jpg   Hochgeschwindigkeits-Slalom
+  L3-03.jpg   Ausweichtest 90
+  L3-04.jpg   Haarnadel-Paar
+  L3-05.jpg   Zwei Runden
+  L3-06.jpg   Bergsprint
+  L3-07.jpg   Eigenes Auto
+  L3-08.jpg   Abschlussrunde
+
+Lizenz I – Lizenz I - International
+  L4-01.jpg   Bremspunkt 180
+  L4-02.jpg   Rennslalom
+  L4-03.jpg   Ausweichtest 110
+  L4-04.jpg   Rennrunde
+  L4-05.jpg   Drei Runden konstant
+  L4-06.jpg   Sprint im Rennwagen
+  L4-07.jpg   Internationale Strecke
+  L4-08.jpg   Prüfungsrunde
+
+Lizenz S – Lizenz S - Super
+  L5-01.jpg   Bremspunkt 220
+  L5-02.jpg   Highspeed-Spurwechsel
+  L5-03.jpg   Prototyp-Runde
+  L5-04.jpg   Fünf Runden
+  L5-05.jpg   Königsetappe
+  L5-06.jpg   Fremdes Terrain
+  L5-07.jpg   Eigener Rennwagen
+  L5-08.jpg   Meisterprüfung
+
+Lizenz R – Rallye-Lizenz
+  R1-01.jpg   Schotter-Slalom
+  R1-02.jpg   Kehre auf Schotter
+  R1-03.jpg   Wertungsprüfung 1
+  R1-04.jpg   Wertungsprüfung 2
+  R1-05.jpg   Eigenes Rallyeauto
+
+Lizenz D – Drift-Lizenz
+  D1-01.jpg   Donut-Kreis
+  D1-02.jpg   Kehren-Drift
+  D1-03.jpg   Slalom quer
+  D1-04.jpg   Drift-Runde
+  D1-05.jpg   Eigenes Driftauto
+
+Fahrschule
+  TR-brake1.jpg   Bremsen 1: Vollbremsung
+  TR-brake2.jpg   Bremsen 2: Präzision
+  TR-corner1.jpg   Kurven 1: Konstanter Radius
+  TR-corner2.jpg   Kurven 2: Wechselkurven
+  TR-slalom.jpg   Slalom-Meister
+  TR-moose.jpg   Elchtest
+  TR-eight.jpg   Liegende Acht
+  TR-lap-hr.jpg   Rundentraining Rennstrecke
+  TR-lap-it.jpg   Rundentraining Bergstrecke
+  TR-lap-3.jpg   Konstanz-Training

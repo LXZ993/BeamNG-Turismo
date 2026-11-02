@@ -8,6 +8,11 @@
   'use strict';
 
   var BASE = '/ui/modules/apps/TurismoHub/';
+  // city map of the World menu, made with VectorCraft (tools/art/make_map.py).
+  // Positions in percent of the map image; must match PLACES in make_map.py.
+  var MAP_PLACES = { cafe: [50, 50], events: [70, 34], licenses: [31, 30], trainings: [19, 46], dealers: [60, 72], used: [78, 62],
+    legends: [88, 40], garage: [38, 68], workshop: [24, 76], world2: [12, 24] };
+  function isNight(d) { if (typeof window.TURISMO_NIGHT === 'boolean') return window.TURISMO_NIGHT; var h = (d || new Date()).getHours(); return h < 7 || h >= 19; }
 
   // ------------------------------------------------------------------ helpers
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -22,6 +27,7 @@
   function gap(t) { return t == null ? '' : (t >= 0 ? '+' : '−') + Math.abs(t).toFixed(1).replace('.', ',') + ' s'; }
   function arr(x) { if (!x) return []; if (Array.isArray(x)) return x; return Object.keys(x).map(function (k) { return x[k]; }); }
   function medalOf(m) { return '<i class="tz-medal ' + esc(m || 'none') + '"></i>'; }
+  var SURF_DE = { tarmac: 'Asphalt', dirt: 'Schotter', gravel: 'Schotter', snow: 'Schnee', mixed: 'Gemischt' };
   var MEDAL_DE = { gold: 'Gold', silver: 'Silber', bronze: 'Bronze', none: '—' };
   var TYPE_DE = { circuit: 'Rundstrecke', elimination: 'K.O.-Rennen', pursuit: 'Verfolgung', timeAttack: 'Zeitfahren', touge: 'Touge', drift: 'Drift',
     derby: 'Derby', trucking: 'Transport', crawl: 'Crawling', drag: 'Drag', hillclimb: 'Bergrennen' };
@@ -47,6 +53,8 @@
     ticket: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><path d="M6 20h52v8a5 5 0 0 0 0 10v8H6v-8a5 5 0 0 0 0-10z"/><path d="M40 20v26" stroke-dasharray="3 4"/></svg>',
     rec: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><circle cx="32" cy="32" r="22"/><circle cx="32" cy="32" r="8" fill="#ff5d6c" stroke="none"/></svg>',
     gear: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><circle cx="32" cy="32" r="9"/><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13 13l7 7M44 44l7 7M13 51l7-7M44 20l7-7"/></svg>',
+    help: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><circle cx="32" cy="32" r="24"/><path d="M24 25a8 8 0 1 1 11 7c-2 1-3 3-3 5v3"/><circle cx="32" cy="47" r="1.5" fill="#fff"/></svg>',
+    lock: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><rect x="14" y="28" width="36" height="26" rx="4"/><path d="M22 28v-8a10 10 0 0 1 20 0v8"/></svg>',
     wash: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><path d="M32 8c8 12 14 20 14 28a14 14 0 0 1-28 0c0-8 6-16 14-28z"/></svg>'
   };
 
@@ -131,10 +139,11 @@
       '</div>' +
       '<div data-el="overlay"></div>' +
       '<div class="tz-modal tz-hidden" data-el="modal"><div></div></div>' +
-      '<div class="tz-toasts" data-el="toasts"></div>';
+      '<div class="tz-toasts" data-el="toasts"></div>' +
+      '<div class="tz-loading tz-hidden" data-el="loading"><div class="logo">TURISMO</div><div class="bar"><i></i></div><div class="txt" data-el="loadingTxt"></div></div>';
     var q = this.root.querySelector.bind(this.root);
     this.el = { hud: q('[data-el=hud]'), hub: q('[data-el=hub]'), top: q('[data-el=top]'), screen: q('[data-el=screen]'),
-      overlay: q('[data-el=overlay]'), modal: q('[data-el=modal]'), toasts: q('[data-el=toasts]') };
+      overlay: q('[data-el=overlay]'), modal: q('[data-el=modal]'), toasts: q('[data-el=toasts]'), loading: q('[data-el=loading]'), loadingTxt: q('[data-el=loadingTxt]') };
   };
 
   App.prototype.call = function (action, args) {
@@ -148,11 +157,13 @@
     var self = this, b = this.bridge;
     b.on('TurismoState', function (s) { self.state = s || { loaded: false }; self.renderTop(); if (self.cur() && self.cur().name === 'world') self.render(); });
     b.on('TurismoHubToggle', function (d) { self.showHub(d && d.visible); });
+    b.on('TurismoLoading', function (d) { self.showLoading(d && d.visible, d && d.text); });
     b.on('TurismoToast', function (d) { self.toast(d.msg, d.kind); });
     b.on('TurismoSound', function (d) { Audio_.sfx(d.file || d.cue); });
     b.on('TurismoMusic', function (d) { Audio_.music(d.context); });
     b.on('TurismoRacePhase', function (d) { self.onPhase(d); });
-    b.on('TurismoHud', function (d) { self.hud.race = d; self.renderHud(); });
+    b.on('TurismoHud', function (d) { self.trackDelta(d); self.hud.race = d; self.renderHud(); });
+    b.on('TurismoTrackMap', function (d) { self.trackMap = prepMap(d); self.renderHud(); });
     b.on('TurismoSessionHud', function (d) { self.hud.session = d; self.renderHud(); });
     b.on('TurismoModeHud', function (d) { self.hud.mode = d; self.renderHud(); });
     b.on('TurismoCountdown', function (d) { self.onCountdown(d); });
@@ -188,11 +199,22 @@
     this.root.addEventListener('focusout', function (ev) { if (isText(ev.target) && b.typing) b.typing(false); });
     b.on('CEFTypingLostFocus', function () { var a = document.activeElement; if (isText(a)) a.blur(); });
     this.root.addEventListener('mouseover', function (ev) {
-      var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab');
+      var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab,.tz-pin,.tz-dockbtn,.tz-mcard,.tz-brand,.tz-scard');
       if (t && t !== self._hover) { self._hover = t; Audio_.sfx('ui_hover'); }
+      var pin = ev.target.closest('.tz-pin');
+      if (pin && pin.getAttribute('data-pin') !== self._mapSel) self.mapSelect(pin.getAttribute('data-pin'));
     });
     document.addEventListener('keydown', function (ev) {
       if (!self.hubVisible) return;
+      var c = self.cur();
+      if (c && c.name === 'world' && !self.modal && !isText(ev.target)) {
+        var k = ev.key, dirs = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+        if (dirs[k]) { ev.preventDefault(); self.mapStep(dirs[k][0], dirs[k][1]); return; }
+        if (k === 'Enter' && self._mapSel) {
+          var el = self.el.screen.querySelector('.tz-pin[data-pin="' + self._mapSel + '"]');
+          if (el) { ev.preventDefault(); el.click(); } return;
+        }
+      }
       if (ev.key === 'Escape' || ev.key === 'Backspace') {
         if (ev.target && ev.target.tagName === 'INPUT') return;
         if (self.modal) self.closeModal(); else self.back();
@@ -216,8 +238,18 @@
   };
   App.prototype.home = function () { this.stack = [{ name: this.state.loaded ? 'world' : 'title', params: {} }]; this.load(); };
 
+  // own loading cover between "load save" and the world menu (no flash of the menu before the map loads)
+  App.prototype.showLoading = function (on, text) {
+    var self = this;
+    clearTimeout(this._loadingT);
+    this.el.loading.classList.toggle('tz-hidden', !on);
+    this.el.loadingTxt.textContent = text || '';
+    // safety: never cover the game for good if the map load fails silently
+    if (on) this._loadingT = setTimeout(function () { self.showLoading(false); }, 120000);
+  };
   App.prototype.showHub = function (visible) {
     this.hubVisible = !!visible;
+    if (this.hubVisible) this.showLoading(false);
     this.el.hub.classList.toggle('tz-hidden', !this.hubVisible);
     if (!this.hubVisible && this.modal) this.closeModal();
     this.root.style.pointerEvents = 'none';
@@ -251,6 +283,7 @@
     tickets: function (a) { return a.call('tickets').then(function (d) { return { tickets: arr(d) }; }); },
     world2: function (a) { return Promise.all([a.call('levels'), a.call('tracks'), a.call('recorderState')]).then(function (r) { return { levels: arr(r[0]), tracks: arr(r[1]), rec: r[2] }; }); },
     settings: function () { return Promise.resolve({}); },
+    changelog: function (a) { return a.call('changelog').then(function (d) { return { text: (d && d.text) || '' }; }); },
     diag: function (a) { return a.call('diagnostics').then(function (d) { return { diag: d }; }); }
   };
 
@@ -270,6 +303,8 @@
     this.el.screen.innerHTML = fn ? fn.call(this, this.data, c.params) : '';
     this.el.screen.scrollTop = c.params._scroll || 0;
     this.el.top.classList.toggle('tz-hidden', c.name === 'title' || c.name === 'newProfile');
+    this.el.hub.classList.toggle('on-map', c.name === 'world');
+    if (c.name === 'world') this._mapSel = null;
   };
   App.prototype.reload = function () { var c = this.cur(); if (c) c.params._scroll = this.el.screen.scrollTop; this.load(); };
 
@@ -314,7 +349,7 @@
           '<div style="font-size:40px">+</div>Neue Karriere<br><small>Platz ' + s.slot + '</small></div>';
       }
     });
-    html += '</div><div><button class="tz-btn" data-act="close">◂ Zurück</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
+    html += '</div><div style="display:flex;gap:10px;justify-content:center"><button class="tz-btn" data-act="close">◂ Zurück</button><button class="tz-btn" data-act="bugReport">Fehlerbericht erstellen</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
     return html;
   };
 
@@ -336,36 +371,81 @@
       '<button class="tz-btn" data-act="back">Abbrechen</button></div></div>';
   };
 
+  App.prototype.worldPlaces = function () {
+    var s = this.state || {}, u = s.unlocks || {};
+    var lics = (s.licenses || []);
+    return [
+      { id: 'cafe', name: 'Boxenstopp-Café', icon: 'cafe', main: true, act: 'go', arg: 'cafe',
+        sub: 'Aufgabenhefte holen. Jedes Heft bringt Belohnungen und öffnet neue Orte.',
+        stat: s.cafe ? 'Heft: ' + s.cafe.name + ' · ' + s.cafe.done + '/' + s.cafe.total : 'Neue Hefte warten' },
+      { id: 'events', name: 'Rennen', icon: 'race', main: true, act: 'go', arg: 'events',
+        sub: 'Rennserien von Einsteiger bis Profi. Preisgeld, Pokale und Autos gewinnen.' },
+      { id: 'licenses', name: 'Lizenzzentrum', icon: 'lic', act: 'go', arg: 'licenses',
+        sub: 'Fahrprüfungen. Lizenzen öffnen höhere Rennserien.', stat: lics.length ? 'Erhalten: ' + lics.join(', ') : 'Noch keine Lizenz' },
+      { id: 'trainings', name: 'Fahrschule', icon: 'cone', act: 'go', arg: 'trainings', sub: 'Üben ohne Prüfung: Bremspunkte, Ideallinie, Drift.' },
+      { id: 'dealers', name: 'Neuwagen', icon: 'car', act: 'go', arg: 'dealers', lock: 'dealer_new', sub: 'Neue Autos aller Marken kaufen.' },
+      { id: 'used', name: 'Gebrauchtwagen', icon: 'used', act: 'go', arg: 'used', lock: 'dealer_used', sub: 'Günstige Autos mit Kilometern. Angebote wechseln alle paar Tage.' },
+      { id: 'legends', name: 'Klassiker-Galerie', icon: 'star', act: 'go', arg: 'legends', lock: 'dealer_legend', sub: 'Seltene Legenden für Sammler.', hint: 'Öffnet ab Sammlerstufe 4' },
+      { id: 'garage', name: 'Garage', icon: 'garage', act: 'go', arg: 'garage', sub: 'Deine Autos auswählen, ansehen, verkaufen.', stat: (s.carCount || 0) + ' Fahrzeuge' },
+      { id: 'workshop', name: 'Werkstatt', icon: 'wrench', act: 'goWorkshop', arg: '', lock: 'services', sub: 'Reparieren, Öl wechseln, waschen, umbauen. Schäden bleiben bis hierher.' },
+      { id: 'world2', name: 'Freie Fahrt', icon: 'map', act: 'go', arg: 'world2', lock: 'freeDrive', sub: 'Frei fahren, Tageskilometer sammeln, eigene Strecken aufnehmen.' }
+    ].map(function (p) { p.locked = !!(p.lock && u[p.lock] === false); p.pos = MAP_PLACES[p.id]; return p; });
+  };
+
   App.prototype.scr_world = function () {
-    var s = this.state, u = (s.unlocks || {});
-    if (s.firstVisit && !this._guideShown) { this._guideShown = true; var self0 = this; setTimeout(function () { self0.showGuide(); }, 300); }
-    function locked(key) { return u[key] === false; }
-    var cafeSub = s.cafe ? ('Heft: ' + esc(s.cafe.name) + ' · ' + s.cafe.done + '/' + s.cafe.total) : 'Neue Hefte warten';
-    var lic = (s.licenses || []).length ? 'Erhalten: ' + esc(s.licenses.join(', ')) : 'Noch keine Lizenz';
-    function tile(cls, span, act, arg, title, sub, icon, key) {
-      return '<div class="tz-tile ' + cls + ' ' + span + (key && locked(key) ? ' locked' : '') + '" data-act="' + act + '" data-arg="' + (arg || '') + '">' +
-        '<h3>' + title + '</h3><p>' + sub + '</p><div class="tz-ico">' + (ICONS[icon] || '') + '</div></div>';
-    }
-    return '<div class="tz-world">' +
-      '<div class="tz-district">Stadtzentrum</div>' +
-      tile('c-cafe big', 's4 r2', 'go', 'cafe', 'Boxenstopp-Café', '<b>Hier startest du.</b> Der Wirt gibt dir Aufgabenhefte (z. B. „Gewinne drei Rennen“ oder „Sammle diese Autos“). Jedes erledigte Heft bringt Belohnungen und schaltet neue Bereiche frei.<br><br>' + cafeSub, 'cafe') +
-      tile('c-race big', 's4 r2', 'go', 'events', 'Rennen', 'Rennserien von Einsteiger bis Profi: Preisgeld verdienen, Trophäen und Autos gewinnen. Manche Serien brauchen eine Lizenz oder eine bestimmte Fahrzeugklasse.', 'race') +
-      tile('c-lic', 's4', 'go', 'licenses', 'Lizenzzentrum', 'Fahrprüfungen (Anfahren, Bremsen, Kurven …). Lizenzen öffnen höhere Rennserien. ' + lic, 'lic') +
-      tile('c-lic', 's4', 'go', 'trainings', 'Fahrschule', 'Üben ohne Prüfung: Bremspunkte, Ideallinie, Drift, Gelände', 'cone') +
-      '<div class="tz-district">Händlerviertel</div>' +
-      tile('c-dealer', 's4', 'go', 'dealers', 'Neuwagen', 'Neue Autos aller Marken deiner Installation kaufen', 'car', 'dealer_new') +
-      tile('c-dealer', 's4', 'go', 'used', 'Gebrauchtwagen', 'Günstige Autos mit Kilometern – ideal zum Start. Angebote wechseln alle paar Tage', 'used', 'dealer_used') +
-      tile('c-dealer', 's4', 'go', 'legends', 'Klassiker-Galerie', 'Seltene Legenden – öffnet, wenn du genug Autos gesammelt hast (Sammlerstufe 4)', 'star', 'dealer_legend') +
-      '<div class="tz-district">Boxengasse</div>' +
-      tile('c-garage', 's4', 'go', 'garage', 'Garage', 'Deine Autos auswählen, ansehen, verkaufen · ' + esc(s.carCount || 0) + ' Fahrzeuge', 'garage') +
-      tile('c-garage', 's4', 'goWorkshop', '', 'Werkstatt & Waschanlage', 'Schäden aus Rennen bleiben am Auto! Hier reparieren, Öl wechseln, waschen, umbauen', 'wrench', 'services') +
-      tile('c-fun', 's4', 'go', 'tickets', 'Bonuslose', 'Gewinnlose aus Heften und Rennen – öffnen für Geld oder Autos · ' + esc(s.tickets || 0) + ' ungeöffnet', 'ticket') +
-      '<div class="tz-district">Unterwegs</div>' +
-      tile('c-fun', 's4', 'go', 'world2', 'Freie Fahrt & Strecken', 'Mit deinem Auto frei fahren, Tagesziel (Kilometer) schaffen, eigene Strecken aufnehmen', 'map', 'freeDrive') +
-      tile('c-garage', 's4', 'guide', '', 'So funktioniert’s', 'Kurze Einführung in die Karriere', 'star') +
-      tile('c-garage', 's4', 'go', 'settings', 'Einstellungen', 'Renndauer, Intro, Musik, Schäden', 'gear') +
-      tile('c-garage', 's4', 'go', 'diag', 'Diagnose', 'Autos, Strecken und Inhalte prüfen', 'rec') +
+    var s = this.state || {}, self = this;
+    if (s.firstVisit && !this._guideShown) { this._guideShown = true; setTimeout(function () { self.showGuide(); }, 300); }
+    var night = isNight();
+    var pins = this.worldPlaces().map(function (p, i) {
+      return '<div class="tz-pin' + (p.main ? ' main' : '') + (p.locked ? ' locked' : '') + '" style="left:' + p.pos[0] + '%;top:' + p.pos[1] + '%;animation-delay:' + (0.05 * i).toFixed(2) + 's"' +
+        ' data-pin="' + p.id + '" data-act="' + (p.locked ? 'pinLocked' : p.act) + '" data-arg="' + esc(p.locked ? p.id : p.arg) + '">' +
+        '<span class="pill">' + esc(p.name) + '</span><i class="dot">' + (p.locked ? ICONS.lock : (ICONS[p.icon] || '')) + '</i></div>';
+    }).join('');
+    var dock = [['guide', '', 'So funktioniert’s', 'help'], ['go', 'tickets', 'Bonuslose', 'ticket', s.tickets], ['go', 'settings', 'Einstellungen', 'gear'],
+      ['go', 'changelog', 'Changelog', 'rec'], ['go', 'diag', 'Diagnose', 'cone']].map(function (d) {
+      return '<button class="tz-dockbtn" data-act="' + d[0] + '" data-arg="' + d[1] + '" title="' + esc(d[2]) + '"><i>' + (ICONS[d[3]] || '') + '</i><span>' + esc(d[2]) + '</span>' +
+        (d[4] ? '<b class="cnt">' + esc(d[4]) + '</b>' : '') + '</button>';
+    }).join('');
+    return '<div class="tz-map' + (night ? ' night' : '') + '" data-el="map">' +
+      '<div class="tz-mapbox"><img class="tz-mapimg day" src="' + BASE + 'art/map_day.png" alt=""><img class="tz-mapimg nightimg" src="' + BASE + 'art/map_night.png" alt="">' + pins + '</div>' +
+      '<div class="tz-dock">' + dock + '</div>' +
+      '<div class="tz-mapinfo" data-el="mapInfo">' + this.mapInfoHtml(null) + '</div>' +
       '</div>';
+  };
+
+  App.prototype.mapInfoHtml = function (p) {
+    if (!p) {
+      var s = this.state || {};
+      var tip = !s.activeCar ? 'Tipp: Hol dir im Café dein erstes Heft und kauf ein günstiges Auto beim Gebrauchtwagenhändler.'
+        : s.cafe ? 'Aktuelles Heft: ' + s.cafe.name + ' (' + s.cafe.done + '/' + s.cafe.total + ')' : 'Wähle einen Ort auf der Karte.';
+      return '<div class="t">' + esc(isNight() ? 'Nacht in der Stadt' : 'Tag in der Stadt') + '</div><div class="d">' + esc(tip) + '</div>';
+    }
+    return '<div class="t">' + esc(p.name) + (p.stat && !p.locked ? '<span class="st">' + esc(p.stat) + '</span>' : '') + '</div>' +
+      '<div class="d">' + (p.locked ? '<span class="lk">Gesperrt.</span> ' + esc(p.hint || 'Wird über Aufgabenhefte im Café freigeschaltet.') : esc(p.sub)) + '</div>';
+  };
+
+  App.prototype.mapSelect = function (id) {
+    var box = this.el.screen.querySelector('[data-el=map]'); if (!box) return;
+    var p = id ? this.worldPlaces().filter(function (x) { return x.id === id; })[0] : null;
+    this._mapSel = p ? p.id : null;
+    Array.prototype.forEach.call(box.querySelectorAll('.tz-pin'), function (el) { el.classList.toggle('sel', !!p && el.getAttribute('data-pin') === p.id); });
+    var info = box.querySelector('[data-el=mapInfo]'); if (info) info.innerHTML = this.mapInfoHtml(p);
+  };
+
+  // arrow keys / d-pad: jump to the nearest place in that direction
+  App.prototype.mapStep = function (dx, dy) {
+    var list = this.worldPlaces(), cur = null, i;
+    for (i = 0; i < list.length; i++) if (list[i].id === this._mapSel) cur = list[i];
+    if (!cur) { this.mapSelect('cafe'); return; }
+    var best = null, bestScore = 1e9;
+    list.forEach(function (p) {
+      if (p === cur) return;
+      var vx = p.pos[0] - cur.pos[0], vy = (p.pos[1] - cur.pos[1]) * 0.6, along = vx * dx + vy * dy;
+      if (along <= 0) return;
+      var score = Math.sqrt(vx * vx + vy * vy) + Math.abs(vx * dy - vy * dx) * 1.5;
+      if (score < bestScore) { bestScore = score; best = p; }
+    });
+    if (best) { this.mapSelect(best.id); Audio_.sfx('ui_hover'); }
   };
 
   App.prototype.carCard = function (c, actions) {
@@ -379,16 +459,35 @@
       '<div class="row">' + actions + '</div></div>';
   };
 
+  // garage like the GT4 garage: selected car large on the left, sortable list on the right
   App.prototype.scr_garage = function (d) {
-    var self = this;
     var cars = arr(d.cars);
     if (!cars.length) return this.head('Garage') + '<div class="tz-panel">Deine Garage ist leer. Beim Gebrauchtwagenhändler findest du günstige Einstiegsautos.<div style="margin-top:12px"><button class="tz-btn primary" data-act="go" data-arg="used">Zum Gebrauchtwagenhändler</button></div></div>';
-    return this.head('Garage', cars.length + ' Fahrzeuge') + '<div class="tz-grid">' + cars.map(function (c) {
-      return self.carCard(c,
-        (c.active ? '' : '<button class="tz-btn primary" data-act="setActive" data-arg="' + c.id + '">Auswählen</button>') +
-        '<button class="tz-btn" data-act="goWorkshop" data-arg="' + c.id + '">Werkstatt</button>' +
-        '<button class="tz-btn" data-act="go" data-arg="car" data-arg2="' + c.id + '">Details</button>');
-    }).join('') + '</div>';
+    var sort = this.ui.garageSort || 'name';
+    var keyf = { name: function (c) { return String(c.nickname || c.name).toLowerCase(); }, li: function (c) { return -((c.rating && c.rating.li) || 0); },
+      km: function (c) { return c.mileageKm || 0; }, value: function (c) { return -(c.value || 0); } }[sort];
+    cars = cars.slice().sort(function (x, y) { if (x.active !== y.active) return x.active ? -1 : 1; var a = keyf(x), b = keyf(y); return a < b ? -1 : a > b ? 1 : 0; });
+    var selId = this.ui.garageSel, sel = cars.filter(function (c) { return c.id === selId; })[0] || cars[0];
+    var dmg = sel.damage || 0;
+    var left = '<div class="tz-gsel">' + carPhoto(sel) +
+      '<div class="info"><div class="br">' + esc(sel.brand) + (sel.active ? ' · <b class="act">Aktives Auto</b>' : '') + '</div>' +
+      '<h2>' + esc(sel.nickname || sel.name) + (sel.favorite ? ' ★' : '') + '</h2>' +
+      '<div style="margin:6px 0 10px">' + liBadge(sel.rating, sel.effectiveLI) + ' <span class="cat">' + esc(sel.rating && sel.rating.categoryName || '') + '</span></div>' +
+      '<div class="tz-gstats"><div><span>Kilometer</span><b>' + km(sel.mileageKm) + '</b></div>' +
+      '<div><span>Zustand</span><b class="' + (dmg > 0.15 ? 'bad' : dmg > 0.02 ? 'mid' : 'ok') + '">' + Math.round((1 - dmg) * 100) + ' %</b></div>' +
+      '<div><span>Motor</span><b>' + Math.round((1 - (sel.engineWear || 0)) * 100) + ' %</b></div><div><span>Sauberkeit</span><b>' + Math.round(sel.cleanliness || 0) + ' %</b></div>' +
+      '<div><span>Rennen</span><b>' + esc(sel.races || 0) + ' / ' + esc(sel.wins || 0) + ' Siege</b></div><div><span>Wert</span><b>' + money(sel.value) + '</b></div></div>' +
+      '<div class="acts">' + (sel.active ? '' : '<button class="tz-btn primary" data-act="setActive" data-arg="' + sel.id + '">Auswählen</button>') +
+      '<button class="tz-btn" data-act="goWorkshop" data-arg="' + sel.id + '">Werkstatt</button>' +
+      '<button class="tz-btn" data-act="go" data-arg="car" data-arg2="' + sel.id + '">Details</button></div></div></div>';
+    function th(k, label) { return '<th class="' + (sort === k ? 'on' : '') + '" data-act="garageSort" data-arg="' + k + '">' + label + '</th>'; }
+    var list = '<div class="tz-glist"><table><tr>' + th('name', 'Fahrzeug') + th('li', 'LI') + th('km', 'Kilometer') + th('value', 'Wert') + '</tr>' +
+      cars.map(function (c) {
+        return '<tr class="' + (c.id === sel.id ? 'sel' : '') + (c.active ? ' act' : '') + '" data-act="garageSel" data-arg="' + c.id + '">' +
+          '<td><span class="dot"></span>' + esc(c.nickname || c.name) + (c.favorite ? ' ★' : '') + (c.damage > 0.02 ? ' <span class="dm">Schaden</span>' : '') + '</td>' +
+          '<td>' + esc((c.rating && c.rating.li) || '') + ' <small>' + esc(c.rating && c.rating['class'] || '') + '</small></td><td>' + km(c.mileageKm) + '</td><td>' + money(c.value) + '</td></tr>';
+      }).join('') + '</table></div>';
+    return this.head('Garage', cars.length + ' Fahrzeuge') + '<div class="tz-garage">' + left + list + '</div>';
   };
 
   App.prototype.scr_car = function (d) {
@@ -458,19 +557,60 @@
     var region = regions.filter(function (r) { return r.id === tab; })[0] || regions[0];
     return this.head('Neuwagen', 'Händler nach Region') +
       '<div class="tz-tabs">' + regions.map(function (r) { return '<div class="tz-tab' + (r.id === tab ? ' on' : '') + '" data-act="tab" data-arg="dealer" data-arg2="' + r.id + '">' + esc(r.name) + '</div>'; }).join('') + '</div>' +
-      '<div class="tz-grid">' + (region ? arr(region.brands).map(function (b) {
-        return '<div class="tz-tile c-dealer" style="height:110px" data-act="go" data-arg="showroom" data-arg2="' + esc(b.name) + '"><h3>' + esc(b.name) + '</h3><p>' + esc(b.count) + ' Modelle</p><div class="tz-ico">' + ICONS.car + '</div></div>';
+      '<div class="tz-brands">' + (region ? arr(region.brands).map(function (b) {
+        return '<div class="tz-brand" data-act="go" data-arg="showroom" data-arg2="' + esc(b.name) + '"><div class="nm">' + esc(b.name) + '</div><div class="sub">' + esc(b.count) + ' Modelle</div></div>';
       }).join('') : '') + '</div>';
   };
-  App.prototype.scr_showroom = function (d, p) { var self = this; return this.head(p.arg2 || p.brand, 'Schauraum') + '<div class="tz-grid">' + arr(d.offers).map(function (o) { return self.offerCard(o, 'new'); }).join('') + '</div>'; };
-  App.prototype.scr_used = function (d) { var self = this; return this.head('Gebrauchtwagen', 'Neue Angebote alle paar Tage. Gebrauchte haben Verschleiß – ein Werkstattbesuch lohnt sich.') + '<div class="tz-grid">' + arr(d.offers).map(function (o) { return self.offerCard(o, 'used'); }).join('') + '</div>'; };
+  // ---- car market in the GT used-car style: grid of light cards with photo, detail window on click
+  function carPhoto(o) {
+    var src = o && o.preview ? String(o.preview) : '';
+    if (src && src.charAt(0) !== '/' && src.indexOf('://') < 0) src = '/' + src;
+    return '<div class="ph"><i class="sil">' + ICONS.car + '</i>' + (src ? '<img src="' + esc(src) + '" alt="" onerror="this.style.display=\'none\'">' : '') + '</div>';
+  }
+  App.prototype.marketCard = function (o, kind, i) {
+    var gone = o.soldOut, warn = !o.licenseOk;
+    return '<div class="tz-mcard' + (gone ? ' gone' : '') + '" style="animation-delay:' + (0.02 * (i || 0)).toFixed(2) + 's" data-act="offer" data-arg="' + kind + '" data-arg2="' + esc(o.id) + '">' +
+      carPhoto(o) + (o.rating ? '<div class="li">' + liBadge(o.rating) + '</div>' : '') +
+      (gone ? '<div class="flag">Verkauft</div>' : o.daysLeft != null && kind !== 'new' && o.daysLeft <= 1 ? '<div class="flag new">Letzter Tag</div>' : '') +
+      '<div class="body"><div class="br">' + esc(o.brand) + (o.year ? ' · ' + esc(o.year) : '') + (o.country ? ' · ' + esc(o.country) : '') + '</div>' +
+      '<div class="nm">' + esc(o.name) + '</div>' +
+      '<div class="ft"><span class="sub">' + (o.mileageKm ? km(o.mileageKm) : kind === 'new' ? 'Neuwagen' : '') + (warn ? ' · <b class="warn">Lizenz ' + esc(o.licenseRequired) + '</b>' : '') + '</span>' +
+      '<span class="pr">' + money(o.price) + '</span></div></div></div>';
+  };
+  App.prototype.marketGrid = function (offers, kind) {
+    var self = this;
+    offers = arr(offers);
+    if (!offers.length) return '<div class="tz-panel">Gerade keine Angebote. Schau in ein paar Tagen wieder vorbei.</div>';
+    return '<div class="tz-mgrid">' + offers.map(function (o, i) { return self.marketCard(o, kind, i); }).join('') + '</div>';
+  };
+  App.prototype.showOffer = function (kind, id) {
+    var o = arr(this.data.offers).filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!o) return;
+    var canBuy = o.licenseOk && !o.soldOut && (this.state.money || 0) >= o.price;
+    var why = o.soldOut ? 'Schon verkauft.' : !o.licenseOk ? 'Dafür brauchst du Lizenz ' + esc(o.licenseRequired) + '.' :
+      (this.state.money || 0) < o.price ? 'Dir fehlen ' + money(o.price - (this.state.money || 0)) + '.' : '';
+    function row(l, v) { return v == null || v === '' ? '' : '<tr><th>' + l + '</th><td>' + v + '</td></tr>'; }
+    this.modalShow('<div class="tz-cdetail">' + carPhoto(o) +
+      '<div class="info"><div class="br">' + esc(o.brand) + (o.country ? ' · ' + esc(o.country) : '') + '</div>' +
+      '<h2>' + esc(o.name) + '</h2>' + (o.rating ? '<div style="margin:6px 0 12px">' + liBadge(o.rating) + ' <span class="cat">' + esc(o.rating.categoryName || '') + '</span></div>' : '') +
+      '<table>' + row('Baujahr', esc(o.year || '')) + row('Leistung', o.power ? num(o.power) + ' PS' : '') + row('Gewicht', o.weight ? num(o.weight) + ' kg' : '') +
+      row('Antrieb', esc(o.drivetrain || '')) + row('Kilometer', o.mileageKm ? km(o.mileageKm) : '') +
+      row('Angebot', o.daysLeft != null && kind !== 'new' ? 'noch ' + esc(o.daysLeft) + ' Tage' : '') + '</table>' +
+      '<div class="buy"><span class="pr">' + money(o.price) + '</span>' + (why ? '<span class="why">' + why + '</span>' : '') + '</div>' +
+      '<div class="actions"><button class="tz-btn" data-act="closeModal">Schließen</button>' +
+      '<button class="tz-btn primary" ' + (canBuy ? '' : 'disabled') + ' data-act="buy" data-arg="' + kind + '" data-arg2="' + esc(o.id) + '">Kaufen</button></div></div></div>', 'light');
+  };
+  App.prototype.scr_showroom = function (d, p) { return this.head(p.arg2 || p.brand, 'Schauraum · Neuwagen') + this.marketGrid(d.offers, 'new'); };
+  App.prototype.scr_used = function (d) {
+    return this.head('Gebrauchtwagen', 'Neue Angebote alle paar Tage. Gebrauchte haben Verschleiß, ein Werkstattbesuch lohnt sich.') + this.marketGrid(d.offers, 'used');
+  };
   App.prototype.scr_legends = function (d) {
-    var self = this, s = this.state, lvl = (s.collector && s.collector.level) || 0;
+    var s = this.state, lvl = (s.collector && s.collector.level) || 0;
     var offers = arr(d.offers);
     var gate = offers[0] && offers[0].collectorLevel && lvl < offers[0].collectorLevel;
     return this.head('Klassiker-Galerie', 'Seltene Fahrzeuge bis Baujahr 1995. Jedes Stück gibt es nur einmal pro Ausstellung.') +
       (gate ? '<div class="tz-panel">Die Galerie verkauft erst ab Sammlerstufe ' + esc(offers[0].collectorLevel) + '. Du bist auf Stufe ' + lvl + '.</div>' : '') +
-      '<div class="tz-grid">' + offers.map(function (o) { return self.offerCard(o, 'legend'); }).join('') + '</div>';
+      this.marketGrid(offers, 'legend');
   };
 
   App.prototype.scr_licenses = function (d) {
@@ -485,34 +625,54 @@
       '<div class="tz-panel" style="display:flex;align-items:center;gap:20px"><div style="flex:1"><h2 style="margin:0">' + esc(lic.name) + '</h2><div style="color:var(--dim)">' + esc(lic.desc || '') + '</div></div>' +
       '<div class="tz-stat"><label>Bestanden</label><span>' + lic.done + ' / ' + lic.total + '</span></div><div class="tz-stat"><label>Gold</label><span style="color:var(--gold)">' + lic.gold + '</span></div></div>';
     if (!lic.available) html += '<div class="tz-panel" style="color:#ffb3ba">' + esc(lic.reason) + '</div>';
-    html += '<div class="tz-grid">' + arr(lic.tests).map(function (t, i) {
+    html += '<div class="tz-tgrid">' + arr(lic.tests).map(function (t, i) {
       var tg = t.targets || {};
       var fmt = t.scoring === 'score' ? function (v) { return v == null ? '--' : Math.round(v); } : time;
-      return '<div class="tz-card"><div style="display:flex;gap:10px;align-items:center"><div style="font-size:22px;font-weight:800;color:var(--dim);width:34px">' + (i + 1) + '</div>' +
-        '<div style="flex:1"><h4>' + esc(t.name) + '</h4><div class="meta">' + esc(t.desc) + '</div></div>' + medalOf(t.medal) + '</div>' +
-        '<div class="tz-targets" style="justify-content:flex-start;margin-top:10px">' + ['gold', 'silver', 'bronze'].map(function (m) { return '<span>' + medalOf(m) + fmt(tg[m]) + '</span>'; }).join('') + '</div>' +
-        '<div class="meta" style="margin-top:6px">Auto: ' + esc(t.ownCar ? 'eigenes Fahrzeug' : t.carName) + ' · Bestwert: ' + fmt(t.best) + (tg.source === 'estimate' ? ' · <i>Zielzeiten geschätzt</i>' : '') + '</div>' +
-        '<div class="row">' + (lic.available ? '<button class="tz-btn primary" data-act="startTest" data-arg="' + t.id + '">Starten</button><button class="tz-btn" data-act="startTest" data-arg="' + t.id + '" data-arg2="demo">Vorführung</button>' : '') + '</div></div>';
+      return '<div class="tz-tcard' + (t.medal && t.medal !== 'none' ? ' won' : '') + '">' + pvImg(testPreview(t.id), 'lic') +
+        '<span class="no">' + (i + 1) + '</span><span class="md">' + medalOf(t.medal) + '</span>' +
+        '<div class="bd"><div class="nm">' + esc(t.name) + '</div><div class="ds">' + esc(t.desc) + '</div>' +
+        '<div class="tg">' + ['gold', 'silver', 'bronze'].map(function (m) { return '<span>' + medalOf(m) + fmt(tg[m]) + '</span>'; }).join('') + '</div>' +
+        '<div class="mt">' + esc(t.ownCar ? 'Eigenes Auto' : t.carName) + ' · Bestwert ' + fmt(t.best) + '</div>' +
+        '<div class="bt">' + (lic.available ? '<button class="tz-btn primary" data-act="startTest" data-arg="' + t.id + '">Starten</button><button class="tz-btn" data-act="startTest" data-arg="' + t.id + '" data-arg2="demo">Vorführung</button>' : '') + '</div></div></div>';
     }).join('') + '</div>';
     return html;
   };
 
   App.prototype.scr_trainings = function (d) {
-    return this.head('Fahrschule', 'Freiwillige Übungen. Jede Medaille wird bezahlt.') + '<div class="tz-grid">' + arr(d.list).map(function (t) {
+    return this.head('Fahrschule', 'Freiwillige Übungen. Jede Medaille wird bezahlt.') + '<div class="tz-tgrid">' + arr(d.list).map(function (t) {
       var fmt = t.scoring === 'score' ? function (v) { return v == null ? '--' : Math.round(v); } : time;
       var tg = t.targets || {};
-      return '<div class="tz-card"><div style="display:flex;gap:10px"><div style="flex:1"><h4>' + esc(t.name) + '</h4><div class="meta">' + esc(t.desc) + '</div></div>' + medalOf(t.medal) + '</div>' +
-        '<div class="tz-targets" style="justify-content:flex-start;margin-top:10px">' + ['gold', 'silver', 'bronze'].map(function (m) { return '<span>' + medalOf(m) + fmt(tg[m]) + '</span>'; }).join('') + '</div>' +
-        '<div class="row"><button class="tz-btn primary" data-act="startTest" data-arg="' + t.id + '">Starten</button><span class="meta">Bestwert: ' + fmt(t.best) + '</span></div></div>';
+      return '<div class="tz-tcard' + (t.medal && t.medal !== 'none' ? ' won' : '') + '">' + pvImg(testPreview(t.id), 'cone') + '<span class="md">' + medalOf(t.medal) + '</span>' +
+        '<div class="bd"><div class="nm">' + esc(t.name) + '</div><div class="ds">' + esc(t.desc) + '</div>' +
+        '<div class="tg">' + ['gold', 'silver', 'bronze'].map(function (m) { return '<span>' + medalOf(m) + fmt(tg[m]) + '</span>'; }).join('') + '</div>' +
+        '<div class="mt">Bestwert ' + fmt(t.best) + '</div>' +
+        '<div class="bt"><button class="tz-btn primary" data-act="startTest" data-arg="' + t.id + '">Starten</button></div></div></div>';
     }).join('') + '</div>';
   };
 
+  // preview image with placeholder until the file exists (Alex adds them later, see previews/LIESMICH.txt)
+  function pvImg(src, icon) {
+    return '<div class="tz-pv"><i class="ph-ico">' + (ICONS[icon] || ICONS.map) + '</i>' + (src ? '<img src="' + esc(src) + '" alt="" onerror="this.style.display=\'none\'">' : '') + '</div>';
+  }
+  function testPreview(id) { return BASE + 'previews/tests/' + id + '.jpg'; }
+
+  var HALL_HUE = { einsteiger: 200, amateur: 150, profi: 265, extrem: 350, langstrecke: 30, marken: 210, regional: 175, gelaende: 40, rallye: 40, spezial: 300 };
+  function hallHue(h, i) { var k = String(h.id || '').toLowerCase(); for (var n in HALL_HUE) if (k.indexOf(n) === 0) return HALL_HUE[n]; return (i * 47) % 360; }
+  function trophyImg(place, cls) {
+    var t = place == 1 ? 'gold' : place == 2 ? 'silver' : place == 3 ? 'bronze' : '';
+    return t ? '<img class="' + (cls || 'tz-mtrophy') + '" src="' + BASE + 'art/trophy_' + t + '.png" alt="">' : '';
+  }
+
   App.prototype.scr_events = function (d) {
     var halls = arr(d.halls);
-    return this.head('Rennen', 'Wähle eine Halle') + '<div class="tz-world">' + halls.map(function (h, i) {
+    return this.head('Rennen', 'Wähle eine Rennklasse') + '<div class="tz-srow">' + halls.map(function (h, i) {
       var series = arr(h.series), won = series.filter(function (s) { return s.won; }).length, open = series.filter(function (s) { return s.available; }).length;
-      return '<div class="tz-tile c-race s4" style="animation-delay:' + (i * 0.03) + 's" data-act="go" data-arg="series" data-arg2="' + h.id + '"><h3>' + esc(h.name) + '</h3><p>' + esc(h.desc || '') + '<br>' +
-        series.length + ' Serien · ' + open + ' offen · ' + won + ' gewonnen</p><div class="tz-ico">' + ICONS.race + '</div></div>';
+      var hue = hallHue(h, i), frac = series.length ? won / series.length : 0;
+      return '<div class="tz-scard' + (open ? '' : ' locked') + '" style="--h:' + hue + ';animation-delay:' + (i * 0.04).toFixed(2) + 's" data-act="go" data-arg="series" data-arg2="' + esc(h.id) + '">' +
+        '<div class="top"><span class="no">' + (i + 1) + '</span><i class="ico">' + ICONS.race + '</i></div>' +
+        '<div class="bd"><h3>' + esc(h.name) + '</h3><p>' + esc(h.desc || '') + '</p>' +
+        '<div class="kv"><span>Serien</span><b>' + series.length + '</b></div><div class="kv"><span>Offen</span><b>' + open + '</b></div><div class="kv"><span>Gewonnen</span><b>' + won + '</b></div>' +
+        '<div class="prog"><i style="width:' + Math.round(frac * 100) + '%"></i></div></div></div>';
     }).join('') + '</div>';
   };
 
@@ -536,15 +696,21 @@
         '<div style="margin:8px 0;color:var(--dim);font-size:13px">Teilnahme: ' + esc(s.requirement || 'offen') + '</div>';
       if (!s.available) html += '<div style="color:#ffb3ba">' + esc(s.reason) + '</div>';
       else if (!elig.length) html += '<div style="color:var(--money)">Kein passendes Auto in deiner Garage.</div>';
-      html += '<table class="tz-table"><tr><th>#</th><th>Lauf</th><th>Strecke</th><th>Runden</th><th>Bestes</th><th></th></tr>' + races.map(function (r) {
+      html += '<div class="tz-rrow">' + races.map(function (r) {
         var canStart = s.available && useCar && r.trackOk && (!s.championship || r.idx === s.raceIndex);
-        return '<tr><td>' + r.idx + '</td><td>' + esc(r.name || ('Lauf ' + r.idx)) + '</td><td>' + esc(r.track) + (r.level ? ' <span class="tz-tag">' + esc(r.level) + '</span>' : '') + '</td><td>' + esc(r.laps) + '</td>' +
-          '<td>' + (r.trophy ? 'P' + esc(r.trophy) : '–') + '</td><td style="text-align:right">' +
-          (canStart ? (s.format === 'choice' && !hardcore
-            ? '<button class="tz-btn" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|quick">Schnelles Rennen</button> ' +
-              '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|weekend">Rennwochenende</button>'
-            : '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '">Start</button>') : '') + '</td></tr>';
-      }).join('') + '</table>';
+        var btns = canStart ? (s.format === 'choice' && !hardcore
+            ? '<button class="tz-btn" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|quick">Schnell</button>' +
+              '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|weekend">Wochenende</button>'
+            : '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '">Start</button>')
+          : '<span class="na">' + (!r.trackOk ? 'Strecke fehlt' : s.championship && s.available && r.idx !== s.raceIndex ? (r.idx < s.raceIndex ? 'Gefahren' : 'Später') : 'Gesperrt') + '</span>';
+        return '<div class="tz-rcard' + (canStart ? ' go' : '') + '">' +
+          '<div class="hd"><span class="no">' + r.idx + '</span>' + trophyImg(r.trophy) + '</div>' +
+          '<div class="nm">' + esc(r.name || ('Lauf ' + r.idx)) + '</div>' +
+          '<div class="tr">' + esc(r.track) + '</div>' + (r.level ? '<div class="lv">' + esc(r.levelTitle || r.level) + '</div>' : '') +
+          '<div class="kv"><span>Runden</span><b>' + esc(r.laps) + '</b></div>' +
+          '<div class="kv"><span>Bestes</span><b>' + (r.trophy ? 'P' + esc(r.trophy) : '–') + '</b></div>' +
+          '<div class="bt">' + btns + '</div></div>';
+      }).join('') + '</div>';
       if (s.championship && s.points) {
         var pts = Object.keys(s.points).map(function (k) { return { k: k, v: s.points[k] }; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 8);
         if (pts.length) html += '<div style="margin-top:10px;color:var(--dim);font-size:13px">Punktestand: ' + pts.map(function (x) { return (x.k === 'player' ? '<b style="color:var(--accent)">Du</b>' : esc(x.k)) + ' ' + x.v; }).join(' · ') + '</div>';
@@ -564,7 +730,7 @@
     var steps = arr(cur.steps);
     var allDone = steps.length && steps.every(function (s) { return s.done; });
     var rw = cur.reward || {};
-    html += '<div class="tz-book"><div class="tz-paper"><div class="no">MENÜHEFT ' + esc(cur.number) + ' · KAPITEL ' + esc(cur.chapter) + '</div><h2>' + esc(cur.name) + '</h2><p>' + esc(cur.intro) + '</p>' +
+    html += '<div class="tz-book tz-board"><div class="tz-paper"><div class="no">MENÜHEFT ' + esc(cur.number) + ' · KAPITEL ' + esc(cur.chapter) + '</div><h2>' + esc(cur.name) + '</h2><p>' + esc(cur.intro) + '</p>' +
       steps.map(function (s) {
         return '<div class="step"><span class="chk' + (s.done ? ' on' : '') + '">' + (s.done ? '✓' : '') + '</span><div style="flex:1">' + esc(s.label) +
           (s.need > 1 ? ' <b>(' + esc(Math.min(s.have, s.need)) + '/' + esc(s.need) + ')</b>' : '') + (s.hint && !s.done ? '<div class="hint">' + esc(s.hint) + '</div>' : '') + '</div></div>';
@@ -573,9 +739,10 @@
       (arr(cur.unlocks).length ? '<br>Schaltet frei: ' + arr(cur.unlocks).map(esc).join(', ') : '') + '</p>' +
       (cur.status === 'next' ? '<button class="tz-btn primary" data-act="cafeAccept" data-arg="' + cur.id + '">Heft annehmen</button>' : '') +
       (cur.status === 'active' && allDone ? '<button class="tz-btn primary" data-act="cafeComplete" data-arg="' + cur.id + '">Heft abgeben</button>' : '') +
-      '</div><div><div class="tz-panel"><h3 style="margin-top:0">Alle Hefte</h3><div class="tz-bookList">' + books.map(function (b) {
-        return '<div class="' + esc(b.status) + '">' + esc(b.number) + '<br>' + (b.status === 'locked' ? '???' : esc(b.name)) + '</div>';
-      }).join('') + '</div></div></div></div>';
+      '</div><div class="tz-shelf"><h3>Alle Hefte</h3><div class="tz-covers">' + books.map(function (b, i) {
+        return '<div class="tz-cover ' + esc(b.status) + '" style="--h:' + ((i * 37 + 10) % 360) + '"><span class="n">' + esc(b.number) + '</span>' +
+          '<span class="t">' + (b.status === 'locked' ? '' : esc(b.name)) + '</span>' + (b.status === 'done' ? '<span class="stamp">Erledigt</span>' : '') + '</div>';
+      }).join('') + '</div></div></div>';
     return html;
   };
 
@@ -589,9 +756,10 @@
 
   App.prototype.scr_world2 = function (d) {
     var levels = arr(d.levels), tracks = arr(d.tracks), rec = d.rec;
-    var html = this.head('Freie Fahrt & Strecken', 'Kilometer zählen fürs Tagesziel (' + esc(this.state.dailyGoal || 42) + ' km = Bonuslos).') +
-      '<div class="tz-grid">' + levels.map(function (l) {
-        return '<div class="tz-tile c-fun" style="height:110px" data-act="freeDrive" data-arg="' + esc(l.level) + '"><h3>' + esc(l.level) + '</h3><p>' + esc(l.tracks) + ' Strecken</p><div class="tz-ico">' + ICONS.map + '</div></div>';
+    var html = this.head('Freie Fahrt & Strecken', 'Mit deinem Auto frei fahren. Kilometer zählen fürs Tagesziel (' + esc(this.state.dailyGoal || 42) + ' km = Bonuslos).') +
+      '<div class="tz-lvgrid">' + levels.map(function (l) {
+        return '<div class="tz-lvcard" data-act="freeDrive" data-arg="' + esc(l.level) + '">' + pvImg(l.preview || '', 'map') +
+          '<div class="bd"><div class="nm">' + esc(l.title || l.level) + '</div><div class="sub">' + esc(l.tracks) + ' Strecken</div></div></div>';
       }).join('') + '</div>' +
       '<h2 style="margin:24px 0 10px">Streckenrekorder</h2><div class="tz-panel">' +
       (rec ? '<b>Aufnahme läuft: ' + esc(rec.name) + '</b> · ' + esc(rec.cps) + ' Checkpoints · ' + esc(rec.grid) + ' Startplätze<div class="row" style="display:flex;gap:8px;margin-top:10px">' +
@@ -600,7 +768,7 @@
         : 'Fahre eine Strecke ab und setze Checkpoints (eigene Taste belegbar). Gespeicherte Strecken stehen für Rennen mit Platzhalter-Strecken zur Verfügung.<div class="row" style="display:flex;gap:8px;margin-top:10px">' +
         '<button class="tz-btn" data-act="recStart" data-arg="1">Rundkurs aufnehmen</button><button class="tz-btn" data-act="recStart" data-arg="0">Sprint aufnehmen</button></div>') + '</div>' +
       '<h2 style="margin:24px 0 10px">Bekannte Strecken (' + tracks.length + ')</h2><div class="tz-panel"><table class="tz-table"><tr><th>Name</th><th>Karte</th><th>Art</th><th>Länge</th><th>Bestzeit</th></tr>' +
-      tracks.map(function (t) { return '<tr><td>' + esc(t.name) + '</td><td>' + esc(t.level) + '</td><td>' + (t.closed ? 'Rundkurs' : 'Sprint') + ' · ' + esc(t.surface) + '</td><td>' + num((t.lengthM || 0) / 1000, 2) + ' km</td><td>' + (t.best ? time(t.best) : '–') + '</td></tr>'; }).join('') +
+      tracks.map(function (t) { return '<tr><td>' + esc(t.name) + '</td><td>' + esc(t.levelTitle || t.level) + '</td><td>' + (t.closed ? 'Rundkurs' : 'Sprint') + ' · ' + esc(SURF_DE[t.surface] || t.surface || '') + '</td><td>' + num((t.lengthM || 0) / 1000, 2) + ' km</td><td>' + (t.best ? time(t.best) : '–') + '</td></tr>'; }).join('') +
       '</table></div>';
     return html;
   };
@@ -617,7 +785,30 @@
       '<label>Hardcore</label><div class="tz-choice">' + opt('hardcore', 'false', 'Aus', !!m.hardcore) + opt('hardcore', 'true', 'An (immer Rennwochenende, kein Neustart)', !!m.hardcore) + '</div>' +
       '<label>Spiel pausieren im Menü</label><div class="tz-choice">' + opt('pauseInHub', 'true', 'Ja', st.pauseInHub !== false) + opt('pauseInHub', 'false', 'Nein', st.pauseInHub !== false) + '</div>' +
       '<label>Musik-Lautstärke</label><div class="tz-choice">' + [0, 0.2, 0.45, 0.7].map(function (v) { return '<div class="' + (Math.abs(Audio_.musicVol - v) < 0.01 ? 'on' : '') + '" data-act="musicVol" data-arg="' + v + '">' + (v === 0 ? 'Aus' : Math.round(v * 100) + '%') + '</div>'; }).join('') + '</div>' +
-      '<div style="margin-top:20px;display:flex;gap:10px"><button class="tz-btn" data-act="save">Jetzt speichern</button><button class="tz-btn" data-act="toTitle">Spielstand wechseln</button></div></div>';
+      '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><button class="tz-btn" data-act="save">Jetzt speichern</button><button class="tz-btn" data-act="toTitle">Spielstand wechseln</button>' +
+      '<span style="flex:1"></span><button class="tz-btn" data-act="go" data-arg="changelog">Changelog</button><button class="tz-btn" data-act="bugReport">Fehlerbericht erstellen</button></div></div>';
+  };
+
+  // Changelog: CHANGELOG.md, jede "## Version" ein aufklappbarer Abschnitt, neueste offen
+  App.prototype.scr_changelog = function (d) {
+    function inline(t) { return esc(t).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>'); }
+    var out = '', open = false, list = false, first = true;
+    String(d.text || '').split(/\r?\n/).forEach(function (raw) {
+      var l = raw.trim();
+      if (/^- /.test(l)) { if (!list) { out += '<ul>'; list = true; } out += '<li>' + inline(l.slice(2)) + '</li>'; return; }
+      if (list) { out += '</ul>'; list = false; }
+      if (/^## /.test(l)) { if (open) out += '</details>'; out += '<details class="tz-cl"' + (first ? ' open' : '') + '><summary>' + inline(l.slice(3)) + '</summary>'; open = true; first = false; }
+      else if (/^### /.test(l)) out += '<h4>' + inline(l.slice(4)) + '</h4>';
+      else if (l && !/^# /.test(l)) out += '<p>' + inline(l) + '</p>';
+    });
+    if (list) out += '</ul>';
+    if (open) out += '</details>';
+    return this.head('Changelog', 'Was sich in Turismo Karriere geändert hat') + '<div class="tz-panel tz-changelog" style="max-width:900px">' + (out || '<p>Kein Changelog gefunden.</p>') + '</div>';
+  };
+  App.prototype.showBugReport = function () {
+    this.modalShow('<h2>Fehlerbericht erstellen</h2><p>Schreib kurz, was passiert ist (optional). Die Mod speichert dann <b>bugreport.txt</b> mit Log und Spielstand. Diese eine Datei schickst du mir.</p>' +
+      '<textarea data-el="bugNote" rows="4" style="width:100%;box-sizing:border-box" placeholder="z. B. Nach dem Ziel blieb der Bildschirm schwarz"></textarea>' +
+      '<div class="actions"><button class="tz-btn" data-act="modalClose">Abbrechen</button><button class="tz-btn primary" data-act="bugReportSend">Bericht speichern</button></div>');
   };
 
   App.prototype.scr_diag = function (d) {
@@ -635,8 +826,12 @@
     switch (act) {
       case 'back': this.back(); break;
       case 'home': this.home(); break;
-      case 'close': this.call('hub', { visible: false }); break;
+      case 'close': this.call('drive').catch(function () {}); break;
       case 'guide': this.showGuide(); break;
+      case 'pinLocked':
+        var lp = this.worldPlaces().filter(function (x) { return x.id === arg; })[0];
+        this.mapSelect(arg); Audio_.sfx('ui_error');
+        this.toast((lp ? lp.name + ': ' : '') + ((lp && lp.hint) || 'noch gesperrt. Aufgabenhefte im Café schalten neue Orte frei.'), 'error'); break;
       case 'guideDone': this.closeModal(); if (this.state && this.state.firstVisit) { this.state.firstVisit = false; this.call('setting', { key: 'introSeen', value: true }).catch(function () {}); } break;
       case 'go': this.go(arg, { arg2: arg2, carId: arg === 'car' ? arg2 : undefined, brand: arg === 'showroom' ? arg2 : undefined }); break;
       case 'goWorkshop':
@@ -669,6 +864,10 @@
           self.call('convert', { carId: arg, key: arg2 }).then(function () { return self.refreshState(); }).then(function () { self.reload(); });
         });
         break;
+      case 'offer': this.showOffer(arg, arg2); break;
+      case 'garageSel': this.ui.garageSel = arg; this.render(); break;
+      case 'garageSort': this.ui.garageSort = arg; this.render(); break;
+      case 'closeModal': this.closeModal(); break;
       case 'buy':
         this.confirm('Kaufen?', 'Das Fahrzeug wird in deine Garage gestellt.', function () {
           self.call('buy', { kind: arg, id: arg2 }).then(function (car) {
@@ -708,6 +907,13 @@
         this.call('setting', { key: arg, value: v }).then(function (s) { self.state = s; self.render(); });
         break;
       case 'musicVol': Audio_.setMusicVolume(+arg); this.render(); break;
+      case 'bugReport': this.showBugReport(); break;
+      case 'bugReportSend':
+        var note = this.el.modal.querySelector('[data-el=bugNote]');
+        this.call('bugReport', { note: note ? note.value : '' }).then(function (r) {
+          self.modalShow('<h2>Fehlerbericht gespeichert</h2><p>Die Datei liegt im BeamNG-Userordner unter:</p><p><code>' + esc((r && r.path) || 'settings/turismo/logs/bugreport.txt') + '</code></p>' +
+            '<div class="actions"><button class="tz-btn primary" data-act="modalClose">OK</button></div>');
+        }); break;
       case 'save': this.call('save').then(function () { self.toast('Gespeichert', 'info'); }); break;
       case 'toTitle': this.stack = [{ name: 'title', params: {} }]; this.load(); break;
       case 'rescan': this.call('rescan').then(function () { self.reload(); }); break;
@@ -732,7 +938,7 @@
   App.prototype.refreshState = function () { var self = this; return this.call('state').then(function (s) { self.state = s; self.renderTop(); }); };
 
   // ------------------------------------------------------------------ modal & toasts
-  App.prototype.modalShow = function (html) { this.modal = true; this.el.modal.firstChild.innerHTML = html; this.el.modal.classList.remove('tz-hidden'); };
+  App.prototype.modalShow = function (html, cls) { this.modal = true; this.el.modal.firstChild.className = cls || ''; this.el.modal.firstChild.innerHTML = html; this.el.modal.classList.remove('tz-hidden'); };
   App.prototype.showGuide = function () {
     this.modalShow('<div class="tz-guide"><h2>Willkommen bei Turismo</h2>' +
       '<p>Du startest mit wenig Geld und ohne Auto. Ziel: dir eine Garage voller Autos erfahren und die großen Meisterschaften gewinnen.</p>' +
@@ -768,6 +974,7 @@
   App.prototype.onPhase = function (d) {
     var self = this;
     this.phase = d.phase;
+    if (d.phase === 'idle' || d.phase === 'loading') { this.trackMap = null; this._delta = null; }
     if (d.phase === 'idle') { this.hud = {}; this.banner = null; this.lights = null; this.renderHud(); return; }
     var titles = {
       loading: [d.title || 'Rennen', 'Strecke wird geladen …'], intro: [d.track || d.title, (d.laps ? d.laps + (d.laps === 1 ? ' Runde' : ' Runden') + ' · ' : '') + (d.title || '')],
@@ -838,13 +1045,14 @@
       if (r.pos) html += '<div class="tz-hbox tz-hpos"><div><div class="lab">Position</div><div class="big tz-num">' + r.pos + '<small>/' + (r.total || '?') + '</small></div></div>' +
         '<div><div class="lab">Runde</div><div class="lap tz-num">' + (r.lap || 1) + '/' + (r.laps || 1) + '</div></div></div>';
       html += '<div class="tz-hbox tz-htimes" style="' + (r.pos ? '' : 'top:22px') + '"><div><span>Runde</span><span class="cur tz-num">' + time(r.lapTime) + '</span></div>' +
+        (r.delta != null ? '<div><span>Δ Beste</span><span class="tz-num ' + (r.delta > 0 ? 'bad' : 'good') + '">' + (r.delta > 0 ? '+' : '−') + num(Math.abs(r.delta), 2) + '</span></div>' : '') +
         '<div><span>Letzte</span><span class="tz-num">' + time(r.lastLap) + '</span></div><div><span>Beste</span><span class="tz-num" style="color:var(--accent2)">' + time(r.bestLap) + '</span></div>' +
         (r.target ? '<div><span>Ziel</span><span class="tz-num">' + time(r.target) + '</span></div>' : '') + '</div>';
       var st = arr(r.standings);
       if (st.length > 1) {
         var me = 0; st.forEach(function (x, i) { if (x.isPlayer) me = i; });
-        var from = Math.max(0, Math.min(st.length - 8, me - 3));
-        html += '<div class="tz-hbox tz-hstand">' + st.slice(from, from + 8).map(function (x) {
+        var rows = 5, from = Math.max(0, Math.min(st.length - rows, me - 2));
+        html += '<div class="tz-hbox tz-hstand">' + st.slice(from, from + rows).map(function (x) {
           return '<div class="' + (x.isPlayer ? 'me' : '') + '"><span class="tz-num">' + x.pos + '</span><span>' + esc(x.isPlayer ? 'Du' : x.name) + '</span><b class="tz-num">' + (x.pos === 1 ? 'Führung' : (x.gap != null ? gap(x.gap) : '')) + '</b></div>';
         }).join('') + '</div>';
       }
@@ -852,6 +1060,8 @@
         html += '<div class="tz-hbox tz-hgaps">' + (r.gapAhead != null ? '<div class="g ahead"><b class="tz-num">' + gap(-r.gapAhead) + '</b>' + esc(r.nameAhead || '') + '</div>' : '') +
           (r.gapBehind != null ? '<div class="g behind"><b class="tz-num">' + gap(r.gapBehind) + '</b>' + esc(r.nameBehind || '') + '</div>' : '') + '</div>';
       }
+      if (r.delta != null && this.phase !== 'formation') html += '<div class="tz-hdelta tz-num ' + (r.delta > 0 ? 'bad' : 'good') + '">' + (r.delta > 0 ? '+' : '−') + num(Math.abs(r.delta), 2) + '</div>';
+      if (this.trackMap) html += minimapSvg(this.trackMap, arr(r.cars));
       if (r.progress != null) html += '<div class="tz-hbox tz-hprog"><i style="width:' + (r.progress * 100).toFixed(1) + '%"></i></div>';
     }
     if (h.session && (this.phase === 'practice' || this.phase === 'qualifying')) {
@@ -904,27 +1114,78 @@
     this.renderSpeedo();
   };
 
+  var SEGS = 32;
   App.prototype.renderSpeedo = function () {
     var box = this.el.hud.querySelector('[data-el=speedo]');
     if (!box) return;
     var t = this.tele || { speed: (this.hud.test && this.hud.test.speed) || (this.hud.dragRun && this.hud.dragRun.speed) || 0, rpm: 0, maxrpm: 7000, gear: '' };
-    if (!this._speedoBuilt) {
-      box.innerHTML = '<svg viewBox="0 0 230 230"><circle cx="115" cy="115" r="100" fill="rgba(6,12,26,.78)" stroke="rgba(130,170,255,.25)" stroke-width="2"/>' +
-        '<path d="' + arcPath(115, 115, 88, 135, 405) + '" stroke="rgba(255,255,255,.1)" stroke-width="12" fill="none" stroke-linecap="round"/>' +
-        '<path data-el="rpmArc" d="" stroke="url(#tzg)" stroke-width="12" fill="none" stroke-linecap="round"/>' +
-        '<defs><linearGradient id="tzg" x1="0" x2="1"><stop offset="0" stop-color="#7b6cff"/><stop offset=".7" stop-color="#36d1ff"/><stop offset="1" stop-color="#ff5d6c"/></linearGradient></defs></svg>' +
-        '<div class="spd tz-num" data-el="spd">0</div><div class="unit">KM/H</div><div class="gear" data-el="gear">N</div>';
-      this._speedoBuilt = true;
+    var maxrpm = t.maxrpm || 7000, red = 0.88;
+    if (!this._speedoBuilt || this._speedoMax !== maxrpm) {
+      var segs = '', marks = '', k1 = Math.ceil(maxrpm / 1000);
+      for (var i = 0; i < SEGS; i++) segs += '<i class="' + ((i + 1) / SEGS > red ? 'red' : '') + '"></i>';
+      for (var k = 0; k <= k1; k++) if (k * 1000 <= maxrpm) marks += '<span style="left:' + (k * 1000 / maxrpm * 100).toFixed(1) + '%">' + k + '</span>';
+      box.innerHTML = '<div class="row"><div class="gear" data-el="gear">N</div><div class="spdbox"><div class="spd tz-num" data-el="spd">0</div><div class="unit">km/h</div></div></div>' +
+        '<div class="revs" data-el="revs">' + segs + '</div><div class="marks">' + marks + '</div><div class="rpm tz-num"><b data-el="rpm">0</b> U/min ×1000</div>';
+      this._speedoBuilt = true; this._speedoMax = maxrpm;
     }
-    var frac = Math.max(0, Math.min(1, (t.rpm || 0) / (t.maxrpm || 7000)));
-    box.querySelector('[data-el=rpmArc]').setAttribute('d', frac > 0.005 ? arcPath(115, 115, 88, 135, 135 + 270 * frac) : '');
+    var frac = Math.max(0, Math.min(1, (t.rpm || 0) / maxrpm));
+    var lit = Math.round(frac * SEGS), cells = box.querySelector('[data-el=revs]').children;
+    for (var j = 0; j < cells.length; j++) cells[j].classList.toggle('on', j < lit);
     box.querySelector('[data-el=spd]').textContent = Math.round(t.speed || 0);
+    box.querySelector('[data-el=rpm]').textContent = num((t.rpm || 0) / 1000, 1);
     var g = box.querySelector('[data-el=gear]');
     var gear = t.gear;
     if (typeof gear === 'number') gear = gear === 0 ? 'N' : gear < 0 ? 'R' : String(gear);
     g.textContent = gear == null ? '' : gear;
-    g.classList.toggle('shift', frac > 0.92);
+    box.classList.toggle('shift', frac > red);
   };
+
+  // live delta to the best lap: record (lap progress -> lap time) samples, keep the best lap's samples as reference
+  App.prototype.trackDelta = function (d) {
+    if (!d || d.phase !== 'racing' || d.progress == null || d.lapTime == null) { if (d) d.delta = null; return; }
+    var D = this._delta || (this._delta = { lap: d.lap, cur: [], ref: null, refTime: null });
+    if (d.lap !== D.lap) {
+      // previous lap just finished: keep its samples if it is the new best
+      if (d.lastLap != null && d.bestLap != null && Math.abs(d.lastLap - d.bestLap) < 0.002 && D.cur.length > 10 && (D.refTime == null || d.bestLap < D.refTime)) {
+        D.ref = D.cur; D.refTime = d.bestLap;
+      }
+      D.lap = d.lap; D.cur = [];
+    }
+    var last = D.cur[D.cur.length - 1];
+    // ignore the wrap-around jitter near the line (progress still ~1 right after the lap counter switched)
+    if (!(d.lapTime < 4 && d.progress > 0.5) && (!last || d.progress > last[0])) D.cur.push([d.progress, d.lapTime]);
+    d.delta = null;
+    if (D.ref && d.lapTime > 2 && !(d.lapTime < 4 && d.progress > 0.5)) {
+      var ref = D.ref, lo = 0, hi = ref.length - 1;
+      if (d.progress < ref[0][0] || d.progress > ref[hi][0]) return;
+      while (hi - lo > 1) { var mid = (lo + hi) >> 1; if (ref[mid][0] <= d.progress) lo = mid; else hi = mid; }
+      var a = ref[lo], b = ref[hi], f = b[0] > a[0] ? (d.progress - a[0]) / (b[0] - a[0]) : 0;
+      d.delta = d.lapTime - (a[1] + (b[1] - a[1]) * f);
+    }
+  };
+
+  function prepMap(d) {
+    var pts = arr(d && d.pts);
+    if (pts.length < 2) return null;
+    var x0 = Infinity, y0 = Infinity, x1 = -Infinity, y1 = -Infinity;
+    pts.forEach(function (p) { x0 = Math.min(x0, p[0]); x1 = Math.max(x1, p[0]); y0 = Math.min(y0, p[1]); y1 = Math.max(y1, p[1]); });
+    var size = Math.max(x1 - x0, y1 - y0, 1), pad = 12, S = 176 - 2 * pad;
+    var ox = pad + (S - (x1 - x0) / size * S) / 2, oy = pad + (S - (y1 - y0) / size * S) / 2;
+    // world y points north, screen y points down
+    var tf = function (x, y) { return [ox + (x - x0) / size * S, 176 - (oy + (y - y0) / size * S)]; };
+    var path = pts.map(function (p, i) { var q = tf(p[0], p[1]); return (i ? 'L' : 'M') + q[0].toFixed(1) + ' ' + q[1].toFixed(1); }).join('') + (d.closed ? 'Z' : '');
+    var st = tf(pts[0][0], pts[0][1]);
+    return { path: path, tf: tf, start: st };
+  }
+  function minimapSvg(m, cars) {
+    var dots = cars.slice().sort(function (a, b) { return a[2] - b[2]; }).map(function (c) {
+      var q = m.tf(c[0], c[1]);
+      return c[2] ? '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="6.5" class="me"/>'
+        : '<circle cx="' + q[0].toFixed(1) + '" cy="' + q[1].toFixed(1) + '" r="4.5" class="ai"/>';
+    }).join('');
+    return '<div class="tz-hbox tz-minimap"><svg viewBox="0 0 176 176"><path d="' + m.path + '" class="trk2"/><path d="' + m.path + '" class="trk"/>' +
+      '<rect x="' + (m.start[0] - 4).toFixed(1) + '" y="' + (m.start[1] - 4).toFixed(1) + '" width="8" height="8" class="sf"/>' + dots + '</svg></div>';
+  }
 
   function arcPath(cx, cy, r, a0, a1) {
     function pt(a) { var rad = (a - 90) * Math.PI / 180; return [cx + r * Math.cos(rad), cy + r * Math.sin(rad)]; }
@@ -953,7 +1214,7 @@
       if (rw.seriesComplete) lines.push('<div>Serie<b>abgeschlossen</b></div>');
       if (rw.championship) lines.push('<div>Meisterschaft<b>Platz ' + esc(rw.championship.position || '?') + '</b></div>');
       var isTime = list.some(function (x) { return x.time != null; });
-      html = '<div style="display:flex;align-items:flex-end;gap:24px"><div class="pos">' + (me.dnf && !me.time && !me.score ? 'DNF' : (me.pos || '–')) + '</div><div><h1>' + (me.pos === 1 ? 'Sieg!' : me.pos <= 3 ? 'Podium!' : 'Rennende') + '</h1>' +
+      html = '<div style="display:flex;align-items:flex-end;gap:24px">' + (me.pos >= 1 && me.pos <= 3 && !me.dnf ? '<img class="tz-trophy" src="' + BASE + 'art/trophy_' + ['gold', 'silver', 'bronze'][me.pos - 1] + '.png" alt="">' : '') + '<div class="pos">' + (me.dnf && !me.time && !me.score ? 'DNF' : (me.pos || '–')) + '</div><div><h1>' + (me.pos === 1 ? 'Sieg!' : me.pos <= 3 ? 'Podium!' : 'Rennende') + '</h1>' +
         '<div style="color:var(--dim)">' + (d.cleanRace ? 'Saubere Fahrt' : 'Kontakt registriert') + '</div></div></div>' +
         '<div class="tz-rewards">' + lines.join('') + '</div>' +
         '<div class="tz-panel"><table class="tz-table"><tr><th>Pos</th><th>Fahrer</th><th>Auto</th><th>' + (isTime ? 'Zeit' : 'Wertung') + '</th><th>Beste Runde</th></tr>' + list.map(function (x) {

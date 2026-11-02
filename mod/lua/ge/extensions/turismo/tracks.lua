@@ -23,6 +23,90 @@ local function levelFromPath(p)
   return p:match('^/?levels/([^/]+)/') or p:match('/missions/([^/]+)/') or p:match('tracks/([^/]+)/')
 end
 
+---------------------------------------------------------------------------
+-- readable names: BeamNG stores titles as translation keys
+-- ("quickrace.industrial.track_rally.title", "levels.italy.info.title")
+---------------------------------------------------------------------------
+-- German names for the vanilla maps, used when the game gives no title
+local KNOWN_LEVELS = {
+  west_coast_usa = 'West Coast, USA', east_coast_usa = 'East Coast, USA', italy = 'Italien', utah = 'Utah, USA',
+  johnson_valley = 'Johnson Valley', jungle_rock_island = 'Jungle Rock Island', small_island = 'Small Island, USA',
+  hirochi_raceway = 'Hirochi Raceway', automation_test_track = 'Automation Testgelände', industrial = 'Industriegelände',
+  derby = 'Derby-Arenen', driver_training = 'Fahrsicherheitszentrum', gridmap_v2 = 'Gridmap', cliff = 'Klippe',
+  autotest = 'Autotest-Gelände', smallgrid = 'Kleine Gridmap', garage_v2 = 'Garage',
+}
+
+local function translate(key)
+  if type(key) ~= 'string' or key == '' then return nil end
+  if type(translateLanguage) == 'function' then
+    local ok, s = pcall(translateLanguage, key, key, true)
+    if ok and type(s) == 'string' and s ~= '' and s ~= key then return s end
+  end
+  return nil
+end
+
+-- "track_container_chaos" -> "Container Chaos"
+local function pretty(s)
+  s = tostring(s or ''):gsub('^track_', ''):gsub('[_%-]+', ' ')
+  s = s:gsub("(%a)([%w']*)", function(a, b) return a:upper() .. b end)
+  return s
+end
+M.pretty = pretty
+
+-- a name that is really a translation key: translate it, otherwise make it readable
+function M.niceName(name, fallback)
+  if type(name) ~= 'string' or name == '' then return fallback end
+  if not name:find('%.') or name:find(' ') then return name end
+  local t = translate(name)
+  if t then return t end
+  local seg = name:gsub('%.title$', ''):gsub('%.name$', ''):match('([^%.]+)$')
+  return seg and pretty(seg) or fallback or name
+end
+
+local levelCache = nil
+function M.levelTable()
+  if levelCache then return levelCache end
+  levelCache = {}
+  if core_levels and core_levels.getList then
+    local ok, lst = pcall(core_levels.getList)
+    if ok and type(lst) == 'table' then
+      for _, lv in ipairs(lst) do
+        local name = lv.levelName or (lv.misFilePath and lv.misFilePath:match('/levels/([^/]+)/'))
+        if name then
+          local prev = (type(lv.previews) == 'table' and lv.previews[1]) or lv.preview
+          if type(prev) == 'string' and prev ~= '' and not prev:find('/') then prev = '/levels/' .. name .. '/' .. prev end
+          levelCache[U().lower(name)] = { name = name, title = translate(lv.title), preview = prev }
+        end
+      end
+    end
+  end
+  return levelCache
+end
+
+-- { name = folder name as the game knows it, title = readable name, preview = image path or nil }
+local infoCache = {}
+function M.levelInfo(level)
+  local key = U().lower(level or '')
+  if infoCache[key] then return infoCache[key] end
+  local e = M.levelTable()[key] or {}
+  local preview = e.preview
+  if not preview and FS and FS.fileExists then
+    for _, f in ipairs({ key .. '_preview.jpg', key .. '_preview1.jpg', 'preview.jpg', key .. '_preview.png', 'preview.png' }) do
+      local p = '/levels/' .. (e.name or level or '') .. '/' .. f
+      local ok, ex = pcall(function() return FS:fileExists(p) end)
+      if ok and ex then preview = p break end
+    end
+  end
+  infoCache[key] = { name = e.name or level, title = e.title or KNOWN_LEVELS[key] or pretty(level), preview = preview }
+  return infoCache[key]
+end
+
+-- race files use different spellings ("Industrial" and "industrial"): use the game's folder name
+function M.canonicalLevel(level)
+  local e = M.levelTable()[U().lower(level or '')]
+  return e and e.name or level
+end
+
 local function idFromPath(p)
   local s = p:gsub('^/', ''):gsub('%.race%.json$', ''):gsub('[^%w]+', '_')
   return U().lower(s)
@@ -95,11 +179,11 @@ function M.rebuild()
       seen[key] = true
       local info = inspectRaceFile(f)
       if info and info.nodes >= 2 then
-        local level = levelFromPath(f) or 'unknown'
+        local level = M.canonicalLevel(levelFromPath(f) or 'unknown')
         local t = {
           id = idFromPath(f), file = f, level = level, source = source,
-          name = (info.name and info.name ~= '' and info.name ~= 'New Race') and info.name or f:match('([^/]+)%.race%.json$'),
-          description = info.description,
+          name = M.niceName((info.name and info.name ~= '' and info.name ~= 'New Race') and info.name or nil, pretty(f:match('([^/]+)%.race%.json$'))),
+          description = M.niceName(info.description, nil),
           closed = info.closed, lengthM = info.lengthM, grid = info.grid, nodes = info.nodes,
           defaultLaps = info.defaultLaps, surface = guessSurface(level, f), tags = {},
         }

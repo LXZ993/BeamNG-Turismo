@@ -9,10 +9,10 @@
 
 local M = {}
 
-M.VERSION = '0.1.0'
+M.VERSION = '0.1.4' -- muss zu data/turismo/build.json "modVersion" und CHANGELOG.md passen
 
 M.MODULES = {
-  'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',
+  'turismo_logger', 'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',
   'turismo_profile', 'turismo_garage', 'turismo_condition', 'turismo_services', 'turismo_dealer',
   'turismo_licenses', 'turismo_tracks', 'turismo_aiDirector', 'turismo_race', 'turismo_tests',
   'turismo_modes', 'turismo_drag', 'turismo_events', 'turismo_cafe', 'turismo_progression',
@@ -34,6 +34,39 @@ local function levelLoaded()
 end
 M.levelLoaded = levelLoaded
 
+-- BeamNG draws the minimap (Navigation app, or another mod's minimap) with imgui on top of every HTML
+-- layer, so it would show through the world menu. While the menu is open: hide it and hold back new
+-- transforms; when the menu closes, put the last known transform back and ask the apps to resend theirs.
+local mmTimer = 0
+local mmGuard = { wrapped = nil, orig = nil, last = nil, blocked = false }
+local function minimapGuard(block)
+  local mm = rawget(_G, 'ui_apps_minimap_minimap')
+  if not mm or type(mm.setDrawTransform) ~= 'function' then return end
+  if mmGuard.wrapped ~= mm then
+    local orig = mm.setDrawTransform
+    mmGuard.wrapped, mmGuard.orig, mmGuard.last, mmGuard.blocked = mm, orig, nil, false
+    mm.setDrawTransform = function(...)
+      mmGuard.last = { ... }
+      if not mmGuard.blocked then return orig(...) end
+    end
+  end
+  if block == mmGuard.blocked then return end
+  mmGuard.blocked = block
+  if block then
+    pcall(mm.hide)
+  else
+    if mmGuard.last then pcall(mmGuard.orig, unpack(mmGuard.last)) end
+    if guihooks then guihooks.trigger('onMinimapSettingsChanged') end
+  end
+  U().log('D', 'Minikarte %s', block and 'ausgeblendet (Menü offen)' or 'wieder an')
+end
+
+-- own loading cover: keeps the world menu from flashing up before the map loads
+local function loadingCover(on, text)
+  if guihooks then guihooks.trigger('TurismoLoading', { visible = on and true or false, text = text }) end
+end
+M.loadingCover = loadingCover
+
 ---------------------------------------------------------------------------
 -- bootstrap
 ---------------------------------------------------------------------------
@@ -44,15 +77,20 @@ local function loadModules()
     end
     if setExtensionUnloadMode then setExtensionUnloadMode(name, 'manual') end
   end
+  X('logger').start()
   -- data must be available before anything reads it
   X('data').reload()
+  X('logger').checkData()
+  for _, name in ipairs(M.MODULES) do
+    if name ~= 'turismo_logger' then X('logger').protect(name) end
+  end
 end
 
 function M.onExtensionLoaded()
   if setExtensionUnloadMode then setExtensionUnloadMode(M, 'manual') end
   loadModules()
   M.registerPauseButton()
-  log('I', 'turismo', 'Turismo Karriere ' .. M.VERSION .. ' geladen')
+  U().log('I', 'Turismo Karriere %s geladen', M.VERSION)
 end
 
 function M.onUpdate(dtReal, dtSim, dtRaw)
@@ -66,8 +104,12 @@ function M.onUpdate(dtReal, dtSim, dtRaw)
     if X('imguiHub') then X('imguiHub').draw(dtReal) end
   end)
   if not ok then
-    log('E', 'turismo', 'update error: ' .. tostring(err))
+    U().log('E', 'FEHLER in onUpdate: %s | Zustand: %s', tostring(err), X('logger').context())
   end
+  X('logger').onUpdate(dtReal)
+  -- a minimap app may load while the menu is already open
+  mmTimer = (mmTimer or 0) + dtReal
+  if hubVisible and mmTimer > 1 then mmTimer = 0 pcall(minimapGuard, true) end
   stateTimer = stateTimer + dtReal
   if stateDirty and stateTimer > 0.5 then
     stateTimer = 0
@@ -79,8 +121,11 @@ end
 ---------------------------------------------------------------------------
 -- hub visibility
 ---------------------------------------------------------------------------
+
 function M.setHubVisible(v)
   hubVisible = v and true or false
+  pcall(minimapGuard, hubVisible)
+  if hubVisible then loadingCover(false) end
   -- leaving the Turismo menu to drive: make sure BeamNG's own menu is closed too
   if not hubVisible and levelLoaded() and ui_menuManager and ui_menuManager.closeMenu then
     pcall(ui_menuManager.closeMenu)
@@ -103,7 +148,7 @@ function M.toggleHub() M.setHubVisible(not hubVisible) end
 
 -- main menu button "Turismo Karriere": title screen with the save slots
 function M.startCareer()
-  log('I', 'turismo', 'Karriere aus dem Hauptmenü gestartet')
+  U().log('I', 'Karriere aus dem Hauptmenü gestartet')
   M.registerPauseButton()
   -- started from the in-game menu: close it, the Turismo menu takes over
   if levelLoaded() and ui_menuManager and ui_menuManager.closeMenu then pcall(ui_menuManager.closeMenu) end
@@ -129,19 +174,23 @@ function M.onWorldReadyState(state)
   if state == 2 then M.registerPauseButton() end
 end
 
--- after a save slot was loaded/created in the main menu: load the home map,
--- put the active garage car there and open the world menu
-function M.enterCareerWorld()
+-- The career menu runs on top of BeamNG's main menu without a map. A map is only loaded when
+-- the player wants to drive: "Fahren" in the top bar (home map with the active car), a race,
+-- a test or free drive. openHub = true opens the world menu again once the map is ready.
+function M.enterCareerWorld(openHub)
   if levelLoaded() or not S().isLoaded() then return end
   local st = S().get()
   local home = (st.settings and st.settings.homeLevel) or 'west_coast_usa'
+  U().log('I', 'Heimatkarte wird geladen: %s (Menü danach: %s)', home, tostring(openHub == true))
   M.setHubVisible(false) -- keep the loading screen visible
   X('session').loadLevel(home, function()
-    local function show() M.setHubVisible(true) end
+    local function done()
+      if openHub then M.setHubVisible(true) else loadingCover(false) end
+    end
     if X('garage').active() then
-      X('session').spawnPlayerCar(nil, nil, show)
+      X('session').spawnPlayerCar(nil, nil, done)
     else
-      show()
+      done()
     end
   end)
 end
@@ -239,7 +288,7 @@ handlers.newProfile = function(a)
   st.economy.money = eco.startMoney or st.economy.money
   st.settings = st.settings or { pauseInHub = true, homeLevel = eco.homeLevel or 'west_coast_usa', raceLength = 'normal' }
   S().save()
-  if not levelLoaded() then X('session').defer(0.3, M.enterCareerWorld) end
+  -- no map is loaded here: the world menu opens directly over the main menu
   return M.snapshotState()
 end
 
@@ -247,7 +296,7 @@ handlers.loadProfile = function(a)
   if not S().load(a.slot) then error('Spielstand konnte nicht geladen werden', 0) end
   local st = S().get()
   st.settings = st.settings or { pauseInHub = true, homeLevel = 'west_coast_usa', raceLength = 'normal' }
-  if not levelLoaded() then X('session').defer(0.3, M.enterCareerWorld) end
+  -- no map is loaded here: the world menu opens directly over the main menu
   return M.snapshotState()
 end
 
@@ -434,13 +483,17 @@ handlers.freeDrive = function(a)
 end
 handlers.levels = function()
   local res = {}
-  for _, l in ipairs(X('tracks').byLevel()) do res[#res + 1] = { level = l.level, tracks = #l.tracks } end
+  for _, l in ipairs(X('tracks').byLevel()) do
+    local info = X('tracks').levelInfo(l.level)
+    res[#res + 1] = { level = l.level, tracks = #l.tracks, title = info.title, preview = info.preview }
+  end
+  table.sort(res, function(a, b) return tostring(a.title) < tostring(b.title) end)
   return res
 end
 handlers.tracks = function()
   local res = {}
   for _, t in ipairs(X('tracks').all()) do
-    res[#res + 1] = { id = t.id, name = t.name, level = t.level, closed = t.closed, lengthM = t.lengthM,
+    res[#res + 1] = { id = t.id, name = t.name, level = t.level, levelTitle = X('tracks').levelInfo(t.level).title, closed = t.closed, lengthM = t.lengthM,
       grid = t.grid, surface = t.surface, source = t.source, best = S().isLoaded() and S().get().stats.bestLaps[t.id] or nil }
   end
   return res
@@ -451,6 +504,18 @@ handlers.rescan = function()
   X('data').reload()
   return { cars = #X('vehicleDb').all(), tracks = #X('tracks').all() }
 end
+-- Changelog für den Bildschirm "Neuigkeiten". Eigener Mod-Ordner zuerst: /CHANGELOG.md teilen sich alle Mods
+-- (z. B. Hashiriya Battle hat auch eine), deshalb wird die Überschrift geprüft.
+handlers.changelog = function()
+  local candidates = { '/mods/unpacked/turismo_karriere/CHANGELOG.md', '/CHANGELOG.md' }
+  for _, path in ipairs(candidates) do
+    local txt = readFile and readFile(path)
+    if txt and txt:find('^# Changelog Turismo') then return { text = txt, path = path } end
+  end
+  U().log('W', 'Changelog nicht gefunden (%s)', table.concat(candidates, ', '))
+  error('Changelog nicht gefunden', 0)
+end
+
 handlers.diagnostics = function()
   local problems = X('data').validate()
   local missingTracks = {}
@@ -480,20 +545,68 @@ handlers.recorderSave = function()
   return file
 end
 
+-- Fehlerbericht: schreibt settings/turismo/logs/bugreport.txt (die eine Datei, die Tester schicken)
+handlers.bugReport = function(a)
+  local path = X('logger').writeReport(a and a.note)
+  if not path then error('Fehlerbericht konnte nicht geschrieben werden', 0) end
+  return { path = path }
+end
+function M.bugReport(note)
+  local path = X('logger').writeReport(note)
+  if path then M.onTurismoToast('Fehlerbericht gespeichert: ' .. path, 'info') end
+  return path
+end
+
 handlers.hub = function(a) M.setHubVisible(a.visible) return true end
+-- "Fahren" in the top bar: without a map load the home map with the active car first
+handlers.drive = function()
+  if levelLoaded() then M.setHubVisible(false) return true end
+  requireProfile()
+  if not X('garage').active() then error('Du hast noch kein Auto. Kauf eins beim Gebrauchtwagenhändler.', 0) end
+  loadingCover(true, 'Fahrt wird vorbereitet …')
+  X('session').defer(0.2, function() M.enterCareerWorld(false) end)
+  return true
+end
 handlers.sound = function(a) X('audio').play(a.cue) return true end
+
+-- Aktionen, die die UI ständig abfragt: nicht ins Log (sonst wird es unlesbar)
+local QUIET_ACTIONS = { ping = true, state = true, recorderState = true, sound = true, getSlots = true }
+
+-- kurze Zusammenfassung der Argumente für das Log (keine langen Texte)
+local function argSummary(args)
+  if type(args) ~= 'table' then return '' end
+  local parts = {}
+  for k, v in pairs(args) do
+    if type(v) ~= 'table' then
+      local t = tostring(v)
+      if #t > 40 then t = t:sub(1, 40) .. '...' end
+      parts[#parts + 1] = tostring(k) .. '=' .. t
+    end
+  end
+  table.sort(parts)
+  return table.concat(parts, ' ')
+end
 
 function M.uiCall(action, args, reqId)
   local h = handlers[action]
   local res = { reqId = reqId, action = action }
+  if not QUIET_ACTIONS[action] then U().log('I', 'Aktion: %s %s', tostring(action), argSummary(args)) end
   if not h then
     res.ok, res.error = false, 'Unbekannte Aktion: ' .. tostring(action)
+    U().log('W', 'uiCall: unbekannte Aktion %s', tostring(action))
   else
-    local ok, data = pcall(h, args or {})
+    local ok, data = xpcall(h, debug.traceback, args or {})
     res.ok = ok
     if ok then res.data = data else
-      res.error = tostring(data)
-      log('W', 'turismo', 'uiCall ' .. tostring(action) .. ' failed: ' .. tostring(data))
+      local msg = tostring(data)
+      res.error = msg:match('^[^\n]*') or msg
+      -- error('Text', 0) sind erwartete Meldungen an den Spieler (z. B. "Kein Spielstand geladen"), kein Code-Fehler
+      local expected = not msg:find('%.lua:%d+:')
+      if expected then
+        U().log('W', 'uiCall %s abgelehnt: %s', tostring(action), res.error)
+      else
+        U().log('E', 'FEHLER in uiCall %s: %s | Zustand: %s', tostring(action), msg, X('logger').context())
+      end
     end
   end
   if guihooks then guihooks.trigger('TurismoResult', res) end
