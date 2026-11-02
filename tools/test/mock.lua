@@ -111,6 +111,22 @@ local function resolve(p)
 end
 H.resolve = resolve
 
+-- BeamNG's serialize(): Lua literal of a value
+function serialize(v)
+  local t = type(v)
+  if t == 'string' then return string.format('%q', v) end
+  if t == 'number' or t == 'boolean' or t == 'nil' then return tostring(v) end
+  if t == 'table' then
+    local parts = {}
+    for k, x in pairs(v) do
+      local key = type(k) == 'number' and ('[' .. k .. ']') or ('[' .. string.format('%q', k) .. ']')
+      parts[#parts + 1] = key .. '=' .. serialize(x)
+    end
+    return '{' .. table.concat(parts, ',') .. '}'
+  end
+  return 'nil'
+end
+
 function jsonReadFile(p)
   local s = H.readText(resolve(p))
   if not s then return nil end

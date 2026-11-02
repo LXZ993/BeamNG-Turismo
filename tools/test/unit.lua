@@ -265,6 +265,34 @@ H.test('used offers are stable within a rotation window', function()
   H.eq(#a, #b) H.eq(a[1].id, b[1].id)
 end)
 
+H.section = H.section or function(n) print('== ' .. n) end
+print('== 0.40 engine interface')
+H.test('startSlots drops recovery points and puts the default first', function()
+  local function sp(id, name, group, order) return { id = id, name = name, group = group, sortOrder = order } end
+  local path = { defaultStartPosition = 3, startPositions = { sorted = {
+    sp(1, 'Recovery 1', 'recovery', 1), sp(2, 'Grid 2', 'start', 2), sp(3, 'Grid 1', 'start', 3), sp(4, 'Old Recovery', nil, 4) } } }
+  local s = extensions.turismo_util.startSlots(path)
+  H.eq(#s, 2) H.eq(s[1].id, 3) H.eq(s[2].id, 2)
+end)
+H.test('script AI commands start at the car and resend aggression', function()
+  local cmd = extensions.turismo_aiDirector.driveCommand({ script = { { x = 1, y = 2, z = 3 } }, aggression = 0.8, avoidCars = 'on', routeSpeed = 20 })
+  H.truthy(cmd:find('obj:getFrontPosition()', 1, true))
+  H.truthy(cmd:find('ai.setAggression(0.800)', 1, true))
+  H.truthy(cmd:find('ai.setSpeedMode("limit")', 1, true))
+  H.truthy(loadstring(cmd), 'command compiles')
+  local nav = extensions.turismo_aiDirector.driveCommand({ wpTargetList = { 'a', 'b' }, aggression = 0.8 })
+  H.truthy(nav:find('^ai.driveUsingPath%('))
+end)
+
+H.test('drag strips: 0.40 modular format and legacy format', function()
+  local D = extensions.turismo_drag
+  local a = D._readLanes('/levels/dragtest/dragstrips/main.dragData.json')
+  H.eq(#a, 2) H.eq(a[1].stage.x, 0) H.eq(a[2].stage.x, 4)
+  H.truthy(math.abs(a[1].length - 402.34) < 0.01)
+  local b = D._readLanes('/levels/dragtest/legacy.dragData.json')
+  H.eq(#b, 2) H.truthy(math.abs(b[2].length - 201.17) < 0.01)
+end)
+
 print(string.format('== %d ok, %d failed', H.passed, H.failed))
 for _, l in ipairs(H.logs) do if l:sub(1, 1) == 'E' then print('  log ' .. l) end end
 os.exit(H.failed == 0 and 0 or 1)

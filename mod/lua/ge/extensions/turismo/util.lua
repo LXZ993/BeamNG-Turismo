@@ -205,4 +205,20 @@ function M.splitCarKey(key)
   return key, nil
 end
 
+-- grid slots of a gameplay/race path: start positions without the recovery
+-- points (race files list both in startPositions, group = 'recovery'); the
+-- path's defaultStartPosition comes first
+function M.startSlots(path)
+  local out, def = {}, nil
+  local sps = path and path.startPositions
+  for _, sp in ipairs(sps and sps.sorted or {}) do
+    if sp.group ~= 'recovery' and not (sp.name or ''):find('Recovery', 1, true) then
+      if path.defaultStartPosition and sp.id == path.defaultStartPosition then def = sp
+      else out[#out + 1] = sp end
+    end
+  end
+  if def then table.insert(out, 1, def) end
+  return out
+end
+
 return M

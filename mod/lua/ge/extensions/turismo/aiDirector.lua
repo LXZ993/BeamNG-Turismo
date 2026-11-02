@@ -148,12 +148,32 @@ function M.prepare(vehId)
   pcall(send, vehId, 'if ai.setRecoverOnCrash then ai.setRecoverOnCrash(true) end')
 end
 
+-- vehicle-Lua command for ai.driveUsingPath. In 0.40 the script branch of
+-- driveUsingPath teleports the car to script[1] and ignores aggression,
+-- avoidCars and routeSpeed; so script[1] becomes the car's own front position
+-- and orientation (no visible jump) and those settings are sent separately.
+function M.driveCommand(d)
+  if type(d.script) ~= 'table' then
+    return 'ai.driveUsingPath(' .. serialize(d) .. ')'
+  end
+  local extra = {}
+  if d.aggression then extra[#extra + 1] = string.format('ai.setAggression(%.3f)', d.aggression) end
+  if d.avoidCars then extra[#extra + 1] = string.format('ai.setAvoidCars(%q)', d.avoidCars) end
+  if d.routeSpeed then
+    extra[#extra + 1] = string.format('ai.setSpeed(%.2f) ai.setSpeedMode(%q)', d.routeSpeed, d.routeSpeedMode or 'limit')
+  end
+  return 'local d = ' .. serialize(d) .. ' ' ..
+    'local fp, dv, uv = obj:getFrontPosition(), obj:getDirectionVector(), obj:getDirectionVectorUp() ' ..
+    'table.insert(d.script, 1, {x = fp.x, y = fp.y, z = fp.z, dir = {x = dv.x, y = dv.y, z = dv.z}, up = {x = uv.x, y = uv.y, z = uv.z}}) ' ..
+    'ai.driveUsingPath(d) ' .. table.concat(extra, ' ')
+end
+
 local function drivePath(r, extra)
   local d = U().deepcopy(r.drive or {})
   d.aggression = r.aggr
   d.avoidCars = 'on'
   for k, v in pairs(extra or {}) do d[k] = v end
-  send(r.id, 'ai.driveUsingPath(' .. serialize(d) .. ')')
+  send(r.id, M.driveCommand(d))
   send(r.id, 'ai.setRacing(true)')
   send(r.id, 'ai.setParameters(' .. serialize(r.params) .. ')')
 end
@@ -162,7 +182,7 @@ end
 function M.startFormation(speedMs)
   for _, r in pairs(racers) do
     r.mode = 'formation'
-    send(r.id, 'controller.setFreeze(false)')
+    send(r.id, 'controller.setFreeze(0)')
     drivePath(r, { routeSpeed = speedMs or 20, routeSpeedMode = 'limit' })
   end
 end
@@ -216,7 +236,7 @@ function M.update(dt, ctx)
     local c = ctx and ctx[id] or {}
     if r.mode == 'launch' and session.time >= (r.releaseAt or 0) then
       r.mode = 'race'
-      send(id, 'controller.setFreeze(false)')
+      send(id, 'controller.setFreeze(0)')
       drivePath(r)
     end
 

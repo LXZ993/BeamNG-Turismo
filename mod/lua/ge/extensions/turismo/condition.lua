@@ -179,7 +179,7 @@ function M.apply(vehId, car, damageMode)
     fbI = car.usedFallback.integrity or 1
     fbV = car.usedFallback.visual or 1
   end
-  local ok, err = pcall(bridge().executeAction, veh, 'initPartConditions', conds, odoMeters, fbI, fbV)
+  local ok, err = pcall(bridge().executeAction, veh, 'initPartConditions', conds or {}, odoMeters, fbI, fbV)
   if not ok then
     U().log('E', 'condition: apply failed: %s', tostring(err))
     return false

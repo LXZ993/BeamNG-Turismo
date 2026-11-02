@@ -250,7 +250,7 @@ function M._startTrackTest()
     path:onDeserialized(jsonReadFile(track.file))
     path:autoConfig()
     T.path = path
-    local sp = path.startPositions.sorted[1]
+    local sp = extensions.turismo_util.startSlots(path)[1]
     local transform = sp and { startPosition = sp } or nil
     local function onSpawned(vehId)
       T.vehId = vehId
@@ -261,6 +261,7 @@ function M._startTrackTest()
       race:setPath(path)
       race.lapCount = def.laps or 1
       race.useHotlappingApp = false
+      race.useLapTimesApp = false
       race:setVehicleIds({ vehId })
       T.race = race
       local v = veh(vehId)
@@ -368,7 +369,7 @@ local function startDemo()
   end
   local v = veh(T.vehId)
   if v then
-    v:queueLuaCommand('ai.driveUsingPath(' .. serialize({ script = script, aggression = T.def.demoAggression or 0.95 }) .. ')')
+    v:queueLuaCommand(extensions.turismo_aiDirector.driveCommand({ script = script, aggression = T.def.demoAggression or 0.95, avoidCars = 'off' }))
   end
 end
 

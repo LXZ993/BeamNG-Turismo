@@ -1,7 +1,11 @@
 /* Turismo Karriere - BeamNG UI app (AngularJS wrapper around turismo-ui.js).
  * The visible UI is mounted on document.body as a full-screen layer, so the
  * small app box in the layout only shows a status pill. */
-angular.module('beamng.apps').directive('turismoHub', ['StreamsManager', function (StreamsManager) {
+angular.module('beamng.apps').directive('turismoHub', ['$injector', function ($injector) {
+  // 0.40: StreamsManager is a global (vanilla apps use it without injection);
+  // older builds provided it as an Angular service
+  var SM = (typeof StreamsManager !== 'undefined' && StreamsManager) ||
+    ($injector.has && $injector.has('StreamsManager') ? $injector.get('StreamsManager') : { add: function () {}, remove: function () {} });
   var BASE = '/ui/modules/apps/TurismoHub/';
   function loadOnce(id, tag, attrs) {
     return new Promise(function (resolve, reject) {
@@ -14,7 +18,7 @@ angular.module('beamng.apps').directive('turismoHub', ['StreamsManager', functio
     });
   }
   function toLua(v) {
-    if (window.bngApi && bngApi.serializeToLua) return bngApi.serializeToLua(v);
+    if (typeof bngApi !== 'undefined' && bngApi.serializeToLua) return bngApi.serializeToLua(v);
     if (v === null || v === undefined) return 'nil';
     if (typeof v === 'boolean' || typeof v === 'number') return String(v);
     if (typeof v === 'string') return JSON.stringify(v);
@@ -27,7 +31,7 @@ angular.module('beamng.apps').directive('turismoHub', ['StreamsManager', functio
       'border-radius:20px;padding:8px 12px;cursor:pointer;text-align:center;pointer-events:auto" ng-click="toggle()">TURISMO ▸ Menü</div>',
     link: function (scope) {
       var streams = ['electrics', 'engineInfo'];
-      StreamsManager.add(streams);
+      SM.add(streams);
       var reqId = 0, pending = {}, listeners = {}, streamCb = null, root = null;
 
       var bridge = {
@@ -64,7 +68,7 @@ angular.module('beamng.apps').directive('turismoHub', ['StreamsManager', functio
       }).catch(function (e) { console.error('Turismo UI konnte nicht geladen werden', e); });
 
       scope.$on('$destroy', function () {
-        StreamsManager.remove(streams);
+        SM.remove(streams);
         if (root && root.parentNode) root.parentNode.removeChild(root);
       });
     }

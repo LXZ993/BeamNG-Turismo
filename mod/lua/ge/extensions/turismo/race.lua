@@ -81,7 +81,7 @@ end
 ---------------------------------------------------------------------------
 local function gridSlots(path, count)
   local slots = {}
-  for _, sp in ipairs(path.startPositions.sorted or {}) do slots[#slots + 1] = sp end
+  for _, sp in ipairs(U().startSlots(path)) do slots[#slots + 1] = sp end
   if #slots >= count or #slots == 0 then return slots end
   -- generate missing slots behind the last known slot (2-wide, staggered rows)
   local base = slots[1]
@@ -151,7 +151,7 @@ function M._onLevelReady()
   R.closed = path.config.closed
   R.laps = R.closed and (cfg.laps or path.defaultLaps or 3) or 1
 
-  if #path.startPositions.sorted == 0 then syntheticSlot(path, R.poly) end
+  if #U().startSlots(path) == 0 then syntheticSlot(path, R.poly) end
   local total = 1 + #(cfg.field or {})
   R.slots = gridSlots(path, total)
   if #R.slots < total then
@@ -188,6 +188,7 @@ local function newRaceObject(ids, laps, rolling)
   race:setPath(R.path)
   race.lapCount = laps
   race.useHotlappingApp = false
+  race.useLapTimesApp = false
   race.useWaypointAudio = false
   if rolling then race.path.config.rollingStart = true end
   race:setVehicleIds(ids)

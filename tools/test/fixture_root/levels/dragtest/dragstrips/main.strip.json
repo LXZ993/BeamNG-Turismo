@@ -1,0 +1,4 @@
+{"id":"main_strip","name":"Test Strip","lanes":[
+ {"id":"r","laneOrder":2,"waypoints":[{"type":"stage","transform":{"position":[4,0,0],"rotation":[0,0,0,1],"scale":[1,1,1]}},{"type":"endLine","transform":{"position":[4,402.34,0],"rotation":[0,0,0,1],"scale":[1,1,1]}}]},
+ {"id":"l","laneOrder":1,"waypoints":[{"type":"stage","transform":{"position":{"x":0,"y":0,"z":0},"rotation":[0,0,0,1],"scale":[1,1,1]}},{"type":"endLine","transform":{"position":{"x":0,"y":402.34,"z":0},"rotation":[0,0,0,1],"scale":[1,1,1]}}]}
+]}

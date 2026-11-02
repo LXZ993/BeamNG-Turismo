@@ -61,27 +61,58 @@ end
 ---------------------------------------------------------------------------
 local function findStrip(level, file)
   if file and FS:fileExists(file) then return file end
-  local files = FS:findFiles('/levels/' .. level .. '/dragstrips/', '*.dragData.json', -1, true, false) or {}
+  local dir = '/levels/' .. level .. '/dragstrips/'
+  local files = FS:findFiles(dir, '*.dragData.json', -1, true, false) or {}
+  if not files[1] then files = FS:findFiles(dir, '*.strip.json', -1, true, false) or {} end
   return files[1]
 end
 
-local function tv(t) return vec3(t.x or t[1], t.y or t[2], t.z or t[3]) end
+local function tv(t)
+  if type(t) ~= 'table' then return nil end
+  local x, y, z = t.x or t[1], t.y or t[2], t.z or t[3]
+  if not (x and y and z) then return nil end
+  return vec3(x, y, z)
+end
 
+local function wpPos(wp)
+  local tf = type(wp) == 'table' and wp.transform
+  return tf and (tv(tf.position) or tv(tf.pos)) or nil
+end
+
+-- BeamNG 0.40 drag data comes in two shapes:
+--  * modular: <x>.dragData.json { stripId = '<y>.strip.json' } and the strip file
+--    with lanes[].waypoints = array of { type = 'stage'|'endLine'|..., transform = { position } }
+--  * legacy: strip.lanes[].waypoints = { stage = { transform = { pos } }, endLine = ... }
+-- (same rules as gameplay/drag/saveSystem.loadDragStripData, without its scenetree side effects)
 local function readLanes(file)
   local data = jsonReadFile(file)
-  if not data or not data.strip or not data.strip.lanes then return nil end
+  if not data then return nil end
+  local rawLanes
+  if data.stripId then
+    local strip = FS:fileExists(data.stripId) and jsonReadFile(data.stripId) or nil
+    rawLanes = strip and strip.lanes
+  elseif data.strip and data.strip.lanes then
+    rawLanes = data.strip.lanes
+  elseif data.lanes then -- a .strip.json picked directly
+    rawLanes = data.lanes
+  end
+  if type(rawLanes) ~= 'table' then return nil end
+  table.sort(rawLanes, function(a, b) return (a.laneOrder or 0) < (b.laneOrder or 0) end)
   local lanes = {}
-  for i, lane in ipairs(data.strip.lanes) do
-    local wp = lane.waypoints or {}
-    if wp.stage and wp.endLine then
-      local stage = tv(wp.stage.transform.pos)
-      local finish = tv(wp.endLine.transform.pos)
-      local dir = (finish - stage):normalized()
-      lanes[i] = { stage = stage, finish = finish, dir = dir, length = (finish - stage):length() }
+  for _, lane in ipairs(rawLanes) do
+    local wps = {}
+    for k, wp in pairs(lane.waypoints or {}) do
+      local typ = type(k) == 'string' and k or (type(wp) == 'table' and wp.type)
+      if typ then wps[typ] = wp end
+    end
+    local stage, finish = wpPos(wps.stage), wpPos(wps.endLine)
+    if stage and finish then
+      lanes[#lanes + 1] = { stage = stage, finish = finish, dir = (finish - stage):normalized(), length = (finish - stage):length() }
     end
   end
   return lanes
 end
+M._readLanes = readLanes
 
 -- synthetic lanes for levels without drag data: straight from the level spawn
 local function syntheticLanes(distance)

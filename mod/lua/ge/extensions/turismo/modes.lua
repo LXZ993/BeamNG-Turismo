@@ -44,11 +44,27 @@ local function loadPath(track)
   return path
 end
 
+-- race files without start positions: synthetic slot 30 m before the first node
+local function syntheticStart(path)
+  local pns = path.pathnodes.sorted
+  local a = pns[1] and vec3(pns[1].pos) or vec3(0, 0, 0)
+  local b = pns[2] and vec3(pns[2].pos) or (a + vec3(0, 1, 0))
+  local dir = (b - a):normalized()
+  local sp = path.startPositions:create('Synthetic')
+  sp:set(a - dir * 30, quatFromDir(dir, vec3(0, 0, 1)))
+  return sp
+end
+
+local function firstSlot(path)
+  return U().startSlots(path)[1] or syntheticStart(path)
+end
+
 local function soloRace(path, ids, laps)
   local race = require('/lua/ge/extensions/gameplay/race/race')()
   race:setPath(path)
   race.lapCount = laps
   race.useHotlappingApp = false
+  race.useLapTimesApp = false
   race.useWaypointAudio = false
   race:setVehicleIds(ids)
   return race
@@ -149,7 +165,7 @@ function M._setup_timeAttack()
   X.runsLeft = cfg.runs or (X.closed and 1 or 2)
   X.best = nil
   X.runTimes = {}
-  local slot = X.path.startPositions.sorted[1]
+  local slot = firstSlot(X.path)
   spawnPlayerAtSlot(slot, function(id)
     X.slot = slot
     M._timeAttackRun()
@@ -216,13 +232,13 @@ end
 function M._setup_touge()
   local cfg = X.cfg
   X.path = loadPath(cfg.track)
-  local slots = X.path.startPositions.sorted
+  local slots = U().startSlots(X.path)
   if #slots < 2 then
-    local base = slots[1]
+    local base = slots[1] or syntheticStart(X.path)
     local fwd = base.rot * vec3(0, 1, 0)
     local sp = X.path.startPositions:create('Touge 2')
     sp:set(base.pos - fwd * 12, base.rot)
-    slots = X.path.startPositions.sorted
+    slots = { base, sp }
   end
   X.slots = { slots[1], slots[2] }
   X.rival = cfg.field[1]
@@ -333,7 +349,7 @@ function M._setup_drift()
   X.len = trackLength(X.path)
   X.score, X.pending, X.combo, X.calmTime = 0, 0, 1, 0
   X.best = 0
-  local slot = X.path.startPositions.sorted[1]
+  local slot = firstSlot(X.path)
   spawnPlayerAtSlot(slot, function()
     X.race = soloRace(X.path, { X.playerId }, X.path.config.closed and (cfg.laps or 2) or 1)
     X.phase = 'countdown'
@@ -528,7 +544,7 @@ function M._setup_trucking()
   local cfg = X.cfg
   X.path = loadPath(cfg.track)
   X.len = trackLength(X.path)
-  local slot = X.path.startPositions.sorted[1]
+  local slot = firstSlot(X.path)
   spawnPlayerAtSlot(slot, function()
     X.race = soloRace(X.path, { X.playerId }, 1)
     X.phase = 'countdown'

@@ -1,18 +1,19 @@
 # Prüfliste für BeamNG 0.40 (morgen am PC)
 
-Offline ist alles getestet, was ohne Spiel testbar ist (46 automatische Prüfungen, UI im Browser gerendert). Ungeprüft ist, ob die Engine-Schnittstellen in 0.40 noch genauso heißen wie in den Spielquellen, gegen die ich entwickelt habe. Diese Punkte gehe ich mit Zugriff auf `F:\BeamNG\current` der Reihe nach durch – zuerst am Spielordner (Lua-Quellen vergleichen), dann im Spiel.
+Offline ist alles getestet, was ohne Spiel testbar ist (49 automatische Prüfungen, UI im Browser gerendert). Teil A (Schnittstellen gegen die Lua-Quellen von 0.40.4 abgleichen) ist erledigt, offen ist Teil B im Spiel.
 
-## A. Vorab im Spielordner (ohne Spielstart)
-- [ ] `lua/ge/extensions/gameplay/race/path.lua` und `race.lua`: Konstruktor, `onDeserialized`, `autoConfig`, `getAiPath`, `startPositions`, `moveResetVehicleTo(id, lowPrecision, repair)`
-- [ ] `core_vehicleBridge.requestValue/executeAction` mit `getPartConditions` / `initPartConditions(conds, odometer, integrity, visual)`
-- [ ] `core_vehicles.getConfigList()` – Feldnamen (`Power`, `Weight`, `0-100 km/h`, `Drivetrain`, `Value`, `Years` …)
-- [ ] `freeroam_freeroam.startFreeroam`, `core_levels.getLevelByName`, Hook `onWorldReadyState`
-- [ ] `core_paths.playPath` (Kamerafahrt), `commands.setGameCamera`, `simTimeAuthority.pause`
-- [ ] KI: `ai.driveUsingPath{wpTargetList, noOfLaps, aggression …}`, `ai.setParameters`, `ai.setRacing`
-- [ ] Dragstrip-Dateien `levels/*/dragstrips/*.dragData.json` (Lane-Struktur)
-- [ ] Welche `*.race.json` gibt es in 0.40 (Hirochi Raceway, Automation Test Track, West Coast …)?
-- [ ] UI: werden Angular-Apps (`ui/modules/apps/*/app.json`) in 0.40 noch geladen? Name des Stream-Dienstes (`StreamsManager`) und `bngApi.engineLua`
-- [ ] Teilenamen für eigene **Drag-Konfigurationen** (Amateur bis Pro) aus den Jbeams auslesen
+## A. Vorab im Spielordner (ohne Spielstart) – erledigt am 02.11. gegen 0.40.4
+- [x] `gameplay/race/path.lua`, `race.lua`, `startPosition.lua`: Konstruktor, `onDeserialized`, `autoConfig`, `getAiPath`, `moveResetVehicleTo(id, lowPrecision, repair)` passen. **Korrigiert:** Race-Dateien führen Bergungspunkte (`group = 'recovery'`) in `startPositions` – die standen bisher mit in der Startaufstellung. Jetzt gefiltert, Standard-Startplatz zuerst; Ersatz-Startplatz auch für Zeitfahren/Touge, wenn eine Datei keinen hat. Die Vanilla-Rundenzeiten-App wird bei Turismo-Rennen nicht mehr mitgestartet.
+- [x] `core_vehicleBridge` + `interactPartCondition`: `getPartConditions` / `initPartConditions(conds, odometer, integrity, visual)` passen. **Korrigiert:** statt `nil` wird bei neuen Autos `{}` übergeben (Typprüfung der Fahrzeugseite).
+- [x] `core_vehicles.getConfigList()` – gleiche Felder wie bisher (`configs`, `model_key`, `key`, `Name`, `aggregates`, `Value`, `Years` …)
+- [x] `freeroam_freeroam.startFreeroam(level, …)`, `core_levels.getLevelByName`, `simTimeAuthority.pause` – passen
+- [x] Kamerafahrt: `core_paths.playPath(path, offset, initData)` mit absoluten Marker-Zeiten und `finishedPath` – passt
+- [x] KI: `driveUsingPath`, `setParameters`, `setRacing`, `setSpeedMode` passen. **Korrigiert:** im Skript-Modus (Strecken ohne Straßennetz, Lizenz-Vorführung) setzt 0.40 das Auto auf den ersten Skriptpunkt und ignoriert Aggression/avoidCars/Tempolimit. Erster Punkt ist jetzt die eigene Position, die Werte werden separat gesetzt.
+- [x] Dragstrips: 0.40 nutzt ein neues Format (`*.dragData.json` → `stripId` → `*.strip.json`, Wegpunkte als Liste mit `type`). **Korrigiert:** beide Formate werden gelesen.
+- [ ] Welche `*.race.json` es in 0.40 gibt, zeigt der Diagnose-Bildschirm im Spiel (die Level liegen gezippt in `content/levels`, 0,8–3 GB je Karte)
+- [x] UI: Angular-Apps werden in 0.40 weiter geladen. **Korrigiert:** `StreamsManager` ist in 0.40 eine globale Variable und kein Angular-Dienst mehr – die App holt ihn jetzt so wie die Vanilla-Apps (sonst wäre die App beim Laden ausgestiegen).
+- [x] Eingabe-Aktionen (`core/input/actions/*.json`): Format passt
+- [ ] Teilenamen für eigene **Drag-Konfigurationen** (Fahrzeuge liegen gezippt in `content/vehicles`)
 
 ## B. Im Spiel
 1. [ ] Mod aktiv, Log zeigt `Turismo Karriere 0.1.0 geladen`, keine Fehler mit `turismo`
