@@ -8,9 +8,11 @@
   'use strict';
 
   var BASE = '/ui/modules/apps/TurismoHub/';
-  // hub tile illustrations, made with VectorCraft (tools/art/make_art.py)
-  var TILE_ART = { cafe: 'tile_cafe', race: 'tile_race', lic: 'tile_lic', cone: 'tile_cone', guide: 'tile_guide', car: 'tile_car', used: 'tile_used', star: 'tile_star',
-    garage: 'tile_garage', wrench: 'tile_wrench', ticket: 'tile_ticket', map: 'tile_map', gear: 'tile_gear', rec: 'tile_rec' };
+  // city map of the World menu, made with VectorCraft (tools/art/make_map.py).
+  // Positions in percent of the map image; must match PLACES in make_map.py.
+  var MAP_PLACES = { cafe: [50, 50], events: [70, 34], licenses: [31, 30], trainings: [19, 46], dealers: [60, 72], used: [78, 62],
+    legends: [88, 40], garage: [38, 68], workshop: [24, 76], world2: [12, 24] };
+  function isNight(d) { if (typeof window.TURISMO_NIGHT === 'boolean') return window.TURISMO_NIGHT; var h = (d || new Date()).getHours(); return h < 7 || h >= 19; }
 
   // ------------------------------------------------------------------ helpers
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -50,6 +52,8 @@
     ticket: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><path d="M6 20h52v8a5 5 0 0 0 0 10v8H6v-8a5 5 0 0 0 0-10z"/><path d="M40 20v26" stroke-dasharray="3 4"/></svg>',
     rec: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><circle cx="32" cy="32" r="22"/><circle cx="32" cy="32" r="8" fill="#ff5d6c" stroke="none"/></svg>',
     gear: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><circle cx="32" cy="32" r="9"/><path d="M32 6v9M32 49v9M6 32h9M49 32h9M13 13l7 7M44 44l7 7M13 51l7-7M44 20l7-7"/></svg>',
+    help: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><circle cx="32" cy="32" r="24"/><path d="M24 25a8 8 0 1 1 11 7c-2 1-3 3-3 5v3"/><circle cx="32" cy="47" r="1.5" fill="#fff"/></svg>',
+    lock: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><rect x="14" y="28" width="36" height="26" rx="4"/><path d="M22 28v-8a10 10 0 0 1 20 0v8"/></svg>',
     wash: '<svg viewBox="0 0 64 64" fill="none" stroke="#fff" stroke-width="3"><path d="M32 8c8 12 14 20 14 28a14 14 0 0 1-28 0c0-8 6-16 14-28z"/></svg>'
   };
 
@@ -194,11 +198,22 @@
     this.root.addEventListener('focusout', function (ev) { if (isText(ev.target) && b.typing) b.typing(false); });
     b.on('CEFTypingLostFocus', function () { var a = document.activeElement; if (isText(a)) a.blur(); });
     this.root.addEventListener('mouseover', function (ev) {
-      var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab');
+      var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab,.tz-pin,.tz-dockbtn');
       if (t && t !== self._hover) { self._hover = t; Audio_.sfx('ui_hover'); }
+      var pin = ev.target.closest('.tz-pin');
+      if (pin && pin.getAttribute('data-pin') !== self._mapSel) self.mapSelect(pin.getAttribute('data-pin'));
     });
     document.addEventListener('keydown', function (ev) {
       if (!self.hubVisible) return;
+      var c = self.cur();
+      if (c && c.name === 'world' && !self.modal && !isText(ev.target)) {
+        var k = ev.key, dirs = { ArrowLeft: [-1, 0], ArrowRight: [1, 0], ArrowUp: [0, -1], ArrowDown: [0, 1] };
+        if (dirs[k]) { ev.preventDefault(); self.mapStep(dirs[k][0], dirs[k][1]); return; }
+        if (k === 'Enter' && self._mapSel) {
+          var el = self.el.screen.querySelector('.tz-pin[data-pin="' + self._mapSel + '"]');
+          if (el) { ev.preventDefault(); el.click(); } return;
+        }
+      }
       if (ev.key === 'Escape' || ev.key === 'Backspace') {
         if (ev.target && ev.target.tagName === 'INPUT') return;
         if (self.modal) self.closeModal(); else self.back();
@@ -287,6 +302,8 @@
     this.el.screen.innerHTML = fn ? fn.call(this, this.data, c.params) : '';
     this.el.screen.scrollTop = c.params._scroll || 0;
     this.el.top.classList.toggle('tz-hidden', c.name === 'title' || c.name === 'newProfile');
+    this.el.hub.classList.toggle('on-map', c.name === 'world');
+    if (c.name === 'world') this._mapSel = null;
   };
   App.prototype.reload = function () { var c = this.cur(); if (c) c.params._scroll = this.el.screen.scrollTop; this.load(); };
 
@@ -353,37 +370,81 @@
       '<button class="tz-btn" data-act="back">Abbrechen</button></div></div>';
   };
 
+  App.prototype.worldPlaces = function () {
+    var s = this.state || {}, u = s.unlocks || {};
+    var lics = (s.licenses || []);
+    return [
+      { id: 'cafe', name: 'Boxenstopp-Café', icon: 'cafe', main: true, act: 'go', arg: 'cafe',
+        sub: 'Aufgabenhefte holen. Jedes Heft bringt Belohnungen und öffnet neue Orte.',
+        stat: s.cafe ? 'Heft: ' + s.cafe.name + ' · ' + s.cafe.done + '/' + s.cafe.total : 'Neue Hefte warten' },
+      { id: 'events', name: 'Rennen', icon: 'race', main: true, act: 'go', arg: 'events',
+        sub: 'Rennserien von Einsteiger bis Profi. Preisgeld, Pokale und Autos gewinnen.' },
+      { id: 'licenses', name: 'Lizenzzentrum', icon: 'lic', act: 'go', arg: 'licenses',
+        sub: 'Fahrprüfungen. Lizenzen öffnen höhere Rennserien.', stat: lics.length ? 'Erhalten: ' + lics.join(', ') : 'Noch keine Lizenz' },
+      { id: 'trainings', name: 'Fahrschule', icon: 'cone', act: 'go', arg: 'trainings', sub: 'Üben ohne Prüfung: Bremspunkte, Ideallinie, Drift.' },
+      { id: 'dealers', name: 'Neuwagen', icon: 'car', act: 'go', arg: 'dealers', lock: 'dealer_new', sub: 'Neue Autos aller Marken kaufen.' },
+      { id: 'used', name: 'Gebrauchtwagen', icon: 'used', act: 'go', arg: 'used', lock: 'dealer_used', sub: 'Günstige Autos mit Kilometern. Angebote wechseln alle paar Tage.' },
+      { id: 'legends', name: 'Klassiker-Galerie', icon: 'star', act: 'go', arg: 'legends', lock: 'dealer_legend', sub: 'Seltene Legenden für Sammler.', hint: 'Öffnet ab Sammlerstufe 4' },
+      { id: 'garage', name: 'Garage', icon: 'garage', act: 'go', arg: 'garage', sub: 'Deine Autos auswählen, ansehen, verkaufen.', stat: (s.carCount || 0) + ' Fahrzeuge' },
+      { id: 'workshop', name: 'Werkstatt', icon: 'wrench', act: 'goWorkshop', arg: '', lock: 'services', sub: 'Reparieren, Öl wechseln, waschen, umbauen. Schäden bleiben bis hierher.' },
+      { id: 'world2', name: 'Freie Fahrt', icon: 'map', act: 'go', arg: 'world2', lock: 'freeDrive', sub: 'Frei fahren, Tageskilometer sammeln, eigene Strecken aufnehmen.' }
+    ].map(function (p) { p.locked = !!(p.lock && u[p.lock] === false); p.pos = MAP_PLACES[p.id]; return p; });
+  };
+
   App.prototype.scr_world = function () {
-    var s = this.state, u = (s.unlocks || {});
-    if (s.firstVisit && !this._guideShown) { this._guideShown = true; var self0 = this; setTimeout(function () { self0.showGuide(); }, 300); }
-    function locked(key) { return u[key] === false; }
-    var cafeSub = s.cafe ? ('Heft: ' + esc(s.cafe.name) + ' · ' + s.cafe.done + '/' + s.cafe.total) : 'Neue Hefte warten';
-    var lic = (s.licenses || []).length ? 'Erhalten: ' + esc(s.licenses.join(', ')) : 'Noch keine Lizenz';
-    function tile(cls, span, act, arg, title, sub, icon, key) {
-      return '<div class="tz-tile ' + cls + ' ' + span + (TILE_ART[icon] ? ' has-art' : '') + (key && locked(key) ? ' locked' : '') + '" data-act="' + act + '" data-arg="' + (arg || '') + '">' +
-        (TILE_ART[icon] ? '<img class="tz-art" src="' + BASE + 'art/' + TILE_ART[icon] + '.png" alt="">' : '<div class="tz-ico">' + (ICONS[icon] || '') + '</div>') +
-        '<h3>' + title + '</h3><p>' + sub + '</p></div>';
-    }
-    return '<div class="tz-world">' +
-      '<div class="tz-district">Stadtzentrum</div>' +
-      tile('c-cafe big', 's4 r2', 'go', 'cafe', 'Boxenstopp-Café', '<b>Hier startest du.</b> Der Wirt gibt dir Aufgabenhefte (z. B. „Gewinne drei Rennen“ oder „Sammle diese Autos“). Jedes erledigte Heft bringt Belohnungen und schaltet neue Bereiche frei.<br><br>' + cafeSub, 'cafe') +
-      tile('c-race big', 's4 r2', 'go', 'events', 'Rennen', 'Rennserien von Einsteiger bis Profi: Preisgeld verdienen, Trophäen und Autos gewinnen. Manche Serien brauchen eine Lizenz oder eine bestimmte Fahrzeugklasse.', 'race') +
-      tile('c-lic', 's4', 'go', 'licenses', 'Lizenzzentrum', 'Fahrprüfungen (Anfahren, Bremsen, Kurven …). Lizenzen öffnen höhere Rennserien. ' + lic, 'lic') +
-      tile('c-lic', 's4', 'go', 'trainings', 'Fahrschule', 'Üben ohne Prüfung: Bremspunkte, Ideallinie, Drift, Gelände', 'cone') +
-      '<div class="tz-district">Händlerviertel</div>' +
-      tile('c-dealer', 's4', 'go', 'dealers', 'Neuwagen', 'Neue Autos aller Marken deiner Installation kaufen', 'car', 'dealer_new') +
-      tile('c-dealer', 's4', 'go', 'used', 'Gebrauchtwagen', 'Günstige Autos mit Kilometern – ideal zum Start. Angebote wechseln alle paar Tage', 'used', 'dealer_used') +
-      tile('c-dealer', 's4', 'go', 'legends', 'Klassiker-Galerie', 'Seltene Legenden – öffnet, wenn du genug Autos gesammelt hast (Sammlerstufe 4)', 'star', 'dealer_legend') +
-      '<div class="tz-district">Boxengasse</div>' +
-      tile('c-garage', 's4', 'go', 'garage', 'Garage', 'Deine Autos auswählen, ansehen, verkaufen · ' + esc(s.carCount || 0) + ' Fahrzeuge', 'garage') +
-      tile('c-garage', 's4', 'goWorkshop', '', 'Werkstatt & Waschanlage', 'Schäden aus Rennen bleiben am Auto! Hier reparieren, Öl wechseln, waschen, umbauen', 'wrench', 'services') +
-      tile('c-fun', 's4', 'go', 'tickets', 'Bonuslose', 'Gewinnlose aus Heften und Rennen – öffnen für Geld oder Autos · ' + esc(s.tickets || 0) + ' ungeöffnet', 'ticket') +
-      '<div class="tz-district">Unterwegs</div>' +
-      tile('c-fun', 's4', 'go', 'world2', 'Freie Fahrt & Strecken', 'Mit deinem Auto frei fahren, Tagesziel (Kilometer) schaffen, eigene Strecken aufnehmen', 'map', 'freeDrive') +
-      tile('c-garage', 's4', 'guide', '', 'So funktioniert’s', 'Kurze Einführung in die Karriere', 'guide') +
-      tile('c-garage', 's4', 'go', 'settings', 'Einstellungen', 'Renndauer, Intro, Musik, Schäden', 'gear') +
-      tile('c-garage', 's4', 'go', 'diag', 'Diagnose', 'Autos, Strecken und Inhalte prüfen', 'rec') +
+    var s = this.state || {}, self = this;
+    if (s.firstVisit && !this._guideShown) { this._guideShown = true; setTimeout(function () { self.showGuide(); }, 300); }
+    var night = isNight();
+    var pins = this.worldPlaces().map(function (p, i) {
+      return '<div class="tz-pin' + (p.main ? ' main' : '') + (p.locked ? ' locked' : '') + '" style="left:' + p.pos[0] + '%;top:' + p.pos[1] + '%;animation-delay:' + (0.05 * i).toFixed(2) + 's"' +
+        ' data-pin="' + p.id + '" data-act="' + (p.locked ? 'pinLocked' : p.act) + '" data-arg="' + esc(p.locked ? p.id : p.arg) + '">' +
+        '<span class="pill">' + esc(p.name) + '</span><i class="dot">' + (p.locked ? ICONS.lock : (ICONS[p.icon] || '')) + '</i></div>';
+    }).join('');
+    var dock = [['guide', '', 'So funktioniert’s', 'help'], ['go', 'tickets', 'Bonuslose', 'ticket', s.tickets], ['go', 'settings', 'Einstellungen', 'gear'],
+      ['go', 'changelog', 'Changelog', 'rec'], ['go', 'diag', 'Diagnose', 'cone']].map(function (d) {
+      return '<button class="tz-dockbtn" data-act="' + d[0] + '" data-arg="' + d[1] + '" title="' + esc(d[2]) + '"><i>' + (ICONS[d[3]] || '') + '</i><span>' + esc(d[2]) + '</span>' +
+        (d[4] ? '<b class="cnt">' + esc(d[4]) + '</b>' : '') + '</button>';
+    }).join('');
+    return '<div class="tz-map' + (night ? ' night' : '') + '" data-el="map">' +
+      '<div class="tz-mapbox"><img class="tz-mapimg day" src="' + BASE + 'art/map_day.png" alt=""><img class="tz-mapimg nightimg" src="' + BASE + 'art/map_night.png" alt="">' + pins + '</div>' +
+      '<div class="tz-dock">' + dock + '</div>' +
+      '<div class="tz-mapinfo" data-el="mapInfo">' + this.mapInfoHtml(null) + '</div>' +
       '</div>';
+  };
+
+  App.prototype.mapInfoHtml = function (p) {
+    if (!p) {
+      var s = this.state || {};
+      var tip = !s.activeCar ? 'Tipp: Hol dir im Café dein erstes Heft und kauf ein günstiges Auto beim Gebrauchtwagenhändler.'
+        : s.cafe ? 'Aktuelles Heft: ' + s.cafe.name + ' (' + s.cafe.done + '/' + s.cafe.total + ')' : 'Wähle einen Ort auf der Karte.';
+      return '<div class="t">' + esc(isNight() ? 'Nacht in der Stadt' : 'Tag in der Stadt') + '</div><div class="d">' + esc(tip) + '</div>';
+    }
+    return '<div class="t">' + esc(p.name) + (p.stat && !p.locked ? '<span class="st">' + esc(p.stat) + '</span>' : '') + '</div>' +
+      '<div class="d">' + (p.locked ? '<span class="lk">Gesperrt.</span> ' + esc(p.hint || 'Wird über Aufgabenhefte im Café freigeschaltet.') : esc(p.sub)) + '</div>';
+  };
+
+  App.prototype.mapSelect = function (id) {
+    var box = this.el.screen.querySelector('[data-el=map]'); if (!box) return;
+    var p = id ? this.worldPlaces().filter(function (x) { return x.id === id; })[0] : null;
+    this._mapSel = p ? p.id : null;
+    Array.prototype.forEach.call(box.querySelectorAll('.tz-pin'), function (el) { el.classList.toggle('sel', !!p && el.getAttribute('data-pin') === p.id); });
+    var info = box.querySelector('[data-el=mapInfo]'); if (info) info.innerHTML = this.mapInfoHtml(p);
+  };
+
+  // arrow keys / d-pad: jump to the nearest place in that direction
+  App.prototype.mapStep = function (dx, dy) {
+    var list = this.worldPlaces(), cur = null, i;
+    for (i = 0; i < list.length; i++) if (list[i].id === this._mapSel) cur = list[i];
+    if (!cur) { this.mapSelect('cafe'); return; }
+    var best = null, bestScore = 1e9;
+    list.forEach(function (p) {
+      if (p === cur) return;
+      var vx = p.pos[0] - cur.pos[0], vy = (p.pos[1] - cur.pos[1]) * 0.6, along = vx * dx + vy * dy;
+      if (along <= 0) return;
+      var score = Math.sqrt(vx * vx + vy * vy) + Math.abs(vx * dy - vy * dx) * 1.5;
+      if (score < bestScore) { bestScore = score; best = p; }
+    });
+    if (best) { this.mapSelect(best.id); Audio_.sfx('ui_hover'); }
   };
 
   App.prototype.carCard = function (c, actions) {
@@ -678,6 +739,10 @@
       case 'home': this.home(); break;
       case 'close': this.call('hub', { visible: false }); break;
       case 'guide': this.showGuide(); break;
+      case 'pinLocked':
+        var lp = this.worldPlaces().filter(function (x) { return x.id === arg; })[0];
+        this.mapSelect(arg); Audio_.sfx('ui_error');
+        this.toast((lp ? lp.name + ': ' : '') + ((lp && lp.hint) || 'noch gesperrt. Aufgabenhefte im Café schalten neue Orte frei.'), 'error'); break;
       case 'guideDone': this.closeModal(); if (this.state && this.state.firstVisit) { this.state.firstVisit = false; this.call('setting', { key: 'introSeen', value: true }).catch(function () {}); } break;
       case 'go': this.go(arg, { arg2: arg2, carId: arg === 'car' ? arg2 : undefined, brand: arg === 'showroom' ? arg2 : undefined }); break;
       case 'goWorkshop':

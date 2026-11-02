@@ -9,8 +9,13 @@
 - Oben in der Mitte der Abstand zu deiner besten Runde, live: grün = schneller, rot = langsamer. Erscheint ab der zweiten Runde.
 - Die Rangliste oben rechts zeigt nur noch 5 Fahrer um dich herum.
 
-### Neu: Bilder im Menü
-- Jede Kachel im World-Menü hat ein eigenes Bild.
+### Neu: World-Menü als Stadtkarte
+- Statt der bunten Kacheln zeigt das World-Menü jetzt eine Stadtkarte von schräg oben. Tagsüber hell, abends ab 19 Uhr und nachts dunkel mit leuchtenden Straßen (nach der Uhrzeit deines PCs).
+- Die Orte stehen als Punkte mit Namen auf der Karte: Café, Rennen, Lizenzzentrum, Fahrschule, Neuwagen, Gebrauchtwagen, Klassiker-Galerie, Garage, Werkstatt und Freie Fahrt. Anklicken öffnet den Ort.
+- Fährst du mit der Maus über einen Ort, steht unten kurz, was es dort gibt. Mit den Pfeiltasten springst du von Ort zu Ort, Enter öffnet ihn.
+- Gesperrte Orte sind grau mit Schloss. Unten steht, wie du sie freischaltest.
+- Hilfe, Bonuslose, Einstellungen, Changelog und Diagnose liegen als kleine Knöpfe am rechten Rand.
+- Die Leiste oben ist schmaler und dunkler.
 - Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.
 
 ### Fehler behoben

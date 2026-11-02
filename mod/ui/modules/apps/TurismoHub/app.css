@@ -293,3 +293,70 @@
 .tz-loading .bar i { display: block; width: 35%; height: 100%; background: var(--accent); animation: tz-load 1.2s ease-in-out infinite; }
 @keyframes tz-load { from { transform: translateX(-100%); } to { transform: translateX(290%); } }
 .tz-loading .txt { color: var(--dim); font-size: 13px; letter-spacing: .25em; text-transform: uppercase; }
+
+/* ---------------------------------------------------------------- World-Menü als Stadtkarte (GT-Stil) */
+.tz-top { gap: 26px; padding: 8px 24px; min-height: 58px; z-index: 3;
+  background: linear-gradient(180deg, rgba(0,0,0,.86), rgba(0,0,0,.62)); border-bottom: 1px solid rgba(255,255,255,.08); }
+.tz-top .tz-logo { font-size: 18px; }
+.tz-top .tz-stat label { font-size: 9px; letter-spacing: .22em; }
+.tz-top .tz-stat span { font-size: 16px; }
+.tz-top .tz-carchip { padding: 3px 12px 3px 3px; }
+.tz-top .tz-carchip .tz-li { height: 34px; min-width: 48px; }
+.tz-hub.on-map { background: #000; }
+.tz-hub.on-map::before { display: none; }
+.tz-hub.on-map .tz-top { position: absolute; left: 0; right: 0; top: 0; }
+.tz-hub.on-map .tz-main { position: absolute; inset: 0; }
+.tz-hub.on-map .tz-screen { padding: 0; overflow: hidden; position: relative; animation: tz-fade .35s ease-out; }
+
+.tz-map { position: absolute; inset: 0; overflow: hidden; background: #c9ced6; }
+.tz-map.night { background: #05070c; }
+.tz-mapbox { position: absolute; left: 50%; top: 50%; width: max(100vw, 177.78vh); height: max(100vh, 56.25vw); transform: translate(-50%, -50%); }
+.tz-mapimg { position: absolute; inset: 0; width: 100%; height: 100%; display: block; transition: opacity 1.2s ease; }
+.tz-mapimg.nightimg { opacity: 0; }
+.tz-map.night .tz-mapimg.nightimg { opacity: 1; }
+.tz-map.night .tz-mapimg.day { opacity: 0; }
+.tz-mapbox::after { content: ""; position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, rgba(0,0,0,.35) 0, transparent 14%, transparent 78%, rgba(0,0,0,.45) 100%); }
+
+.tz-pin { position: absolute; transform: translate(-50%, -100%); display: flex; flex-direction: column; align-items: center; gap: 6px;
+  cursor: pointer; z-index: 1; animation: tz-pinin .45s ease-out both; }
+@keyframes tz-pinin { from { opacity: 0; transform: translate(-50%, -80%); } to { opacity: 1; transform: translate(-50%, -100%); } }
+.tz-pin .pill { padding: 5px 14px; border-radius: 20px; font-size: 14px; font-weight: 600; letter-spacing: .02em; white-space: nowrap;
+  background: rgba(255,255,255,.94); color: #10131a; box-shadow: 0 4px 14px rgba(0,0,0,.25); transition: transform .15s, background .15s, color .15s; }
+.tz-pin .dot { width: 34px; height: 34px; border-radius: 50%; display: grid; place-items: center; padding: 7px;
+  background: #1c2433; border: 2px solid #fff; box-shadow: 0 0 0 4px rgba(255,255,255,.25), 0 6px 16px rgba(0,0,0,.35); transition: transform .15s, box-shadow .15s; }
+.tz-pin .dot svg { width: 100%; height: 100%; }
+.tz-pin.main .dot { width: 42px; height: 42px; background: #c8102e; }
+.tz-pin.main .pill { font-size: 16px; }
+.tz-map.night .tz-pin .pill { background: rgba(10,14,22,.86); color: #fff; border: 1px solid rgba(120,190,255,.35); box-shadow: 0 0 18px rgba(80,170,255,.25); }
+.tz-map.night .tz-pin .dot { box-shadow: 0 0 0 4px rgba(90,180,255,.25), 0 0 22px rgba(90,180,255,.7); }
+.tz-pin:hover .pill, .tz-pin.sel .pill { transform: scale(1.08); background: #fff; color: #000; }
+.tz-map.night .tz-pin:hover .pill, .tz-map.night .tz-pin.sel .pill { background: #fff; color: #000; }
+.tz-pin:hover .dot, .tz-pin.sel .dot { transform: scale(1.15); box-shadow: 0 0 0 6px rgba(255,255,255,.35), 0 0 26px rgba(255,255,255,.6); }
+.tz-pin.sel .dot { animation: tz-pulse 1.4s ease-in-out infinite; }
+@keyframes tz-pulse { 50% { box-shadow: 0 0 0 10px rgba(255,255,255,.12), 0 0 30px rgba(255,255,255,.75); } }
+.tz-pin.locked .dot { background: #5b6170; border-color: #b8bdc8; }
+.tz-pin.locked .pill { background: rgba(120,126,140,.85); color: #e8eaef; }
+.tz-map.night .tz-pin.locked .pill { background: rgba(40,44,54,.85); color: #9aa1ae; border-color: rgba(255,255,255,.12); box-shadow: none; }
+.tz-map.night .tz-pin.locked .dot { box-shadow: none; }
+
+.tz-dock { position: absolute; right: 22px; top: 50%; transform: translateY(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 2; }
+.tz-dockbtn { display: flex; align-items: center; gap: 10px; padding: 7px 14px 7px 8px; border-radius: 24px; cursor: pointer; position: relative;
+  background: rgba(0,0,0,.62); color: #fff; border: 1px solid rgba(255,255,255,.14); font: inherit; font-size: 13px; text-align: left; }
+.tz-dockbtn i { width: 26px; height: 26px; display: block; }
+.tz-dockbtn i svg { width: 100%; height: 100%; }
+.tz-dockbtn:hover { background: rgba(0,0,0,.85); border-color: rgba(255,255,255,.45); }
+.tz-dockbtn .cnt { position: absolute; left: 24px; top: 2px; min-width: 18px; height: 18px; border-radius: 9px; background: #c8102e; font-size: 11px;
+  display: grid; place-items: center; padding: 0 4px; }
+
+.tz-mapinfo { position: absolute; left: 50%; bottom: 26px; transform: translateX(-50%); width: min(760px, 90vw); z-index: 2;
+  padding: 12px 22px; border-radius: 6px; background: rgba(0,0,0,.72); border-left: 4px solid #c8102e; color: #fff; }
+.tz-mapinfo .t { font-size: 20px; font-weight: 700; display: flex; align-items: baseline; gap: 14px; }
+.tz-mapinfo .t .st { font-size: 13px; font-weight: 500; color: #ffc35a; }
+.tz-mapinfo .d { font-size: 14px; color: #c9d0dc; margin-top: 2px; }
+.tz-mapinfo .lk { color: #ff8a95; font-weight: 600; }
+/* Dock nur mit Symbolen, Name klappt beim Drüberfahren auf (lässt der Karte Platz) */
+.tz-dock { right: 16px; align-items: flex-end; }
+.tz-dockbtn { padding: 7px; }
+.tz-dockbtn span { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width .2s ease, margin .2s ease; }
+.tz-dockbtn:hover span { max-width: 160px; margin-right: 6px; }

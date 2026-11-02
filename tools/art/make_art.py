@@ -389,8 +389,7 @@ def write(out, name, mk, w=W, h=H):
 if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "out"
     os.makedirs(out, exist_ok=True)
-    for name, fn in TILES.items():
-        write(out, name, fn)
+    # Die Kachelbilder (TILES) nutzt das Menü seit der Stadtkarte nicht mehr; nur noch die Pokale werden gebaut.
     for tone in ("gold", "silver", "bronze"):
         write(out, f"trophy_{tone}", lambda d, t=tone: art_trophy(d, t), 200, 200)
-    print("ok", len(TILES) + 3)
+    print("ok", 3)

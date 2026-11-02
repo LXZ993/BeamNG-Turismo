@@ -14,7 +14,9 @@ const path = require('path');
   await page.waitForTimeout(300);
   const shots = [
     ['01_title', 'preview.title()'],
-    ['02_world', 'preview.hub()'],
+    ['02_world', 'window.TURISMO_NIGHT = false; preview.hub()'],
+    ['02b_world_night', 'window.TURISMO_NIGHT = true; preview.hub(); setTimeout(function () { window.__turismoApp.mapSelect("events"); }, 50)'],
+    ['02c_world_locked', 'window.TURISMO_NIGHT = false; preview.hub(); setTimeout(function () { window.__turismoApp.mapSelect("legends"); }, 50)'],
     ['03_cafe', 'preview.hub("cafe")'],
     ['04_licenses', 'preview.hub("licenses")'],
     ['05_events', 'preview.hub("events")'],
@@ -44,7 +46,7 @@ const path = require('path');
   for (const [name, js] of shots) {
     await page.evaluate(`document.querySelector("[data-el=overlay]").innerHTML=""; preview.emit("TurismoRacePhase",{phase:"idle"}); preview.emit("TurismoDragPhase",{phase:"idle"}); window.__turismoApp.tree=null; window.__turismoApp._guideShown=true; window.__turismoApp.closeModal(); window.__turismoApp.showLoading(false);`);
     await page.evaluate(js);
-    await page.waitForTimeout(450);
+    await page.waitForTimeout(name.startsWith('02') ? 1500 : 450);
     await page.screenshot({ path: path.join(out, name + '.png') });
   }
   console.log(errors.length ? 'ERRORS:\n' + errors.join('\n') : 'no page errors');

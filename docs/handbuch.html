@@ -205,6 +205,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li><b>BeamNG-Log:</b> <span class="path">F:\BeamNG\current\beamng.log</span>. Dort steht alles vom Spiel. Turismo-Meldungen haben den Tag <code>turismo</code>.</li>
 <li><b>Konsole im Spiel:</b> Taste <code>^</code> (bzw. <code>~</code>). Rote Zeilen sind Fehler.</li>
 <li><b>Diagnose:</b> Im World-Menü unter Einstellungen, oder in der Konsole <code>dump(extensions.turismo_core.call('diagnostics'))</code>. Zeigt Anzahl Autos, Strecken und Inhaltsfehler.</li>
+<li><b>World-Menü (Stadtkarte):</b> <code>scr_world</code> in <span class="path">turismo-ui.js</span>. Hintergrund <span class="path">art\map_day.png</span> / <span class="path">map_night.png</span> (Nacht von 19 bis 7 Uhr PC-Zeit, <code>isNight</code>). Die Orte stehen in <code>worldPlaces()</code> (Name, Symbol, Ziel, Sperr-Schlüssel aus <code>unlocks</code>), ihre Lage in Prozent in <code>MAP_PLACES</code>. Wer einen Ort verschiebt, ändert auch <code>PLACES</code> in <span class="path">tools\art\make_map.py</span> und baut die Karte neu (dort sind Plätze frei und beleuchtet). Pfeiltasten: <code>mapStep</code>.</li>
 <li><b>Notfall-Menü:</b> Falls die Oberfläche nicht erscheint, gibt es ein einfaches IMGUI-Menü (Taste „Turismo: Notfall-Menü“).</li>
 <li><b>Prüfliste:</b> <span class="path">docs\PRUEFLISTE.md</span> sagt, was im Spiel zu testen ist.</li>
 </ul>
@@ -504,6 +505,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li><b>Hauptmenü:</b> „Turismo Karriere“ unter <b>Mehr</b> (Vue-UI-Mod in <span class="path">ui\ui-vue\mods\turismo_karriere\index.js</span>).</li>
 <li><b>Pausenmenü:</b> Esc → Mods → Turismo-Menü (<span class="path">PauseCard.vue</span>).</li>
 <li><b>World-Menü und HUD:</b> <span class="path">ui\modules\apps\TurismoHub\turismo-ui.js</span> und <span class="path">app.css</span>. Lädt von selbst, keine Layout-App nötig.</li>
+<li><b>World-Menü (Stadtkarte):</b> <code>scr_world</code> in <span class="path">turismo-ui.js</span>. Hintergrund <span class="path">art\map_day.png</span> / <span class="path">map_night.png</span> (Nacht von 19 bis 7 Uhr PC-Zeit, <code>isNight</code>). Die Orte stehen in <code>worldPlaces()</code> (Name, Symbol, Ziel, Sperr-Schlüssel aus <code>unlocks</code>), ihre Lage in Prozent in <code>MAP_PLACES</code>. Wer einen Ort verschiebt, ändert auch <code>PLACES</code> in <span class="path">tools\art\make_map.py</span> und baut die Karte neu (dort sind Plätze frei und beleuchtet). Pfeiltasten: <code>mapStep</code>.</li>
 <li><b>Notfall-Menü:</b> <span class="path">imguiHub.lua</span>, falls die Oberfläche nicht erscheint.</li>
 <li><b>Changelog im Spiel:</b> Einstellungen → Changelog. Liest <span class="path">CHANGELOG.md</span> aus dem Mod-Ordner (<code>uiCall('changelog')</code>, zuerst <span class="path">/mods/unpacked/turismo_karriere/CHANGELOG.md</span>, sonst <span class="path">/CHANGELOG.md</span>, wenn die erste Zeile „# Changelog Turismo“ ist, weil andere Mods auch eine CHANGELOG.md haben).</li>
 <li><b>Fehlerbericht:</b> Einstellungen und Startbildschirm, ruft <code>uiCall('bugReport', {note = '…'})</code>.</li>
@@ -524,10 +526,11 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <pre><code>VC=/pfad/zu/vectorcraft-cli sh tools/art/build.sh   # alle Bilder neu, kopiert nach ui\modules\apps\TurismoHub\art\</code></pre>
 <table>
 <tr><th>Datei</th><th>Wo im Spiel</th></tr>
-<tr><td><code>tile_*.png</code> (320×200, doppelt gerendert)</td><td>Kacheln im World-Menü; Zuordnung Icon → Bild in <code>TILE_ART</code> in <span class="path">turismo-ui.js</span></td></tr>
+<tr><td><code>map_day.png</code>, <code>map_night.png</code> (1920×1080)</td><td>Stadtkarte im World-Menü, aus <span class="path">tools\art\make_map.py</span> (Straßenraster, Häuser, Parks, Fluss, Schnellstraßen, nachts mit Lichtern)</td></tr>
 <tr><td><code>trophy_gold/silver/bronze.png</code> (200×200)</td><td>Siegerehrung bei Platz 1 bis 3</td></tr>
 </table>
-<p>Neues Bild: in <code>make_art.py</code> eine Funktion <code>art_xyz(doc)</code> schreiben, in <code>TILES</code> eintragen, <code>build.sh</code> laufen lassen, in <code>TILE_ART</code> dem Icon zuordnen.</p>
+<p>Neues Bild: in <code>make_art.py</code> eine Funktion <code>art_xyz(doc)</code> schreiben, im <code>__main__</code>-Teil mit <code>write(out, "name", art_xyz)</code> eintragen und <code>build.sh</code> laufen lassen. Die alten Kachelbilder (<code>TILES</code>) werden nicht mehr gebaut.</p>
+<p>Vorlagen für das Aussehen (GT-Bilder mit Beschreibung) sammelt Alex in der Sammelliste „Turismo Menü-Vorlagen“ auf claude.ai.</p>
 <p>Die Oberfläche spricht mit Lua über <code>extensions.turismo_core.uiCall('&lt;aktion&gt;', {…}, reqId)</code>. Jede Aktion steht im Log.</p>
 </section>
 
@@ -580,9 +583,14 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li>Oben in der Mitte der Abstand zu deiner besten Runde, live: grün = schneller, rot = langsamer. Erscheint ab der zweiten Runde.</li>
 <li>Die Rangliste oben rechts zeigt nur noch 5 Fahrer um dich herum.</li>
 </ul>
-<h4>Neu: Bilder im Menü</h4>
+<h4>Neu: World-Menü als Stadtkarte</h4>
 <ul>
-<li>Jede Kachel im World-Menü hat ein eigenes Bild.</li>
+<li>Statt der bunten Kacheln zeigt das World-Menü jetzt eine Stadtkarte von schräg oben. Tagsüber hell, abends ab 19 Uhr und nachts dunkel mit leuchtenden Straßen (nach der Uhrzeit deines PCs).</li>
+<li>Die Orte stehen als Punkte mit Namen auf der Karte: Café, Rennen, Lizenzzentrum, Fahrschule, Neuwagen, Gebrauchtwagen, Klassiker-Galerie, Garage, Werkstatt und Freie Fahrt. Anklicken öffnet den Ort.</li>
+<li>Fährst du mit der Maus über einen Ort, steht unten kurz, was es dort gibt. Mit den Pfeiltasten springst du von Ort zu Ort, Enter öffnet ihn.</li>
+<li>Gesperrte Orte sind grau mit Schloss. Unten steht, wie du sie freischaltest.</li>
+<li>Hilfe, Bonuslose, Einstellungen, Changelog und Diagnose liegen als kleine Knöpfe am rechten Rand.</li>
+<li>Die Leiste oben ist schmaler und dunkler.</li>
 <li>Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.</li>
 </ul>
 <h4>Fehler behoben</h4>

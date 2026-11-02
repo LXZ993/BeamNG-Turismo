@@ -9,8 +9,13 @@
 - Top centre: live gap to your best lap, green = faster, red = slower. Shows from the second lap.
 - The standings top right now show only the 5 drivers around you.
 
-### New: pictures in the menu
-- Every tile in the world menu has its own picture.
+### New: world menu as a city map
+- Instead of the colourful tiles the world menu now shows a city map from above at an angle. Bright during the day, dark with glowing roads from 7 pm and at night (based on your PC's clock).
+- The places are dots with names on the map: Café, Races, License Centre, Driving School, New Cars, Used Cars, Classic Gallery, Garage, Workshop and Free Drive. Click to open a place.
+- Hovering a place shows a short line about it at the bottom. The arrow keys jump from place to place, Enter opens it.
+- Locked places are grey with a lock. The bottom line says how to unlock them.
+- Help, bonus tickets, settings, changelog and diagnostics are small buttons on the right edge.
+- The bar at the top is slimmer and darker.
 - For places 1 to 3 the podium screen shows a gold, silver or bronze trophy.
 
 ### Bug fixes
