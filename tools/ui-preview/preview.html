@@ -23,6 +23,8 @@
       else if (a === 'recorderState') d = null;
       else if (a === 'hub') { emit('TurismoHubToggle', { visible: args.visible }); d = true; }
       else if (a === 'getSlots') d = M.getSlots;
+      else if (a === 'changelog') d = { text: window.TURISMO_CHANGELOG || '' };
+      else if (a === 'bugReport') d = { path: 'settings/turismo/logs/bugreport.txt' };
       else d = M[a];
       if (d === undefined) d = true;
       return new Promise(function (r) { setTimeout(function () { r(JSON.parse(JSON.stringify(d))); }, 10); });

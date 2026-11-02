@@ -9,7 +9,7 @@
 
 local M = {}
 
-M.VERSION = '0.1.3' -- muss zu data/turismo/build.json "modVersion" und CHANGELOG.md passen
+M.VERSION = '0.1.4' -- muss zu data/turismo/build.json "modVersion" und CHANGELOG.md passen
 
 M.MODULES = {
   'turismo_logger', 'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',
@@ -457,6 +457,18 @@ handlers.rescan = function()
   X('data').reload()
   return { cars = #X('vehicleDb').all(), tracks = #X('tracks').all() }
 end
+-- Changelog für den Bildschirm "Neuigkeiten". Eigener Mod-Ordner zuerst: /CHANGELOG.md teilen sich alle Mods
+-- (z. B. Hashiriya Battle hat auch eine), deshalb wird die Überschrift geprüft.
+handlers.changelog = function()
+  local candidates = { '/mods/unpacked/turismo_karriere/CHANGELOG.md', '/CHANGELOG.md' }
+  for _, path in ipairs(candidates) do
+    local txt = readFile and readFile(path)
+    if txt and txt:find('^# Changelog Turismo') then return { text = txt, path = path } end
+  end
+  U().log('W', 'Changelog nicht gefunden (%s)', table.concat(candidates, ', '))
+  error('Changelog nicht gefunden', 0)
+end
+
 handlers.diagnostics = function()
   local problems = X('data').validate()
   local missingTracks = {}

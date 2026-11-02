@@ -1,5 +1,22 @@
 # Changelog Turismo Karriere
 
+## 0.1.4 (Stand 02.11.2026)
+
+### Neu: Fahr-HUD im GT-Stil
+- Unten rechts ein Drehzahlband mit roter Zone. Im roten Bereich blinken Band und Gang: jetzt schalten.
+- Großer Gang und Geschwindigkeit direkt über dem Drehzahlband.
+- Minikarte unten links: die Strecke mit allen Autos, du bist der blaue Punkt, die Ziellinie das weiße Quadrat.
+- Oben in der Mitte der Abstand zu deiner besten Runde, live: grün = schneller, rot = langsamer. Erscheint ab der zweiten Runde.
+- Die Rangliste oben rechts zeigt nur noch 5 Fahrer um dich herum.
+
+### Neu: Bilder im Menü
+- Jede Kachel im World-Menü hat ein eigenes Bild.
+- Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.
+
+### Neu: Changelog und Fehlerbericht im Menü
+- In den **Einstellungen** gibt es jetzt **Changelog**: Dort steht, was sich in jeder Version geändert hat.
+- **Fehlerbericht erstellen** gibt es jetzt in den Einstellungen und auf dem Startbildschirm. Du kannst kurz dazuschreiben, was passiert ist. Danach steht dort, wo die Datei liegt.
+
 ## 0.1.3 (Stand 02.11.2026)
 
 ### Neu: Fehlerbericht und eigenes Log

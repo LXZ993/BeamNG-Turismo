@@ -1,5 +1,22 @@
 # Turismo Career Changelog
 
+## 0.1.4 (as of 2026-11-02)
+
+### New: GT-style driving HUD
+- Bottom right: a rev bar with a red zone. In the red, the bar and the gear flash: shift now.
+- Big gear and speed right above the rev bar.
+- Minimap bottom left: the track with all cars, you are the blue dot, the finish line is the white square.
+- Top centre: live gap to your best lap, green = faster, red = slower. Shows from the second lap.
+- The standings top right now show only the 5 drivers around you.
+
+### New: pictures in the menu
+- Every tile in the world menu has its own picture.
+- For places 1 to 3 the podium screen shows a gold, silver or bronze trophy.
+
+### New: changelog and bug report in the menu
+- **Settings** now has **Changelog**: it lists what changed in each version.
+- **Create bug report** is now in Settings and on the title screen. You can add a short note about what happened. Afterwards it shows where the file is.
+
 ## 0.1.3 (as of 2026-11-02)
 
 ### New: bug report and own log

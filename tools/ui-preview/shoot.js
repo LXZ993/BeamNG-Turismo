@@ -9,6 +9,7 @@ const path = require('path');
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
   await page.route('file:///ui/**', r => r.fulfill({ path: path.resolve(__dirname, '../../mod' + new URL(r.request().url()).pathname) }));
+  await page.addInitScript(t => { window.TURISMO_CHANGELOG = t; }, require('fs').readFileSync(path.resolve(__dirname, '../../CHANGELOG.md'), 'utf8'));
   await page.goto('file://' + path.resolve(__dirname, 'preview.html'));
   await page.waitForTimeout(300);
   const shots = [
@@ -35,6 +36,8 @@ const path = require('path');
     ['21_car', 'preview.hub("car", {carId: window.TURISMO_MOCK.garage[0].id})'],
     ['22_world2', 'preview.hub("world2")'],
     ['24_test_brief', 'preview.testBrief()'],
+    ['25_changelog', 'preview.hub("changelog")'],
+    ['26_bugreport', 'preview.hub("settings"); window.__turismoApp.showBugReport()'],
     ['23_guide', 'preview.hub(); window.__turismoApp.showGuide()'],
   ];
   for (const [name, js] of shots) {

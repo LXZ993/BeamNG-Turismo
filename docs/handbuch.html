@@ -115,6 +115,8 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
     <a href="#ki">KI und Gegnerstärke</a>
     <a href="#musik">Musik und Credits</a>
     <a href="#ui">Oberfläche und Hauptmenü</a>
+    <a class="l2" href="#hud">Fahr-HUD</a>
+    <a class="l2" href="#grafik">Grafiken (VectorCraft)</a>
     <a href="#tasten">Tastenbelegung</a>
     <a href="#spielstand">Spielstand</a>
     <div class="grp">Hilfe</div>
@@ -237,7 +239,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li>Ein Code-Fehler bekommt nur beim ersten Mal den ganzen Traceback, danach nur noch eine Zeile mit Zähler.</li>
 </ul>
 <h3>Einstellungen <span class="tag">data\turismo\build.json</span></h3>
-<pre><code>"modVersion": "0.1.3",
+<pre><code>"modVersion": "0.1.4",
 "release": false,
 "log": {"level": "I", "maxKb": 512, "files": 4, "statusMinutes": 5, "perMinute": 30}</code></pre>
 <table>
@@ -251,7 +253,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 </table>
 <h3>Ablauf, wenn etwas nicht geht</h3>
 <ol class="steps">
-<li>Im Spiel die Taste <b>„Turismo: Fehlerbericht erstellen“</b> drücken (einmal in Optionen → Steuerung belegen) oder im Notfall-Menü auf <b>Fehlerbericht erstellen</b>. Unten erscheint der Pfad zur Datei. Konsole geht auch: <code>extensions.turismo_core.bugReport()</code></li>
+<li>Im Spiel die Taste <b>„Turismo: Fehlerbericht erstellen“</b> drücken (einmal in Optionen → Steuerung belegen) oder im Turismo-Menü unter <b>Einstellungen → Fehlerbericht erstellen</b> (auch auf dem Startbildschirm), oder im Notfall-Menü. Dort kannst du kurz dazuschreiben, was passiert ist; der Text steht dann oben im Bericht. Unten erscheint der Pfad zur Datei. Konsole geht auch: <code>extensions.turismo_core.bugReport()</code></li>
 <li><code>bugreport.txt</code> hier im Projekt hochladen und kurz dazuschreiben, was passiert ist.</li>
 <li>Ich werte sie aus und baue den Fix.</li>
 </ol>
@@ -503,7 +505,27 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li><b>Pausenmenü:</b> Esc → Mods → Turismo-Menü (<span class="path">PauseCard.vue</span>).</li>
 <li><b>World-Menü und HUD:</b> <span class="path">ui\modules\apps\TurismoHub\turismo-ui.js</span> und <span class="path">app.css</span>. Lädt von selbst, keine Layout-App nötig.</li>
 <li><b>Notfall-Menü:</b> <span class="path">imguiHub.lua</span>, falls die Oberfläche nicht erscheint.</li>
+<li><b>Changelog im Spiel:</b> Einstellungen → Changelog. Liest <span class="path">CHANGELOG.md</span> aus dem Mod-Ordner (<code>uiCall('changelog')</code>, zuerst <span class="path">/mods/unpacked/turismo_karriere/CHANGELOG.md</span>, sonst <span class="path">/CHANGELOG.md</span>, wenn die erste Zeile „# Changelog Turismo“ ist, weil andere Mods auch eine CHANGELOG.md haben).</li>
+<li><b>Fehlerbericht:</b> Einstellungen und Startbildschirm, ruft <code>uiCall('bugReport', {note = '…'})</code>.</li>
 </ul>
+<h3 id="hud">Fahr-HUD</h3>
+<table>
+<tr><th>Element</th><th>Wo</th><th>Daten</th></tr>
+<tr><td>Position, Runde, Rundenzeiten, Δ Beste</td><td>oben links</td><td><code>TurismoHud</code> aus <span class="path">race.lua</span> (<code>pushHud</code>, alle <code>HUD_RATE</code> Sekunden)</td></tr>
+<tr><td>Live-Delta zur besten Runde</td><td>oben Mitte</td><td>rechnet die UI selbst (<code>trackDelta</code>): pro Runde Paare aus Streckenanteil und Rundenzeit, die beste Runde ist die Referenz. Ab Runde 2.</td></tr>
+<tr><td>Rangliste (5 Fahrer um dich)</td><td>oben rechts</td><td><code>standings</code></td></tr>
+<tr><td>Minikarte</td><td>unten links</td><td>Streckenlinie einmal pro Rennen als <code>TurismoTrackMap</code> (<code>pts</code> = höchstens ~160 Punkte x/y, <code>closed</code>), Autos in jedem <code>TurismoHud</code> als <code>cars</code> = <code>[x, y, ichBins(1/0), platz]</code></td></tr>
+<tr><td>Drehzahlband, Gang, Tempo</td><td>unten rechts</td><td>BeamNG-Stream <code>electrics</code>: <code>rpmTacho</code>, <code>maxrpm</code>, <code>gear</code>, <code>wheelspeed</code>. Rote Zone und Schaltblitz ab 88 % von <code>maxrpm</code> (<code>red</code> in <code>renderSpeedo</code>).</td></tr>
+</table>
+<h3 id="grafik">Grafiken (VectorCraft)</h3>
+<p>Alle Bilder der Oberfläche entstehen mit <b>VectorCraft</b> (<a href="https://github.com/storytold/vectorcraft">github.com/storytold/vectorcraft</a>, MIT/Apache), wie in Hashiriya Battle: <span class="path">tools\art\make_art.py</span> schreibt pro Bild eine SVG und eine Liste mit Effekten (<code>_steps.json</code>: Weichzeichnen, Schlagschatten), <code>vectorcraft-cli</code> rendert sie als PNG.</p>
+<pre><code>VC=/pfad/zu/vectorcraft-cli sh tools/art/build.sh   # alle Bilder neu, kopiert nach ui\modules\apps\TurismoHub\art\</code></pre>
+<table>
+<tr><th>Datei</th><th>Wo im Spiel</th></tr>
+<tr><td><code>tile_*.png</code> (320×200, doppelt gerendert)</td><td>Kacheln im World-Menü; Zuordnung Icon → Bild in <code>TILE_ART</code> in <span class="path">turismo-ui.js</span></td></tr>
+<tr><td><code>trophy_gold/silver/bronze.png</code> (200×200)</td><td>Siegerehrung bei Platz 1 bis 3</td></tr>
+</table>
+<p>Neues Bild: in <code>make_art.py</code> eine Funktion <code>art_xyz(doc)</code> schreiben, in <code>TILES</code> eintragen, <code>build.sh</code> laufen lassen, in <code>TILE_ART</code> dem Icon zuordnen.</p>
 <p>Die Oberfläche spricht mit Lua über <code>extensions.turismo_core.uiCall('&lt;aktion&gt;', {…}, reqId)</code>. Jede Aktion steht im Log.</p>
 </section>
 
@@ -545,6 +567,29 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <h2><span class="n">★</span> Changelog <span class="tag">CHANGELOG.md</span></h2>
 <p>Alle Versionen zum Aufklappen, neueste oben. Kommt aus <span class="path">CHANGELOG.md</span> (englisch: <span class="path">CHANGELOG_EN.md</span>) und wird mit <code>python3 tools/handbuch_sync.py</code> hier eingetragen.</p>
 <!-- CHANGELOG-START -->
+<details class="cl">
+<summary><b>0.1.4</b> <small>Stand 02.11.2026</small></summary>
+<div>
+<h4>Neu: Fahr-HUD im GT-Stil</h4>
+<ul>
+<li>Unten rechts ein Drehzahlband mit roter Zone. Im roten Bereich blinken Band und Gang: jetzt schalten.</li>
+<li>Großer Gang und Geschwindigkeit direkt über dem Drehzahlband.</li>
+<li>Minikarte unten links: die Strecke mit allen Autos, du bist der blaue Punkt, die Ziellinie das weiße Quadrat.</li>
+<li>Oben in der Mitte der Abstand zu deiner besten Runde, live: grün = schneller, rot = langsamer. Erscheint ab der zweiten Runde.</li>
+<li>Die Rangliste oben rechts zeigt nur noch 5 Fahrer um dich herum.</li>
+</ul>
+<h4>Neu: Bilder im Menü</h4>
+<ul>
+<li>Jede Kachel im World-Menü hat ein eigenes Bild.</li>
+<li>Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.</li>
+</ul>
+<h4>Neu: Changelog und Fehlerbericht im Menü</h4>
+<ul>
+<li>In den <b>Einstellungen</b> gibt es jetzt <b>Changelog</b>: Dort steht, was sich in jeder Version geändert hat.</li>
+<li><b>Fehlerbericht erstellen</b> gibt es jetzt in den Einstellungen und auf dem Startbildschirm. Du kannst kurz dazuschreiben, was passiert ist. Danach steht dort, wo die Datei liegt.</li>
+</ul>
+</div>
+</details>
 <details class="cl">
 <summary><b>0.1.3</b> <small>Stand 02.11.2026</small></summary>
 <div>
@@ -632,6 +677,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <pre><code>python3 tools/gen_data.py        # Inhalte in data/turismo neu erzeugen
 python3 tools/gen_sfx.py         # Soundeffekte
 python3 tools/handbuch_sync.py   # Changelog und Roadmap ins Handbuch
+sh tools/art/build.sh            # Grafiken mit VectorCraft (VC=pfad/zu/vectorcraft-cli)
 luajit tools/test/unit.lua       # Logik-Tests
 luajit tools/test/smoke.lua      # Karrierestart-Test
 node tools/ui-preview/shoot.js out/   # Screenshots der Oberfläche

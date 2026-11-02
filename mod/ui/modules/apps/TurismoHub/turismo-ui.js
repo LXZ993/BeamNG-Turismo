@@ -255,6 +255,7 @@
     tickets: function (a) { return a.call('tickets').then(function (d) { return { tickets: arr(d) }; }); },
     world2: function (a) { return Promise.all([a.call('levels'), a.call('tracks'), a.call('recorderState')]).then(function (r) { return { levels: arr(r[0]), tracks: arr(r[1]), rec: r[2] }; }); },
     settings: function () { return Promise.resolve({}); },
+    changelog: function (a) { return a.call('changelog').then(function (d) { return { text: (d && d.text) || '' }; }); },
     diag: function (a) { return a.call('diagnostics').then(function (d) { return { diag: d }; }); }
   };
 
@@ -318,7 +319,7 @@
           '<div style="font-size:40px">+</div>Neue Karriere<br><small>Platz ' + s.slot + '</small></div>';
       }
     });
-    html += '</div><div><button class="tz-btn" data-act="close">◂ Zurück</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
+    html += '</div><div style="display:flex;gap:10px;justify-content:center"><button class="tz-btn" data-act="close">◂ Zurück</button><button class="tz-btn" data-act="bugReport">Fehlerbericht erstellen</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
     return html;
   };
 
@@ -622,7 +623,30 @@
       '<label>Hardcore</label><div class="tz-choice">' + opt('hardcore', 'false', 'Aus', !!m.hardcore) + opt('hardcore', 'true', 'An (immer Rennwochenende, kein Neustart)', !!m.hardcore) + '</div>' +
       '<label>Spiel pausieren im Menü</label><div class="tz-choice">' + opt('pauseInHub', 'true', 'Ja', st.pauseInHub !== false) + opt('pauseInHub', 'false', 'Nein', st.pauseInHub !== false) + '</div>' +
       '<label>Musik-Lautstärke</label><div class="tz-choice">' + [0, 0.2, 0.45, 0.7].map(function (v) { return '<div class="' + (Math.abs(Audio_.musicVol - v) < 0.01 ? 'on' : '') + '" data-act="musicVol" data-arg="' + v + '">' + (v === 0 ? 'Aus' : Math.round(v * 100) + '%') + '</div>'; }).join('') + '</div>' +
-      '<div style="margin-top:20px;display:flex;gap:10px"><button class="tz-btn" data-act="save">Jetzt speichern</button><button class="tz-btn" data-act="toTitle">Spielstand wechseln</button></div></div>';
+      '<div style="margin-top:20px;display:flex;gap:10px;flex-wrap:wrap"><button class="tz-btn" data-act="save">Jetzt speichern</button><button class="tz-btn" data-act="toTitle">Spielstand wechseln</button>' +
+      '<span style="flex:1"></span><button class="tz-btn" data-act="go" data-arg="changelog">Changelog</button><button class="tz-btn" data-act="bugReport">Fehlerbericht erstellen</button></div></div>';
+  };
+
+  // Changelog: CHANGELOG.md, jede "## Version" ein aufklappbarer Abschnitt, neueste offen
+  App.prototype.scr_changelog = function (d) {
+    function inline(t) { return esc(t).replace(/\*\*([^*]+)\*\*/g, '<b>$1</b>').replace(/`([^`]+)`/g, '<code>$1</code>'); }
+    var out = '', open = false, list = false, first = true;
+    String(d.text || '').split(/\r?\n/).forEach(function (raw) {
+      var l = raw.trim();
+      if (/^- /.test(l)) { if (!list) { out += '<ul>'; list = true; } out += '<li>' + inline(l.slice(2)) + '</li>'; return; }
+      if (list) { out += '</ul>'; list = false; }
+      if (/^## /.test(l)) { if (open) out += '</details>'; out += '<details class="tz-cl"' + (first ? ' open' : '') + '><summary>' + inline(l.slice(3)) + '</summary>'; open = true; first = false; }
+      else if (/^### /.test(l)) out += '<h4>' + inline(l.slice(4)) + '</h4>';
+      else if (l && !/^# /.test(l)) out += '<p>' + inline(l) + '</p>';
+    });
+    if (list) out += '</ul>';
+    if (open) out += '</details>';
+    return this.head('Changelog', 'Was sich in Turismo Karriere geändert hat') + '<div class="tz-panel tz-changelog" style="max-width:900px">' + (out || '<p>Kein Changelog gefunden.</p>') + '</div>';
+  };
+  App.prototype.showBugReport = function () {
+    this.modalShow('<h2>Fehlerbericht erstellen</h2><p>Schreib kurz, was passiert ist (optional). Die Mod speichert dann <b>bugreport.txt</b> mit Log und Spielstand. Diese eine Datei schickst du mir.</p>' +
+      '<textarea data-el="bugNote" rows="4" style="width:100%;box-sizing:border-box" placeholder="z. B. Nach dem Ziel blieb der Bildschirm schwarz"></textarea>' +
+      '<div class="actions"><button class="tz-btn" data-act="modalClose">Abbrechen</button><button class="tz-btn primary" data-act="bugReportSend">Bericht speichern</button></div>');
   };
 
   App.prototype.scr_diag = function (d) {
@@ -713,6 +737,13 @@
         this.call('setting', { key: arg, value: v }).then(function (s) { self.state = s; self.render(); });
         break;
       case 'musicVol': Audio_.setMusicVolume(+arg); this.render(); break;
+      case 'bugReport': this.showBugReport(); break;
+      case 'bugReportSend':
+        var note = this.el.modal.querySelector('[data-el=bugNote]');
+        this.call('bugReport', { note: note ? note.value : '' }).then(function (r) {
+          self.modalShow('<h2>Fehlerbericht gespeichert</h2><p>Die Datei liegt im BeamNG-Userordner unter:</p><p><code>' + esc((r && r.path) || 'settings/turismo/logs/bugreport.txt') + '</code></p>' +
+            '<div class="actions"><button class="tz-btn primary" data-act="modalClose">OK</button></div>');
+        }); break;
       case 'save': this.call('save').then(function () { self.toast('Gespeichert', 'info'); }); break;
       case 'toTitle': this.stack = [{ name: 'title', params: {} }]; this.load(); break;
       case 'rescan': this.call('rescan').then(function () { self.reload(); }); break;

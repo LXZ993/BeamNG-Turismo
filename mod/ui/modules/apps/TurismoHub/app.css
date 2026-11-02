@@ -275,3 +275,12 @@
 .tz-tile.big .tz-art { height: 62%; max-width: 70%; }
 .tz-world .tz-tile.has-art p { max-width: 58%; } .tz-world .tz-tile.big.has-art p { max-width: 86%; }
 .tz-results .tz-trophy { width: 150px; height: 150px; margin-bottom: -10px; animation: tz-rise .6s ease-out; filter: drop-shadow(0 0 20px rgba(255,211,77,.35)); }
+
+/* Changelog */
+.tz-changelog details { border-bottom: 1px solid var(--line); padding: 8px 0; }
+.tz-changelog summary { cursor: pointer; font-size: 18px; font-weight: 700; padding: 4px 0; }
+.tz-changelog h4 { margin: 12px 0 4px; color: var(--accent); font-size: 14px; letter-spacing: .05em; }
+.tz-changelog ul { margin: 4px 0; padding-left: 20px; } .tz-changelog li { margin: 3px 0; color: var(--text); font-size: 14px; }
+.tz-changelog code { background: rgba(255,255,255,.08); padding: 1px 5px; border-radius: 4px; }
+.tz-modal textarea { background: rgba(6,12,26,.8); color: var(--text); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; font: inherit; resize: vertical; }
+.tz-modal textarea:focus { outline: none; border-color: var(--accent); }
