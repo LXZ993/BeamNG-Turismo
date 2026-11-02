@@ -492,8 +492,41 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 
 <section id="musik">
 <h2><span class="n">16</span> Musik und Credits</h2>
-<p>Die Musik liegt als eigener Mod-Ordner in <span class="path">mods\unpacked\turismo_musik\</span>. Die Playlists stehen in <span class="path">ui\modules\apps\TurismoHub\audio\music\playlist.json</span>. Alle fremden Stücke stehen mit Künstler und Lizenz in <span class="path">CREDITS.md</span> und im Credits-Menü im Spiel.</p>
-<p><small>Dieses Kapitel wird mit der nächsten Musik-Version ausführlich ergänzt (Aufbau von playlist.json, Import-Skript, Credits-Menü).</small></p>
+<p>Alle Stücke sind von <b>Kevin MacLeod</b> (incompetech.com) unter der Lizenz <b>Creative Commons BY 4.0</b>. Die Lizenz erlaubt die Nutzung, verlangt aber eine Namensnennung. Deshalb blendet das Spiel bei jedem Stück Titel und Künstler ein, und alle Stücke stehen im Credits-Menü und in <span class="path">CREDITS.md</span>.</p>
+
+<h3>Wo die Musik liegt</h3>
+<ul>
+<li><b>Stücke:</b> <span class="path">mods\unpacked\turismo_musik\ui\modules\apps\TurismoHub\audio\music\km_*.ogg</span> (eigener Mod-Ordner, weil die Musik rund 50 MB groß ist).</li>
+<li><b>Playlist:</b> <span class="path">playlist.json</span> im selben Ordner. Sie legt fest, welches Stück wo läuft.</li>
+<li><b>Credits-Menü:</b> Titelbildschirm oder Einstellungen → <b>Credits</b>. Es liest seine Liste direkt aus <span class="path">playlist.json</span>.</li>
+</ul>
+
+<h3>Aufbau von playlist.json</h3>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>tracks.&lt;schlüssel&gt;.file</code></td><td>Dateiname der OGG-Datei im Musikordner.</td></tr>
+<tr><td><code>title</code>, <code>artist</code></td><td>Wird beim Abspielen eingeblendet und im Credits-Menü gezeigt.</td></tr>
+<tr><td><code>license</code></td><td>Kurzform der Lizenz, z. B. <code>CC BY 4.0</code> oder <code>CC0</code>.</td></tr>
+<tr><td><code>licenseText</code></td><td>Vollständiger Lizenzhinweis für das Credits-Menü.</td></tr>
+<tr><td><code>source</code></td><td>Woher das Stück stammt (Download-Adresse).</td></tr>
+<tr><td><code>contexts.&lt;bereich&gt;</code></td><td>Liste der Schlüssel, die in diesem Bereich zufällig nacheinander laufen. Bereiche: <code>title</code> (Titel), <code>menu</code> (Menü und Café), <code>dealer</code> (Händler), <code>license</code> (Lizenzen), <code>race</code> (Rennen), <code>results</code> (Siegerehrung).</td></tr>
+<tr><td><code>credit</code></td><td>Kurzer Text oben im Credits-Menü.</td></tr>
+</table>
+
+<h3>So tauschst du ein Stück aus oder fügst eins hinzu</h3>
+<ol>
+<li>Stück als OGG in den Musikordner legen (MP3 kann die Spieloberfläche nicht sicher abspielen).</li>
+<li>In <span class="path">playlist.json</span> unter <code>tracks</code> einen Eintrag anlegen, Beispiel:
+<pre>"mein_song": { "file": "mein_song.ogg", "title": "Mein Song", "artist": "Künstlername",
+  "license": "CC0", "licenseText": "Public Domain (CC0 1.0)", "source": "https://..." }</pre></li>
+<li>Den Schlüssel in die gewünschten Bereiche unter <code>contexts</code> eintragen, z. B. <code>"race": ["mein_song", "cut_and_run", ...]</code>.</li>
+<li>Ein Stück entfernen: Schlüssel aus <code>contexts</code> löschen. Der Eintrag unter <code>tracks</code> darf bleiben, dann steht er aber weiter im Credits-Menü.</li>
+<li>Spiel neu starten.</li>
+</ol>
+<p>Achte auf die Lizenz: nur Stücke mit CC0, CC BY oder einer klaren Freigabe. Auch CC0-Stücke tragen wir mit Künstler in die Credits ein.</p>
+
+<h3>Für Entwickler: Import-Skript</h3>
+<p><code>python3 tools/import_music.py &lt;ordner mit MP3s&gt;</code> wandelt die Originale in OGG um, gleicht die Lautheit an (Menü −18, Händler/Lizenz/Siegerehrung −17, Titel/Rennen −15 LUFS) und schreibt <span class="path">playlist.json</span> neu. Die Stückliste steht oben im Skript (<code>TRACKS</code>). <code>--playlist-only</code> schreibt nur die Playlist.</p>
 </section>
 
 <section id="ui">
@@ -545,6 +578,19 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <h2><span class="n">★</span> Changelog <span class="tag">CHANGELOG.md</span></h2>
 <p>Alle Versionen zum Aufklappen, neueste oben. Kommt aus <span class="path">CHANGELOG.md</span> (englisch: <span class="path">CHANGELOG_EN.md</span>) und wird mit <code>python3 tools/handbuch_sync.py</code> hier eingetragen.</p>
 <!-- CHANGELOG-START -->
+<details class="cl">
+<summary><b>0.1.4</b> <small>Stand 02.11.2026</small></summary>
+<div>
+<h4>Neu: Echte Musik und Credits-Menü</h4>
+<ul>
+<li>Die selbst erzeugte Musik ist raus. Jetzt laufen 18 echte Stücke von Kevin MacLeod (incompetech.com): Lounge und Bossa im Menü und Café, Funk beim Händler, Rock und Electro im Rennen, Jazz bei der Siegerehrung.</li>
+<li>Die Lautstärke der Stücke ist angeglichen, Rennmusik ist etwas kräftiger als Menümusik. Die Lautstärke stellst du wie bisher in den Einstellungen ein.</li>
+<li>Beim Start jedes Stücks erscheint oben kurz Titel und Künstler.</li>
+<li>Neu: <b>Credits</b> im Titelbildschirm und in den Einstellungen. Dort stehen alle Songs mit Künstler, Lizenz und Lizenzhinweis. Mit ▶ hörst du ein Stück an, ■ stoppt es wieder.</li>
+<li>Die Musik liegt als eigener Ordner <code>mods\unpacked\turismo_musik</code>. Die Mod selbst liegt entpackt in <code>mods\unpacked\turismo_karriere</code>.</li>
+</ul>
+</div>
+</details>
 <details class="cl">
 <summary><b>0.1.3</b> <small>Stand 02.11.2026</small></summary>
 <div>

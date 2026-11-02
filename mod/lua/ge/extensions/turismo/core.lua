@@ -9,7 +9,7 @@
 
 local M = {}
 
-M.VERSION = '0.1.3' -- muss zu data/turismo/build.json "modVersion" und CHANGELOG.md passen
+M.VERSION = '0.1.4' -- muss zu data/turismo/build.json "modVersion" und CHANGELOG.md passen
 
 M.MODULES = {
   'turismo_logger', 'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',

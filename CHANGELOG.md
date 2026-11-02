@@ -1,5 +1,14 @@
 # Changelog Turismo Karriere
 
+## 0.1.4 (Stand 02.11.2026)
+
+### Neu: Echte Musik und Credits-Menü
+- Die selbst erzeugte Musik ist raus. Jetzt laufen 18 echte Stücke von Kevin MacLeod (incompetech.com): Lounge und Bossa im Menü und Café, Funk beim Händler, Rock und Electro im Rennen, Jazz bei der Siegerehrung.
+- Die Lautstärke der Stücke ist angeglichen, Rennmusik ist etwas kräftiger als Menümusik. Die Lautstärke stellst du wie bisher in den Einstellungen ein.
+- Beim Start jedes Stücks erscheint oben kurz Titel und Künstler.
+- Neu: **Credits** im Titelbildschirm und in den Einstellungen. Dort stehen alle Songs mit Künstler, Lizenz und Lizenzhinweis. Mit ▶ hörst du ein Stück an, ■ stoppt es wieder.
+- Die Musik liegt als eigener Ordner `mods\unpacked\turismo_musik`. Die Mod selbst liegt entpackt in `mods\unpacked\turismo_karriere`.
+
 ## 0.1.3 (Stand 02.11.2026)
 
 ### Neu: Fehlerbericht und eigenes Log

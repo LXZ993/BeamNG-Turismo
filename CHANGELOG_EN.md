@@ -1,5 +1,14 @@
 # Turismo Career Changelog
 
+## 0.1.4 (as of 2026-11-02)
+
+### New: Real music and credits screen
+- The self-generated music is gone. The game now plays 18 real tracks by Kevin MacLeod (incompetech.com): lounge and bossa in the menu and café, funk at the dealer, rock and electro in races, jazz at the podium.
+- Track loudness is levelled, race music is a bit stronger than menu music. Set the volume in the settings as before.
+- When a track starts, its title and artist show briefly at the top.
+- New: **Credits** on the title screen and in the settings. It lists every song with artist, licence and licence notice. Press ▶ to listen to a track, ■ stops it.
+- The music is its own folder `mods\unpacked\turismo_musik`. The mod itself is unpacked in `mods\unpacked\turismo_karriere`.
+
 ## 0.1.3 (as of 2026-11-02)
 
 ### New: bug report and own log
