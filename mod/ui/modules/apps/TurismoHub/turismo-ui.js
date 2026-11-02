@@ -134,10 +134,11 @@
       '</div>' +
       '<div data-el="overlay"></div>' +
       '<div class="tz-modal tz-hidden" data-el="modal"><div></div></div>' +
-      '<div class="tz-toasts" data-el="toasts"></div>';
+      '<div class="tz-toasts" data-el="toasts"></div>' +
+      '<div class="tz-loading tz-hidden" data-el="loading"><div class="logo">TURISMO</div><div class="bar"><i></i></div><div class="txt" data-el="loadingTxt"></div></div>';
     var q = this.root.querySelector.bind(this.root);
     this.el = { hud: q('[data-el=hud]'), hub: q('[data-el=hub]'), top: q('[data-el=top]'), screen: q('[data-el=screen]'),
-      overlay: q('[data-el=overlay]'), modal: q('[data-el=modal]'), toasts: q('[data-el=toasts]') };
+      overlay: q('[data-el=overlay]'), modal: q('[data-el=modal]'), toasts: q('[data-el=toasts]'), loading: q('[data-el=loading]'), loadingTxt: q('[data-el=loadingTxt]') };
   };
 
   App.prototype.call = function (action, args) {
@@ -151,6 +152,7 @@
     var self = this, b = this.bridge;
     b.on('TurismoState', function (s) { self.state = s || { loaded: false }; self.renderTop(); if (self.cur() && self.cur().name === 'world') self.render(); });
     b.on('TurismoHubToggle', function (d) { self.showHub(d && d.visible); });
+    b.on('TurismoLoading', function (d) { self.showLoading(d && d.visible, d && d.text); });
     b.on('TurismoToast', function (d) { self.toast(d.msg, d.kind); });
     b.on('TurismoSound', function (d) { Audio_.sfx(d.file || d.cue); });
     b.on('TurismoMusic', function (d) { Audio_.music(d.context); });
@@ -220,8 +222,18 @@
   };
   App.prototype.home = function () { this.stack = [{ name: this.state.loaded ? 'world' : 'title', params: {} }]; this.load(); };
 
+  // own loading cover between "load save" and the world menu (no flash of the menu before the map loads)
+  App.prototype.showLoading = function (on, text) {
+    var self = this;
+    clearTimeout(this._loadingT);
+    this.el.loading.classList.toggle('tz-hidden', !on);
+    this.el.loadingTxt.textContent = text || '';
+    // safety: never cover the game for good if the map load fails silently
+    if (on) this._loadingT = setTimeout(function () { self.showLoading(false); }, 120000);
+  };
   App.prototype.showHub = function (visible) {
     this.hubVisible = !!visible;
+    if (this.hubVisible) this.showLoading(false);
     this.el.hub.classList.toggle('tz-hidden', !this.hubVisible);
     if (!this.hubVisible && this.modal) this.closeModal();
     this.root.style.pointerEvents = 'none';

@@ -38,10 +38,11 @@ const path = require('path');
     ['24_test_brief', 'preview.testBrief()'],
     ['25_changelog', 'preview.hub("changelog")'],
     ['26_bugreport', 'preview.hub("settings"); window.__turismoApp.showBugReport()'],
+    ['27_loading', 'preview.emit("TurismoLoading", {visible: true, text: "Karriere wird geladen …"})'],
     ['23_guide', 'preview.hub(); window.__turismoApp.showGuide()'],
   ];
   for (const [name, js] of shots) {
-    await page.evaluate(`document.querySelector("[data-el=overlay]").innerHTML=""; preview.emit("TurismoRacePhase",{phase:"idle"}); preview.emit("TurismoDragPhase",{phase:"idle"}); window.__turismoApp.tree=null; window.__turismoApp._guideShown=true; window.__turismoApp.closeModal();`);
+    await page.evaluate(`document.querySelector("[data-el=overlay]").innerHTML=""; preview.emit("TurismoRacePhase",{phase:"idle"}); preview.emit("TurismoDragPhase",{phase:"idle"}); window.__turismoApp.tree=null; window.__turismoApp._guideShown=true; window.__turismoApp.closeModal(); window.__turismoApp.showLoading(false);`);
     await page.evaluate(js);
     await page.waitForTimeout(450);
     await page.screenshot({ path: path.join(out, name + '.png') });

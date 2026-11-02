@@ -34,6 +34,39 @@ local function levelLoaded()
 end
 M.levelLoaded = levelLoaded
 
+-- BeamNG draws the minimap (Navigation app, or another mod's minimap) with imgui on top of every HTML
+-- layer, so it would show through the world menu. While the menu is open: hide it and hold back new
+-- transforms; when the menu closes, put the last known transform back and ask the apps to resend theirs.
+local mmTimer = 0
+local mmGuard = { wrapped = nil, orig = nil, last = nil, blocked = false }
+local function minimapGuard(block)
+  local mm = rawget(_G, 'ui_apps_minimap_minimap')
+  if not mm or type(mm.setDrawTransform) ~= 'function' then return end
+  if mmGuard.wrapped ~= mm then
+    local orig = mm.setDrawTransform
+    mmGuard.wrapped, mmGuard.orig, mmGuard.last, mmGuard.blocked = mm, orig, nil, false
+    mm.setDrawTransform = function(...)
+      mmGuard.last = { ... }
+      if not mmGuard.blocked then return orig(...) end
+    end
+  end
+  if block == mmGuard.blocked then return end
+  mmGuard.blocked = block
+  if block then
+    pcall(mm.hide)
+  else
+    if mmGuard.last then pcall(mmGuard.orig, unpack(mmGuard.last)) end
+    if guihooks then guihooks.trigger('onMinimapSettingsChanged') end
+  end
+  U().log('D', 'Minikarte %s', block and 'ausgeblendet (Menü offen)' or 'wieder an')
+end
+
+-- own loading cover: keeps the world menu from flashing up before the map loads
+local function loadingCover(on, text)
+  if guihooks then guihooks.trigger('TurismoLoading', { visible = on and true or false, text = text }) end
+end
+M.loadingCover = loadingCover
+
 ---------------------------------------------------------------------------
 -- bootstrap
 ---------------------------------------------------------------------------
@@ -74,6 +107,9 @@ function M.onUpdate(dtReal, dtSim, dtRaw)
     U().log('E', 'FEHLER in onUpdate: %s | Zustand: %s', tostring(err), X('logger').context())
   end
   X('logger').onUpdate(dtReal)
+  -- a minimap app may load while the menu is already open
+  mmTimer = (mmTimer or 0) + dtReal
+  if hubVisible and mmTimer > 1 then mmTimer = 0 pcall(minimapGuard, true) end
   stateTimer = stateTimer + dtReal
   if stateDirty and stateTimer > 0.5 then
     stateTimer = 0
@@ -85,8 +121,11 @@ end
 ---------------------------------------------------------------------------
 -- hub visibility
 ---------------------------------------------------------------------------
+
 function M.setHubVisible(v)
   hubVisible = v and true or false
+  pcall(minimapGuard, hubVisible)
+  if hubVisible then loadingCover(false) end
   -- leaving the Turismo menu to drive: make sure BeamNG's own menu is closed too
   if not hubVisible and levelLoaded() and ui_menuManager and ui_menuManager.closeMenu then
     pcall(ui_menuManager.closeMenu)
@@ -245,7 +284,12 @@ handlers.newProfile = function(a)
   st.economy.money = eco.startMoney or st.economy.money
   st.settings = st.settings or { pauseInHub = true, homeLevel = eco.homeLevel or 'west_coast_usa', raceLength = 'normal' }
   S().save()
-  if not levelLoaded() then X('session').defer(0.3, M.enterCareerWorld) end
+  if not levelLoaded() then
+    -- hide the menu right away: otherwise the world menu shows for a moment before BeamNG's loading screen
+    M.setHubVisible(false)
+    loadingCover(true, 'Karriere wird geladen …')
+    X('session').defer(0.3, M.enterCareerWorld)
+  end
   return M.snapshotState()
 end
 
@@ -253,7 +297,12 @@ handlers.loadProfile = function(a)
   if not S().load(a.slot) then error('Spielstand konnte nicht geladen werden', 0) end
   local st = S().get()
   st.settings = st.settings or { pauseInHub = true, homeLevel = 'west_coast_usa', raceLength = 'normal' }
-  if not levelLoaded() then X('session').defer(0.3, M.enterCareerWorld) end
+  if not levelLoaded() then
+    -- hide the menu right away: otherwise the world menu shows for a moment before BeamNG's loading screen
+    M.setHubVisible(false)
+    loadingCover(true, 'Karriere wird geladen …')
+    X('session').defer(0.3, M.enterCareerWorld)
+  end
   return M.snapshotState()
 end
 

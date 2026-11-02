@@ -13,6 +13,10 @@
 - Every tile in the world menu has its own picture.
 - For places 1 to 3 the podium screen shows a gold, silver or bronze trophy.
 
+### Bug fixes
+- Loading a save briefly flashed the world menu, then the loading screen, then the menu again. Now a Turismo loading screen shows and the menu appears only once the map is loaded.
+- The minimap (from BeamNG or another mod) was drawn over the Turismo menu. It is now hidden while the menu is open and comes back when you drive.
+
 ### New: changelog and bug report in the menu
 - **Settings** now has **Changelog**: it lists what changed in each version.
 - **Create bug report** is now in Settings and on the title screen. You can add a short note about what happened. Afterwards it shows where the file is.

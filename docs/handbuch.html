@@ -507,6 +507,8 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li><b>Notfall-Menü:</b> <span class="path">imguiHub.lua</span>, falls die Oberfläche nicht erscheint.</li>
 <li><b>Changelog im Spiel:</b> Einstellungen → Changelog. Liest <span class="path">CHANGELOG.md</span> aus dem Mod-Ordner (<code>uiCall('changelog')</code>, zuerst <span class="path">/mods/unpacked/turismo_karriere/CHANGELOG.md</span>, sonst <span class="path">/CHANGELOG.md</span>, wenn die erste Zeile „# Changelog Turismo“ ist, weil andere Mods auch eine CHANGELOG.md haben).</li>
 <li><b>Fehlerbericht:</b> Einstellungen und Startbildschirm, ruft <code>uiCall('bugReport', {note = '…'})</code>.</li>
+<li><b>Ladebildschirm:</b> Nach „Spielstand laden/anlegen“ ohne geladene Karte blendet <span class="path">core.lua</span> das Menü sofort aus und zeigt per <code>TurismoLoading</code> einen eigenen Ladebildschirm, bis das World-Menü wieder aufgeht (Sicherung: nach 2 Minuten von selbst weg).</li>
+<li><b>Minikarte:</b> BeamNG zeichnet die Minikarte mit imgui über jede HTML-Ebene. Solange das Menü offen ist, versteckt <code>minimapGuard</code> in <span class="path">core.lua</span> sie (<code>ui_apps_minimap_minimap.hide</code>) und hält neue Positionen zurück; beim Schließen setzt es die letzte Position zurück und schickt <code>onMinimapSettingsChanged</code>, damit Minikarten-Apps (auch die von Hashiriya Battle) sich neu melden.</li>
 </ul>
 <h3 id="hud">Fahr-HUD</h3>
 <table>
@@ -582,6 +584,11 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <ul>
 <li>Jede Kachel im World-Menü hat ein eigenes Bild.</li>
 <li>Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.</li>
+</ul>
+<h4>Fehler behoben</h4>
+<ul>
+<li>Beim Laden eines Spielstands blitzte das World-Menü kurz auf, dann kam der Ladebildschirm, dann wieder das Menü. Jetzt erscheint ein eigener Turismo-Ladebildschirm und das Menü erst, wenn die Karte geladen ist.</li>
+<li>Die Minikarte (von BeamNG oder einer anderen Mod) lag über dem Turismo-Menü. Sie ist jetzt ausgeblendet, solange das Menü offen ist, und kommt beim Fahren zurück.</li>
 </ul>
 <h4>Neu: Changelog und Fehlerbericht im Menü</h4>
 <ul>

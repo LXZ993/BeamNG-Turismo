@@ -13,6 +13,10 @@
 - Jede Kachel im World-Menü hat ein eigenes Bild.
 - Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.
 
+### Fehler behoben
+- Beim Laden eines Spielstands blitzte das World-Menü kurz auf, dann kam der Ladebildschirm, dann wieder das Menü. Jetzt erscheint ein eigener Turismo-Ladebildschirm und das Menü erst, wenn die Karte geladen ist.
+- Die Minikarte (von BeamNG oder einer anderen Mod) lag über dem Turismo-Menü. Sie ist jetzt ausgeblendet, solange das Menü offen ist, und kommt beim Fahren zurück.
+
 ### Neu: Changelog und Fehlerbericht im Menü
 - In den **Einstellungen** gibt es jetzt **Changelog**: Dort steht, was sich in jeder Version geändert hat.
 - **Fehlerbericht erstellen** gibt es jetzt in den Einstellungen und auf dem Startbildschirm. Du kannst kurz dazuschreiben, was passiert ist. Danach steht dort, wo die Datei liegt.
