@@ -7,7 +7,11 @@ M.LOG_TAG = 'turismo'
 
 function M.log(level, msg, ...)
   local text = select('#', ...) > 0 and string.format(msg, ...) or tostring(msg)
-  if log then
+  -- eigenes Log (settings/turismo/logs/turismo.log), siehe logger.lua
+  local L = rawget(_G, 'extensions') and extensions.turismo_logger
+  if L and L.log then
+    L.log(level, M.LOG_TAG, text)
+  elseif log then
     log(level, M.LOG_TAG, text)
   else
     print('[' .. level .. '] ' .. M.LOG_TAG .. ': ' .. text)
