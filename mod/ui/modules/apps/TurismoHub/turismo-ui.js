@@ -8,6 +8,9 @@
   'use strict';
 
   var BASE = '/ui/modules/apps/TurismoHub/';
+  // hub tile illustrations, made with VectorCraft (tools/art/make_art.py)
+  var TILE_ART = { cafe: 'tile_cafe', race: 'tile_race', lic: 'tile_lic', cone: 'tile_cone', guide: 'tile_guide', car: 'tile_car', used: 'tile_used', star: 'tile_star',
+    garage: 'tile_garage', wrench: 'tile_wrench', ticket: 'tile_ticket', map: 'tile_map', gear: 'tile_gear', rec: 'tile_rec' };
 
   // ------------------------------------------------------------------ helpers
   function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
@@ -344,8 +347,9 @@
     var cafeSub = s.cafe ? ('Heft: ' + esc(s.cafe.name) + ' · ' + s.cafe.done + '/' + s.cafe.total) : 'Neue Hefte warten';
     var lic = (s.licenses || []).length ? 'Erhalten: ' + esc(s.licenses.join(', ')) : 'Noch keine Lizenz';
     function tile(cls, span, act, arg, title, sub, icon, key) {
-      return '<div class="tz-tile ' + cls + ' ' + span + (key && locked(key) ? ' locked' : '') + '" data-act="' + act + '" data-arg="' + (arg || '') + '">' +
-        '<h3>' + title + '</h3><p>' + sub + '</p><div class="tz-ico">' + (ICONS[icon] || '') + '</div></div>';
+      return '<div class="tz-tile ' + cls + ' ' + span + (TILE_ART[icon] ? ' has-art' : '') + (key && locked(key) ? ' locked' : '') + '" data-act="' + act + '" data-arg="' + (arg || '') + '">' +
+        (TILE_ART[icon] ? '<img class="tz-art" src="' + BASE + 'art/' + TILE_ART[icon] + '.png" alt="">' : '<div class="tz-ico">' + (ICONS[icon] || '') + '</div>') +
+        '<h3>' + title + '</h3><p>' + sub + '</p></div>';
     }
     return '<div class="tz-world">' +
       '<div class="tz-district">Stadtzentrum</div>' +
@@ -363,7 +367,7 @@
       tile('c-fun', 's4', 'go', 'tickets', 'Bonuslose', 'Gewinnlose aus Heften und Rennen – öffnen für Geld oder Autos · ' + esc(s.tickets || 0) + ' ungeöffnet', 'ticket') +
       '<div class="tz-district">Unterwegs</div>' +
       tile('c-fun', 's4', 'go', 'world2', 'Freie Fahrt & Strecken', 'Mit deinem Auto frei fahren, Tagesziel (Kilometer) schaffen, eigene Strecken aufnehmen', 'map', 'freeDrive') +
-      tile('c-garage', 's4', 'guide', '', 'So funktioniert’s', 'Kurze Einführung in die Karriere', 'star') +
+      tile('c-garage', 's4', 'guide', '', 'So funktioniert’s', 'Kurze Einführung in die Karriere', 'guide') +
       tile('c-garage', 's4', 'go', 'settings', 'Einstellungen', 'Renndauer, Intro, Musik, Schäden', 'gear') +
       tile('c-garage', 's4', 'go', 'diag', 'Diagnose', 'Autos, Strecken und Inhalte prüfen', 'rec') +
       '</div>';
@@ -1009,7 +1013,7 @@
       if (rw.seriesComplete) lines.push('<div>Serie<b>abgeschlossen</b></div>');
       if (rw.championship) lines.push('<div>Meisterschaft<b>Platz ' + esc(rw.championship.position || '?') + '</b></div>');
       var isTime = list.some(function (x) { return x.time != null; });
-      html = '<div style="display:flex;align-items:flex-end;gap:24px"><div class="pos">' + (me.dnf && !me.time && !me.score ? 'DNF' : (me.pos || '–')) + '</div><div><h1>' + (me.pos === 1 ? 'Sieg!' : me.pos <= 3 ? 'Podium!' : 'Rennende') + '</h1>' +
+      html = '<div style="display:flex;align-items:flex-end;gap:24px">' + (me.pos >= 1 && me.pos <= 3 && !me.dnf ? '<img class="tz-trophy" src="' + BASE + 'art/trophy_' + ['gold', 'silver', 'bronze'][me.pos - 1] + '.png" alt="">' : '') + '<div class="pos">' + (me.dnf && !me.time && !me.score ? 'DNF' : (me.pos || '–')) + '</div><div><h1>' + (me.pos === 1 ? 'Sieg!' : me.pos <= 3 ? 'Podium!' : 'Rennende') + '</h1>' +
         '<div style="color:var(--dim)">' + (d.cleanRace ? 'Saubere Fahrt' : 'Kontakt registriert') + '</div></div></div>' +
         '<div class="tz-rewards">' + lines.join('') + '</div>' +
         '<div class="tz-panel"><table class="tz-table"><tr><th>Pos</th><th>Fahrer</th><th>Auto</th><th>' + (isTime ? 'Zeit' : 'Wertung') + '</th><th>Beste Runde</th></tr>' + list.map(function (x) {

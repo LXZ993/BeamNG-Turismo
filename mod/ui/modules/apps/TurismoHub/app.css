@@ -266,3 +266,12 @@
 .tz-guide ol { padding-left: 20px; } .tz-guide li { margin: 6px 0; }
 .tz-guide .hint { color: var(--dim); font-size: 13px; }
 .tz-world .tz-tile p { max-width: 86%; }
+
+/* VectorCraft tile art (tools/art) */
+.tz-tile .tz-art { position: absolute; right: 0; bottom: 0; height: 100%; max-width: 44%; object-fit: contain; object-position: right bottom; pointer-events: none;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 35%); mask-image: linear-gradient(90deg, transparent, #000 35%); opacity: .9; transition: transform .2s; }
+.tz-tile:hover .tz-art { transform: scale(1.04); opacity: 1; }
+.tz-tile h3, .tz-tile p { position: relative; z-index: 1; text-shadow: 0 1px 3px rgba(0,0,0,.6); }
+.tz-tile.big .tz-art { height: 62%; max-width: 70%; }
+.tz-world .tz-tile.has-art p { max-width: 58%; } .tz-world .tz-tile.big.has-art p { max-width: 86%; }
+.tz-results .tz-trophy { width: 150px; height: 150px; margin-bottom: -10px; animation: tz-rise .6s ease-out; filter: drop-shadow(0 0 20px rgba(255,211,77,.35)); }

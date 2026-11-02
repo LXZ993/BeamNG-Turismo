@@ -8,6 +8,7 @@ const path = require('path');
   const errors = [];
   page.on('pageerror', e => errors.push(String(e)));
   page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+  await page.route('file:///ui/**', r => r.fulfill({ path: path.resolve(__dirname, '../../mod' + new URL(r.request().url()).pathname) }));
   await page.goto('file://' + path.resolve(__dirname, 'preview.html'));
   await page.waitForTimeout(300);
   const shots = [
