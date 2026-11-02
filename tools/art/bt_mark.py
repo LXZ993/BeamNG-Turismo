@@ -67,3 +67,34 @@ def mark(t_mode="normal"):
     else:  # Balken läuft nach links über den Doppelbogen
         T = [(0, -62), (400, -62), (400, -12), (326, -12), (326, 200), (276, 200), (276, -12), (0, -12)]
     return [stem, bow], [T]
+
+
+def mark_solid(t_mode="normal"):
+    """Runde 6: B als ein geschlossenes Stück (Stamm + Bögen, zwei Innenräume), gleiche Strichstärke wie das T."""
+    outer = path((0, 0), [
+        [(108, 0)],
+        [(152, 0), (178, 20), (178, 50)],
+        [(178, 74), (162, 90), (140, 99)],
+        [(168, 108), (190, 128), (190, 154)],
+        [(190, 184), (160, 200), (112, 200)],
+        [(0, 200)],
+    ])
+    # Innenräume gegen den Uhrzeigersinn (Gegenrichtung zur Außenkontur), damit sie als Löcher gelten
+    up = path((50, 44), [
+        [(50, 80)],
+        [(100, 80)],
+        [(118, 80), (128, 72), (128, 62)],
+        [(128, 52), (118, 44), (100, 44)],
+    ])
+    low = path((50, 122), [
+        [(50, 156)],
+        [(108, 156)],
+        [(128, 156), (138, 150), (138, 139)],
+        [(138, 128), (126, 122), (106, 122)],
+    ])
+    _, T = mark(t_mode)
+    return [[outer, up, low]], T
+
+
+def d_multi(parts):
+    return " ".join(d_of(p) for p in parts)

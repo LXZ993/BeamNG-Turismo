@@ -276,7 +276,7 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
     if len(sys.argv) > 2 and sys.argv[2] == "runde1":
         main(out)
-    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b"):
+    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b", "runde6"):
         pass  # main3 läuft am Dateiende (braucht die Funktionen darunter)
     else:
         main2(out)
@@ -415,12 +415,12 @@ if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde5":
 # ---------- Runde 5b: Glanz-Look ohne Inflate (sauberere Kanten): Verlauf, Glanzkante, Innenlicht ----------
 def glossy_piece(d, dpath, top, bot, y0, y1, rim="#FFFFFF"):
     cid = d.uid("cl")
-    d.defs.append(f'<clipPath id="{cid}"><path d="{dpath}"/></clipPath>')
+    d.defs.append(f'<clipPath id="{cid}"><path d="{dpath}" clip-rule="evenodd"/></clipPath>')
     g = d.uid("gr")
     d.defs.append(f'<linearGradient id="{g}" gradientUnits="userSpaceOnUse" x1="0" y1="{y0:.1f}" x2="0" y2="{y1:.1f}">'
                   f'<stop offset="0" stop-color="{top}"/><stop offset="0.55" stop-color="{bot}"/><stop offset="1" stop-color="{bot}"/></linearGradient>')
     n = d.uid("piece")
-    d.body.append(f'<path id="{n}" d="{dpath}" fill="url(#{g})"/>')
+    d.body.append(f'<path id="{n}" d="{dpath}" fill="url(#{g})" fill-rule="evenodd"/>')
     d.shadow(n, blur=10, dy=6, opacity=0.45)
     h = d.uid("gl")
     d.defs.append(f'<linearGradient id="{h}" gradientUnits="userSpaceOnUse" x1="0" y1="{y0:.1f}" x2="0" y2="{y0 + (y1 - y0) * 0.5:.1f}">'
@@ -471,3 +471,23 @@ def main5b(out):
 
 if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde5b":
     main5b(sys.argv[1])
+
+
+def mark6(d, mode, ox, oy, s, bcols, tcols):
+    B, T = _bm.mark_solid(mode)
+    ys = [y for p in T for _, y in _bm.sk(p, ox, oy, s)] + [oy, oy + 200 * s]
+    y0, y1 = min(ys), max(ys)
+    for parts in B:
+        glossy_piece(d, _bm.d_multi([_bm.sk(p, ox, oy, s) for p in parts]), bcols[0], bcols[1], oy, oy + 200 * s)
+    for p in T:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), tcols[0], tcols[1], y0, y1)
+
+
+def main6(out):
+    global mark5b
+    mark5b = mark6
+    main5b(out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde6":
+    main6(sys.argv[1])
