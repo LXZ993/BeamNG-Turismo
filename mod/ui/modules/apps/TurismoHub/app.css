@@ -5,7 +5,7 @@
   --line: rgba(130, 170, 255, 0.18); --text: #e8eefc; --dim: #93a3c7; --accent: #36d1ff; --accent2: #7b6cff;
   --money: #ffc35a; --good: #4fe39a; --bad: #ff5d6c; --gold: #ffd34d; --silver: #cfd8e6; --bronze: #d58a4a;
   --radius: 10px; --shadow: 0 10px 40px rgba(0, 0, 0, 0.45);
-  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 50;
+  position: fixed; left: 0; top: 0; width: 100vw; height: 100vh; z-index: 900;
   font-family: "Segoe UI", "Roboto", "Helvetica Neue", Arial, sans-serif; color: var(--text);
   pointer-events: none; user-select: none; font-size: 15px; line-height: 1.35;
 }

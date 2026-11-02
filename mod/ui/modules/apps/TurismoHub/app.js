@@ -59,8 +59,11 @@ angular.module('beamng.apps').directive('turismoHub', ['$injector', function ($i
 
       Promise.all([
         loadOnce('turismo-css', 'link', { rel: 'stylesheet', href: BASE + 'app.css' }),
-        loadOnce('turismo-js', 'script', { src: BASE + 'turismo-ui.js' })
+        loadOnce('turismo-js', 'script', { src: BASE + 'turismo-ui.js', charset: 'utf-8' })
       ]).then(function () {
+        // 0.40: the Vue UI mod (ui/ui-vue/mods/turismo_karriere) already mounts
+        // the interface for the whole game -> this app only shows the pill
+        if (window.__turismoVueHost) return;
         root = document.createElement('div');
         root.id = 'turismo-root';
         document.body.appendChild(root);

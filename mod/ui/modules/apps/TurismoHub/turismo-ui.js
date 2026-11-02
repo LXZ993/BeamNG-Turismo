@@ -307,7 +307,7 @@
           '<div style="font-size:40px">+</div>Neue Karriere<br><small>Platz ' + s.slot + '</small></div>';
       }
     });
-    html += '</div><div style="color:var(--dim);font-size:12px">Esc: Menü schließen</div></div>';
+    html += '</div><div><button class="tz-btn" data-act="close">◂ Zurück</button></div><div style="color:var(--dim);font-size:12px;margin-top:8px">Esc: zurück</div></div>';
     return html;
   };
 

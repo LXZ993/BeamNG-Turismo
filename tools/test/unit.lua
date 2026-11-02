@@ -293,6 +293,17 @@ H.test('drag strips: 0.40 modular format and legacy format', function()
   H.eq(#b, 2) H.truthy(math.abs(b[2].length - 201.17) < 0.01)
 end)
 
+H.test('main menu entry: startCareer opens hub and registers pause button', function()
+  local reg
+  extensions.ui_pause_actions = { registerModButton = function(b) reg = b return { success = true } end }
+  extensions.turismo_core.startCareer()
+  H.eq(extensions.turismo_core.isHubVisible(), true)
+  H.eq(reg and reg.tabId, 'mods')
+  H.truthy(reg.componentName:find('turismo_karriere/PauseCard.vue', 1, true))
+  extensions.turismo_core.setHubVisible(false)
+  extensions.ui_pause_actions = nil
+end)
+
 print(string.format('== %d ok, %d failed', H.passed, H.failed))
 for _, l in ipairs(H.logs) do if l:sub(1, 1) == 'E' then print('  log ' .. l) end end
 os.exit(H.failed == 0 and 0 or 1)

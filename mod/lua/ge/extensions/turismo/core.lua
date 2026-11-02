@@ -45,6 +45,7 @@ end
 function M.onExtensionLoaded()
   if setExtensionUnloadMode then setExtensionUnloadMode(M, 'manual') end
   loadModules()
+  M.registerPauseButton()
   log('I', 'turismo', 'Turismo Karriere ' .. M.VERSION .. ' geladen')
 end
 
@@ -85,6 +86,58 @@ function M.setHubVisible(v)
 end
 
 function M.toggleHub() M.setHubVisible(not hubVisible) end
+
+---------------------------------------------------------------------------
+-- career as its own game mode (main menu entry, see ui/ui-vue/mods/turismo_karriere)
+---------------------------------------------------------------------------
+local function levelLoaded()
+  local lvl = getCurrentLevelIdentifier and getCurrentLevelIdentifier()
+  return lvl ~= nil and lvl ~= ''
+end
+M.levelLoaded = levelLoaded
+
+-- main menu button "Turismo Karriere": title screen with the save slots
+function M.startCareer()
+  log('I', 'turismo', 'Karriere aus dem Hauptmenü gestartet')
+  M.registerPauseButton()
+  M.setHubVisible(true)
+end
+
+-- pause menu (Esc) -> tab "Mods" -> "Turismo-Menü": no key binding needed
+function M.registerPauseButton()
+  local pa = extensions.ui_pause_actions
+  if not pa or not pa.registerModButton then return end
+  pcall(pa.registerModButton, {
+    id = 'turismo-open', tabId = 'mods', label = 'Turismo-Menü', icon = 'wrench',
+    componentName = '/ui/ui-vue/mods/turismo_karriere/PauseCard.vue',
+  })
+end
+
+function M.openFromPause()
+  if ui_menuManager and ui_menuManager.closeMenu then pcall(ui_menuManager.closeMenu) end
+  M.setHubVisible(true)
+end
+
+function M.onWorldReadyState(state)
+  if state == 2 then M.registerPauseButton() end
+end
+
+-- after a save slot was loaded/created in the main menu: load the home map,
+-- put the active garage car there and open the world menu
+function M.enterCareerWorld()
+  if levelLoaded() or not S().isLoaded() then return end
+  local st = S().get()
+  local home = (st.settings and st.settings.homeLevel) or 'west_coast_usa'
+  M.setHubVisible(false) -- keep the loading screen visible
+  X('session').loadLevel(home, function()
+    local function show() M.setHubVisible(true) end
+    if X('garage').active() then
+      X('session').spawnPlayerCar(nil, nil, show)
+    else
+      show()
+    end
+  end)
+end
 
 -- keybinding: pause menu while driving an event (UI shows restart/abort)
 function M.raceMenu()
@@ -177,6 +230,7 @@ handlers.newProfile = function(a)
   st.economy.money = eco.startMoney or st.economy.money
   st.settings = st.settings or { pauseInHub = true, homeLevel = eco.homeLevel or 'west_coast_usa', raceLength = 'normal' }
   S().save()
+  if not levelLoaded() then X('session').defer(0.3, M.enterCareerWorld) end
   return M.snapshotState()
 end
 
@@ -184,6 +238,7 @@ handlers.loadProfile = function(a)
   if not S().load(a.slot) then error('Spielstand konnte nicht geladen werden', 0) end
   local st = S().get()
   st.settings = st.settings or { pauseInHub = true, homeLevel = 'west_coast_usa', raceLength = 'normal' }
+  if not levelLoaded() then X('session').defer(0.3, M.enterCareerWorld) end
   return M.snapshotState()
 end
 

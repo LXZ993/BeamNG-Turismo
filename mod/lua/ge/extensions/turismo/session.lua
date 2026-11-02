@@ -294,7 +294,7 @@ function M.freeDrive(level, carId)
   M.loadLevel(target, function()
     M.spawnPlayerCar(carId, nil, function()
       if extensions.turismo_core then extensions.turismo_core.setHubVisible(false) end
-      toast('Freie Fahrt: Kilometer zählen für die Tagesetappe. Menü mit der Turismo-Taste.', 'info')
+      toast('Freie Fahrt: Kilometer zählen für die Tagesetappe. Zurück ins Menü: Esc → Mods → Turismo-Menü (oder deine Turismo-Taste).', 'info')
     end)
   end)
 end

@@ -4,17 +4,18 @@
    `Dokumente\BeamNG.drive\0.40\mods\` – bzw. in deinen BeamNG-Userordner unter `current\mods\`
    (bei dir vermutlich `F:\BeamNG\current\mods\`).
 2. **Spiel starten**, im Hauptmenü unter *Mods* prüfen, dass „turismo_karriere“ aktiv ist.
-3. **Freie Fahrt** auf einer beliebigen Karte starten (z. B. West Coast USA).
-4. **App ins Layout ziehen (einmalig):** `Strg+Leertaste` öffnet den UI-Editor (bzw. *Optionen → UI-Apps*).
-   Die App **„Turismo Karriere“** suchen und irgendwo klein ablegen (z. B. unten rechts).
-   Sie zeigt nur einen kleinen Knopf „TURISMO ▸ Menü“ – das eigentliche Menü legt sich über den ganzen Bildschirm.
-5. **Tasten belegen:** *Optionen → Steuerung → Gameplay*:
+3. **Karriere starten:** im Hauptmenü oben auf das Banner **„TURISMO KARRIERE ▸“** klicken
+   oder unter **Mehr** den Eintrag **„Turismo Karriere“** wählen.
+4. Spielstand wählen oder **Neue Karriere** anlegen – die Heimatkarte (West Coast USA) lädt,
+   danach öffnet sich das World-Menü. Café-Heft 1 führt dich zum ersten Gebrauchtwagen.
+5. **Zurück ins Menü während der Fahrt:** `Esc` → Reiter **Mods** → **Turismo-Menü**.
+   Optional eine eigene Taste unter *Optionen → Steuerung → Gameplay*:
    - `Turismo: Hauptmenü öffnen/schließen` (Vorschlag: **F6**)
    - `Turismo: Rennmenü (Neustart/Aufgeben)` (Vorschlag: **F7**)
    - `Turismo: Intro überspringen` (Vorschlag: **Leertaste** oder **F8**)
-   - `Turismo: Notfall-Menü (IMGUI)` (Vorschlag: **F9**) – falls die Oberfläche einmal nicht erscheint
-   - `Turismo: Streckenrekorder – Checkpoint setzen` (optional)
-6. Menü öffnen → **Neue Karriere** → Café-Heft 1 führt dich zum ersten Gebrauchtwagen.
+   - `Turismo: Notfall-Menü (IMGUI)` (Vorschlag: **F9**)
+
+Die UI-App „Turismo Karriere“ muss in 0.40 nicht mehr ins Layout gezogen werden.
 
 ## Wenn etwas nicht erscheint
 - Konsole öffnen (`~`) und eingeben: `extensions.turismo_core.toggleHub()` – öffnet das Menü direkt.
