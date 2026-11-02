@@ -276,5 +276,91 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
     if len(sys.argv) > 2 and sys.argv[2] == "runde1":
         main(out)
+    elif len(sys.argv) > 2 and sys.argv[2] == "runde3":
+        pass  # main3 läuft am Dateiende (braucht die Funktionen darunter)
     else:
         main2(out)
+
+
+# ---------- Runde 3: "Strecke" – das B ist ein Rundkurs mit Curbs, Mittellinie und Start-Ziel ----------
+import bt_swoosh as _sw
+
+
+def track_emblem(d, ox, oy, s, dark, mono=None):
+    cl = _sw._sk(_sw.track_b_centerline(), ox, oy, s, 14)
+    dpath = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in cl) + " Z"
+    w = 32 * s
+    if mono:
+        d.body.append(f'<path id="icon" d="{dpath}" fill="none" stroke="{mono}" stroke-width="{w*1.35:.1f}" stroke-linejoin="round"/>')
+    else:
+        n = d.uid("curb")
+        d.body.append(f'<path id="{n}" d="{dpath}" fill="none" stroke="{RED}" stroke-width="{w*1.32:.1f}" stroke-linejoin="round"/>')
+        d.shadow(n, blur=8, dy=5, opacity=0.3)
+        d.body.append(f'<path d="{dpath}" fill="none" stroke="#FFFFFF" stroke-width="{w*1.32:.1f}" stroke-linejoin="round" stroke-dasharray="{w*0.42:.1f} {w*0.42:.1f}"/>')
+        d.body.append(f'<path d="{dpath}" fill="none" stroke="{"#2B2F36" if dark else "#1F2328"}" stroke-width="{w:.1f}" stroke-linejoin="round"/>')
+        d.body.append(f'<path d="{dpath}" fill="none" stroke="#E8EAED" stroke-width="{max(2, w*0.08):.1f}" stroke-dasharray="{w*0.5:.1f} {w*0.45:.1f}"/>')
+        # Start-Ziel: Schachbrett quer über die Gerade (Stamm)
+        sq = 6.5
+        for r in range(2):
+            for c in range(4):
+                if (r + c) % 2:
+                    col = "#FFFFFF"
+                else:
+                    col = "#111316"
+                x0, y0 = 1 + c * sq, 128 + r * sq
+                pts = _sw._sk([(x0, y0), (x0 + sq, y0), (x0 + sq, y0 + sq), (x0, y0 + sq)], ox, oy, s, 14)
+                d.path(_sw._d(pts), col)
+    T = [(196, 0), (402, 0), (386, 50), (312, 50), (282, 200), (226, 200), (254, 50), (182, 50)]
+    nt = d.path(_sw._d(_sw._sk(T, ox, oy, s, 14)), mono or d.lin([(0, "#FF2338"), (1, "#B80018")]))
+    if not mono:
+        d.shadow(nt, blur=8, dy=5, opacity=0.3)
+    return (402 + 200 * math.tan(math.radians(14))) * s
+
+
+def stacked3(dark, bg=True):
+    d = Doc(1200, 800, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    s = 1.55
+    ew = (402 + 200 * math.tan(math.radians(14))) * s
+    track_emblem(d, (1200 - ew) / 2 + 10, 60, s, dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    w = centered_text(d, "BEAM TURISMO", 590, 96, fg, weight="Black", wide=1.18, slant=14)
+    x0 = (d.w - w) / 2
+    d.path(swoosh(x0 - 10, x0 + w + 30, 638, 20, 10), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 700, 24, SILVER if dark else "#5A5F67", weight="Bold", wide=1.15, slant=14, track=0.32)
+    return d
+
+
+def wide3(dark, bg=True):
+    d = Doc(1600, 320, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    ew = track_emblem(d, 70, 50, 1.0, dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    x = 70 + ew + 40
+    w = d.text("BEAM TURISMO", x, 200, 110, fg, weight="Black", wide=1.18, slant=14)
+    d.path(swoosh(x - 6, x + w + 20, 248, 14, 9), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    d.w = int(x + w + 60)
+    return d
+
+
+def icon3():
+    d = Doc(256, 256)
+    s = 236 / (402 + 200 * math.tan(math.radians(14)))
+    track_emblem(d, 10, 128 - 100 * s, s, True)
+    return d
+
+
+def main3(out):
+    os.makedirs(out, exist_ok=True)
+    items = {"icon_g": icon3()}
+    for dark in (False, True):
+        t = "dunkel" if dark else "hell"
+        items[f"logo_g_{t}"] = stacked3(dark)
+        items[f"logo_g_auf_{t}"] = stacked3(dark, False)
+        items[f"leiste_g_auf_{t}"] = wide3(dark, False)
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde3":
+    main3(sys.argv[1])
