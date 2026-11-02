@@ -276,7 +276,7 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
     if len(sys.argv) > 2 and sys.argv[2] == "runde1":
         main(out)
-    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b", "runde6"):
+    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b", "runde6", "runde7"):
         pass  # main3 läuft am Dateiende (braucht die Funktionen darunter)
     else:
         main2(out)
@@ -491,3 +491,23 @@ def main6(out):
 
 if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde6":
     main6(sys.argv[1])
+
+
+def mark7(d, mode, ox, oy, s, bcols, tcols):
+    B, T = _bm.mark_soft(mode)
+    y0, y1 = oy - (62 * s if mode == "dach" else 0), oy + 200 * s
+    for parts in B:
+        glossy_piece(d, _bm.d_multi([_bm.sk(p, ox, oy, s) for p in parts]), bcols[0], bcols[1], y0, y1)
+    for p in T:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), tcols[0], tcols[1], y0, y1)
+
+
+def main7(out):
+    """Silber-B auf dunkel/hell, gerundete Ecken; je mit und ohne Dach + Komplettlogo."""
+    global mark5b
+    mark5b = mark7
+    main5b(out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde7":
+    main7(sys.argv[1])

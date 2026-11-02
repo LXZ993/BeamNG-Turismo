@@ -98,3 +98,43 @@ def mark_solid(t_mode="normal"):
 
 def d_multi(parts):
     return " ".join(d_of(p) for p in parts)
+
+
+def _round(pts, r_conv=10, r_conc=16, min_turn=25, n=8):
+    """Ecken eines geschlossenen Polygons abrunden (nur echte Knicke; Bezier-Stützpunkte bleiben)."""
+    out = []
+    m = len(pts)
+    area = sum(pts[i][0] * pts[(i + 1) % m][1] - pts[(i + 1) % m][0] * pts[i][1] for i in range(m))
+    for i in range(m):
+        p0, p1, p2 = pts[i - 1], pts[i], pts[(i + 1) % m]
+        a = (p0[0] - p1[0], p0[1] - p1[1]); b = (p2[0] - p1[0], p2[1] - p1[1])
+        la = math.hypot(*a); lb = math.hypot(*b)
+        if la < 1e-6 or lb < 1e-6:
+            continue
+        cosang = max(-1, min(1, (a[0] * b[0] + a[1] * b[1]) / (la * lb)))
+        turn = 180 - math.degrees(math.acos(cosang))
+        if turn < min_turn:
+            out.append(p1); continue
+        cross = a[0] * b[1] - a[1] * b[0]
+        convex = (cross < 0) == (area > 0)
+        r = min(r_conv if convex else r_conc, la * 0.45, lb * 0.45)
+        q0 = (p1[0] + a[0] / la * r, p1[1] + a[1] / la * r)
+        q2 = (p1[0] + b[0] / lb * r, p1[1] + b[1] / lb * r)
+        for k in range(n + 1):
+            t = k / n; u = 1 - t
+            out.append((u * u * q0[0] + 2 * u * t * p1[0] + t * t * q2[0], u * u * q0[1] + 2 * u * t * p1[1] + t * t * q2[1]))
+    return out
+
+
+def mark_soft(t_mode="normal"):
+    """Runde 7: geschlossenes B, T in gleicher Breite/Stärke wie das B, alle Ecken gerundet."""
+    (B,), _ = mark_solid(t_mode)
+    outer, up, low = B
+    outer = _round(outer, 12, 12)
+    up = _round(up, 7, 7); low = _round(low, 7, 7)
+    if t_mode == "normal":   # Balken so breit wie das B, Stamm mittig, Stärken wie beim B
+        T = [(214, 0), (404, 0), (404, 46), (334, 46), (334, 200), (284, 200), (284, 46), (214, 46)]
+    else:
+        T = [(0, -60), (404, -60), (404, -14), (334, -14), (334, 200), (284, 200), (284, -14), (0, -14)]
+    T = _round(T, 12, 18)
+    return [[outer, up, low]], [T]
