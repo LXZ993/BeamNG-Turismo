@@ -360,3 +360,137 @@
 .tz-dockbtn { padding: 7px; }
 .tz-dockbtn span { max-width: 0; overflow: hidden; white-space: nowrap; transition: max-width .2s ease, margin .2s ease; }
 .tz-dockbtn:hover span { max-width: 160px; margin-right: 6px; }
+
+/* ---------------------------------------------------------------- Händler und Gebrauchtwagen (helle Karten wie beim GT-Gebrauchtwagenhändler) */
+.tz-mgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); gap: 12px; }
+.tz-mcard { position: relative; background: #f3f4f6; color: #15181e; border-radius: 6px; overflow: hidden; cursor: pointer;
+  box-shadow: 0 4px 16px rgba(0,0,0,.3); transition: transform .15s, box-shadow .15s; animation: tz-rise .3s ease-out both; }
+.tz-mcard:hover { transform: translateY(-3px); box-shadow: 0 0 0 2px #fff, 0 10px 26px rgba(0,0,0,.45); }
+.tz-mcard .ph, .tz-cdetail .ph { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(180deg, #ffffff, #dfe3e9); display: grid; place-items: center; overflow: hidden; }
+.tz-mcard .ph .sil, .tz-cdetail .ph .sil { width: 46%; opacity: .25; }
+.tz-mcard .ph .sil svg path, .tz-mcard .ph .sil svg circle, .tz-cdetail .ph .sil svg path, .tz-cdetail .ph .sil svg circle { stroke: #15181e; }
+.tz-mcard .ph img, .tz-cdetail .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tz-mcard .li { position: absolute; top: 8px; left: 8px; transform: scale(.82); transform-origin: top left; }
+.tz-mcard .flag { position: absolute; top: 10px; right: 0; padding: 3px 10px; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-transform: uppercase;
+  background: #15181e; color: #fff; }
+.tz-mcard .flag.new { background: #c8102e; }
+.tz-mcard .body { padding: 9px 12px 11px; background: #fff; }
+.tz-mcard .br { font-size: 11px; letter-spacing: .06em; color: #6b7280; text-transform: uppercase; }
+.tz-mcard .nm { font-size: 15px; font-weight: 700; margin: 2px 0 6px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.tz-mcard .ft { display: flex; align-items: baseline; justify-content: space-between; gap: 8px; font-size: 12px; color: #6b7280; }
+.tz-mcard .pr { font-size: 16px; font-weight: 700; color: #15181e; font-variant-numeric: tabular-nums; }
+.tz-mcard .warn { color: #c8102e; }
+.tz-mcard.gone { opacity: .5; filter: grayscale(.8); }
+
+.tz-modal > div.light { padding: 0; background: #f3f4f6; border: 0; max-width: 980px; }
+.tz-cdetail { display: grid; grid-template-columns: 1.3fr 1fr; color: #15181e; min-width: 760px; }
+.tz-cdetail .ph { aspect-ratio: auto; min-height: 340px; }
+.tz-cdetail .info { padding: 22px 24px; background: #fff; display: flex; flex-direction: column; }
+.tz-cdetail .br { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #6b7280; }
+.tz-cdetail h2 { margin: 2px 0 0; font-size: 24px; color: #15181e; }
+.tz-cdetail .cat { font-size: 13px; color: #6b7280; }
+.tz-cdetail table { border-collapse: collapse; width: 100%; font-size: 14px; }
+.tz-cdetail th { text-align: left; font-weight: 500; color: #6b7280; padding: 5px 0; width: 42%; border-bottom: 1px solid #e5e7eb; }
+.tz-cdetail td { padding: 5px 0; border-bottom: 1px solid #e5e7eb; font-weight: 600; }
+.tz-cdetail .buy { margin-top: auto; padding-top: 16px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
+.tz-cdetail .buy .pr { font-size: 26px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.tz-cdetail .buy .why { font-size: 13px; color: #c8102e; }
+.tz-cdetail .actions .tz-btn { color: #15181e; border-color: #cfd4dc; background: #f3f4f6; }
+.tz-cdetail .actions .tz-btn.primary { background: #c8102e; border-color: #c8102e; color: #fff; }
+.tz-cdetail .actions .tz-btn[disabled] { opacity: .45; }
+
+.tz-brands { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 10px; }
+.tz-brand { background: #f3f4f6; color: #15181e; border-radius: 6px; padding: 18px 16px; cursor: pointer; border-bottom: 3px solid transparent;
+  transition: transform .15s, border-color .15s; animation: tz-rise .3s ease-out both; }
+.tz-brand:hover { transform: translateY(-2px); border-bottom-color: #c8102e; }
+.tz-brand .nm { font-size: 19px; font-weight: 800; letter-spacing: .02em; }
+.tz-brand .sub { font-size: 12px; color: #6b7280; margin-top: 2px; }
+
+/* ---------------------------------------------------------------- Rennen: hohe Karten in einer Reihe (GT-Stil) */
+.tz-srow { display: flex; gap: 14px; overflow-x: auto; padding: 4px 2px 16px; scroll-snap-type: x mandatory; }
+.tz-srow::-webkit-scrollbar { height: 8px; } .tz-srow::-webkit-scrollbar-thumb { background: rgba(255,255,255,.18); border-radius: 4px; }
+.tz-scard { flex: 0 0 230px; min-height: 400px; display: flex; flex-direction: column; border-radius: 6px; overflow: hidden; cursor: pointer; scroll-snap-align: start;
+  background: #f3f4f6; color: #15181e; box-shadow: 0 6px 20px rgba(0,0,0,.35); transition: transform .15s, box-shadow .15s; animation: tz-rise .3s ease-out both; }
+.tz-scard:hover { transform: translateY(-4px); box-shadow: 0 0 0 2px #fff, 0 12px 30px rgba(0,0,0,.5); }
+.tz-scard .top { height: 170px; position: relative; background: linear-gradient(160deg, hsl(var(--h) 70% 42%), hsl(var(--h) 60% 18%)); }
+.tz-scard .top::after { content: ""; position: absolute; inset: 0; background: repeating-linear-gradient(115deg, rgba(255,255,255,.06) 0 14px, transparent 14px 28px); }
+.tz-scard .no { position: absolute; left: 14px; top: 10px; font-size: 44px; font-weight: 800; font-style: italic; color: rgba(255,255,255,.9); }
+.tz-scard .ico { position: absolute; right: 14px; bottom: 12px; width: 56px; height: 56px; opacity: .8; }
+.tz-scard .bd { padding: 14px 16px 16px; display: flex; flex-direction: column; flex: 1; }
+.tz-scard h3 { margin: 0 0 4px; font-size: 19px; }
+.tz-scard p { margin: 0 0 12px; font-size: 13px; color: #6b7280; flex: 1; }
+.tz-scard .kv, .tz-rcard .kv { display: flex; justify-content: space-between; font-size: 13px; padding: 4px 0; border-top: 1px solid #e5e7eb; }
+.tz-scard .kv span, .tz-rcard .kv span { color: #6b7280; }
+.tz-scard .prog { height: 4px; background: #e5e7eb; margin-top: 10px; border-radius: 2px; overflow: hidden; }
+.tz-scard .prog i { display: block; height: 100%; background: #c8102e; }
+.tz-scard.locked { filter: grayscale(.85); opacity: .6; }
+
+.tz-rrow { display: flex; gap: 10px; overflow-x: auto; padding: 8px 2px 10px; }
+.tz-rcard { flex: 0 0 190px; min-height: 250px; display: flex; flex-direction: column; background: #f3f4f6; color: #15181e; border-radius: 6px; padding: 12px 14px;
+  border-top: 4px solid #9aa1ae; }
+.tz-rcard.go { border-top-color: #c8102e; }
+.tz-rcard .hd { display: flex; align-items: center; justify-content: space-between; height: 40px; }
+.tz-rcard .no { font-size: 30px; font-weight: 800; font-style: italic; color: #15181e; }
+.tz-mtrophy { width: 40px; height: 40px; object-fit: contain; }
+.tz-rcard .nm { font-size: 15px; font-weight: 700; margin-top: 4px; }
+.tz-rcard .tr { font-size: 13px; color: #374151; margin-top: 2px; }
+.tz-rcard .lv { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; margin-bottom: 8px; }
+.tz-rcard .kv:first-of-type { margin-top: auto; }
+.tz-rcard .bt { display: flex; gap: 6px; margin-top: 10px; }
+.tz-rcard .bt .tz-btn { flex: 1; padding: 7px 8px; font-size: 13px; color: #15181e; background: #e5e7eb; border-color: #cfd4dc; }
+.tz-rcard .bt .tz-btn.primary { background: #c8102e; border-color: #c8102e; color: #fff; }
+.tz-rcard .na { font-size: 12px; color: #6b7280; padding: 8px 0; }
+.tz-rcard .bt .tz-btn { text-align: center; justify-content: center; }
+
+/* ---------------------------------------------------------------- Garage (GT4-Garage: Auto groß links, Liste rechts) */
+.tz-garage { display: grid; grid-template-columns: minmax(380px, 1fr) minmax(420px, 1.1fr); gap: 16px; align-items: start; }
+.tz-gsel { background: #f3f4f6; color: #15181e; border-radius: 6px; overflow: hidden; box-shadow: 0 6px 20px rgba(0,0,0,.35); }
+.tz-gsel .ph { position: relative; aspect-ratio: 16 / 9; background: linear-gradient(180deg, #ffffff, #dfe3e9); display: grid; place-items: center; overflow: hidden; }
+.tz-gsel .ph .sil { width: 40%; opacity: .25; } .tz-gsel .ph .sil svg path, .tz-gsel .ph .sil svg circle { stroke: #15181e; }
+.tz-gsel .ph img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.tz-gsel .info { padding: 16px 20px 18px; background: #fff; }
+.tz-gsel .br { font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: #6b7280; }
+.tz-gsel .br .act { color: #c8102e; }
+.tz-gsel h2 { margin: 2px 0 0; font-size: 24px; }
+.tz-gsel .cat { font-size: 13px; color: #6b7280; }
+.tz-gstats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0 16px; }
+.tz-gstats div { display: flex; flex-direction: column; padding: 6px 0; border-top: 1px solid #e5e7eb; }
+.tz-gstats span { font-size: 11px; color: #6b7280; text-transform: uppercase; letter-spacing: .06em; }
+.tz-gstats b { font-size: 15px; } .tz-gstats b.bad { color: #c8102e; } .tz-gstats b.mid { color: #b7791f; } .tz-gstats b.ok { color: #1b8a4b; }
+.tz-gsel .acts { display: flex; gap: 8px; margin-top: 14px; }
+.tz-gsel .acts .tz-btn { color: #15181e; background: #e5e7eb; border-color: #cfd4dc; }
+.tz-gsel .acts .tz-btn.primary { background: #c8102e; border-color: #c8102e; color: #fff; }
+.tz-glist { background: rgba(0,0,0,.45); border: 1px solid rgba(255,255,255,.1); border-radius: 6px; max-height: calc(100vh - 220px); overflow-y: auto; }
+.tz-glist table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.tz-glist th { position: sticky; top: 0; background: #0b0f17; text-align: left; font-size: 11px; letter-spacing: .1em; text-transform: uppercase; color: var(--dim);
+  padding: 10px 12px; cursor: pointer; font-weight: 600; }
+.tz-glist th.on { color: #fff; box-shadow: inset 0 -2px 0 #c8102e; }
+.tz-glist td { padding: 9px 12px; border-top: 1px solid rgba(255,255,255,.06); white-space: nowrap; }
+.tz-glist td:first-child { white-space: normal; }
+.tz-glist tr[data-act] { cursor: pointer; }
+.tz-glist tr[data-act]:hover td { background: rgba(255,255,255,.06); }
+.tz-glist tr.sel td { background: rgba(255,255,255,.92); color: #15181e; }
+.tz-glist .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 8px; background: transparent; }
+.tz-glist tr.act .dot { background: #c8102e; }
+.tz-glist small { color: var(--dim); } .tz-glist tr.sel small { color: #6b7280; }
+.tz-glist .dm { font-size: 11px; color: #ff8a95; } .tz-glist tr.sel .dm { color: #c8102e; }
+.tz-gsel .ph { aspect-ratio: 2 / 1; } .tz-gsel .ph .sil { width: 24%; }
+
+/* ---------------------------------------------------------------- Café: Hefte auf heller Tafel */
+.tz-board { padding: 22px; border-radius: 6px; background: linear-gradient(160deg, #ece7dd, #d9d2c4); box-shadow: inset 0 0 60px rgba(120,100,70,.18), 0 8px 30px rgba(0,0,0,.4); }
+.tz-board .tz-paper { box-shadow: 0 10px 24px rgba(60,45,25,.28); transform: rotate(-.6deg); }
+.tz-board .tz-paper .tz-btn.primary { background: #c8102e; border-color: #c8102e; color: #fff; font-family: "Segoe UI", Arial, sans-serif; }
+.tz-shelf h3 { margin: 0 0 10px; color: #3b3429; font-size: 13px; letter-spacing: .2em; text-transform: uppercase; }
+.tz-covers { display: grid; grid-template-columns: repeat(5, 1fr); gap: 10px; }
+.tz-cover { position: relative; aspect-ratio: 3 / 4; border-radius: 3px 6px 6px 3px; padding: 8px 9px; display: flex; flex-direction: column; color: #fff;
+  background: linear-gradient(160deg, hsl(var(--h) 45% 42%), hsl(var(--h) 45% 26%)); box-shadow: inset 4px 0 0 rgba(0,0,0,.18), 0 4px 10px rgba(60,45,25,.3); }
+.tz-cover .n { font-size: 20px; font-weight: 800; font-style: italic; }
+.tz-cover .t { font-size: 11px; line-height: 1.25; margin-top: auto; }
+.tz-cover.locked { background: #b9b2a5; box-shadow: inset 4px 0 0 rgba(0,0,0,.08); color: rgba(255,255,255,.75); }
+.tz-cover.active, .tz-cover.next { outline: 3px solid #c8102e; outline-offset: 2px; }
+.tz-cover.done { filter: saturate(.55); }
+.tz-cover .stamp { position: absolute; top: 40%; left: 50%; transform: translate(-50%, -50%) rotate(-14deg); border: 2px solid #fff; padding: 1px 6px;
+  font-size: 10px; font-weight: 800; letter-spacing: .1em; text-transform: uppercase; background: rgba(27,138,75,.85); }
+.tz-board { align-items: start; }
+.tz-covers { grid-template-columns: repeat(auto-fill, minmax(78px, 1fr)); }
+.tz-cover .n { font-size: 17px; } .tz-cover .t { font-size: 10px; }

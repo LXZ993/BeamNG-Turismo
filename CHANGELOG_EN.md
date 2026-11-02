@@ -18,6 +18,13 @@
 - The bar at the top is slimmer and darker.
 - For places 1 to 3 the podium screen shows a gold, silver or bronze trophy.
 
+### New: dealers, races, garage and café in GT style
+- Used cars, new cars and the classic gallery show cars as bright cards with picture, brand, name, mileage and price. A click opens a window with all data and the buy button. It also says why you can't buy a car right now (licence or money missing).
+- The new-car brands are bright cards instead of tiles.
+- Races: the race classes are tall cards side by side with series, open and won series. Inside a class every race is its own card with track, laps, best result (trophy) and start button.
+- Garage: the selected car large on the left with condition, engine, mileage and value, the list of all cars on the right. Clicking a column header sorts the list.
+- Café: the current booklet lies open on a bright board, next to it all booklets as small covers. Finished ones carry a stamp.
+
 ### Bug fixes
 - Loading a save briefly flashed the world menu, then the loading screen, then the menu again. Now a Turismo loading screen shows and the menu appears only once the map is loaded.
 - The minimap (from BeamNG or another mod) was drawn over the Turismo menu. It is now hidden while the menu is open and comes back when you drive.

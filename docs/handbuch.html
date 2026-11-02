@@ -206,6 +206,7 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li><b>Konsole im Spiel:</b> Taste <code>^</code> (bzw. <code>~</code>). Rote Zeilen sind Fehler.</li>
 <li><b>Diagnose:</b> Im World-Menü unter Einstellungen, oder in der Konsole <code>dump(extensions.turismo_core.call('diagnostics'))</code>. Zeigt Anzahl Autos, Strecken und Inhaltsfehler.</li>
 <li><b>World-Menü (Stadtkarte):</b> <code>scr_world</code> in <span class="path">turismo-ui.js</span>. Hintergrund <span class="path">art\map_day.png</span> / <span class="path">map_night.png</span> (Nacht von 19 bis 7 Uhr PC-Zeit, <code>isNight</code>). Die Orte stehen in <code>worldPlaces()</code> (Name, Symbol, Ziel, Sperr-Schlüssel aus <code>unlocks</code>), ihre Lage in Prozent in <code>MAP_PLACES</code>. Wer einen Ort verschiebt, ändert auch <code>PLACES</code> in <span class="path">tools\art\make_map.py</span> und baut die Karte neu (dort sind Plätze frei und beleuchtet). Pfeiltasten: <code>mapStep</code>.</li>
+<li><b>Händler, Rennen, Garage, Café:</b> <code>marketGrid</code>/<code>marketCard</code>/<code>showOffer</code> (Autos als helle Karten, Bild aus <code>preview</code> der BeamNG-Konfiguration, sonst Umriss), <code>scr_events</code> (hohe Karten, Farbe je Klasse in <code>HALL_HUE</code>), <code>scr_series</code> (ein Lauf = eine Karte, Pokal aus <span class="path">art\trophy_*.png</span>), <code>scr_garage</code> (Auswahl links, sortierbare Liste rechts), <code>scr_cafe</code> (Hefte auf heller Tafel).</li>
 <li><b>Notfall-Menü:</b> Falls die Oberfläche nicht erscheint, gibt es ein einfaches IMGUI-Menü (Taste „Turismo: Notfall-Menü“).</li>
 <li><b>Prüfliste:</b> <span class="path">docs\PRUEFLISTE.md</span> sagt, was im Spiel zu testen ist.</li>
 </ul>
@@ -592,6 +593,14 @@ details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
 <li>Hilfe, Bonuslose, Einstellungen, Changelog und Diagnose liegen als kleine Knöpfe am rechten Rand.</li>
 <li>Die Leiste oben ist schmaler und dunkler.</li>
 <li>Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.</li>
+</ul>
+<h4>Neu: Händler, Rennen, Garage und Café im GT-Stil</h4>
+<ul>
+<li>Gebrauchtwagen, Neuwagen und Klassiker-Galerie zeigen die Autos als helle Karten mit Bild, Marke, Name, Kilometern und Preis. Ein Klick öffnet ein Fenster mit allen Daten und dem Kaufen-Knopf. Dort steht auch, warum du ein Auto gerade nicht kaufen kannst (Lizenz fehlt, Geld fehlt).</li>
+<li>Bei den Neuwagen sind die Marken helle Karten statt Kacheln.</li>
+<li>Rennen: Die Rennklassen stehen als hohe Karten nebeneinander, mit Serien, offenen und gewonnenen Serien. In einer Klasse ist jeder Lauf eine eigene Karte mit Strecke, Runden, bestem Ergebnis (Pokal) und Start-Knopf.</li>
+<li>Garage: links groß das gewählte Auto mit Zustand, Motor, Kilometern und Wert, rechts die Liste aller Autos. Ein Klick auf eine Spaltenüberschrift sortiert die Liste.</li>
+<li>Café: Das aktuelle Heft liegt aufgeschlagen auf einer hellen Tafel, daneben alle Hefte als kleine Hefte. Erledigte tragen einen Stempel.</li>
 </ul>
 <h4>Fehler behoben</h4>
 <ul>

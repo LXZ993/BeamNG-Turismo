@@ -18,6 +18,13 @@
 - Die Leiste oben ist schmaler und dunkler.
 - Bei Platz 1 bis 3 steht in der Siegerehrung ein Pokal in Gold, Silber oder Bronze.
 
+### Neu: Händler, Rennen, Garage und Café im GT-Stil
+- Gebrauchtwagen, Neuwagen und Klassiker-Galerie zeigen die Autos als helle Karten mit Bild, Marke, Name, Kilometern und Preis. Ein Klick öffnet ein Fenster mit allen Daten und dem Kaufen-Knopf. Dort steht auch, warum du ein Auto gerade nicht kaufen kannst (Lizenz fehlt, Geld fehlt).
+- Bei den Neuwagen sind die Marken helle Karten statt Kacheln.
+- Rennen: Die Rennklassen stehen als hohe Karten nebeneinander, mit Serien, offenen und gewonnenen Serien. In einer Klasse ist jeder Lauf eine eigene Karte mit Strecke, Runden, bestem Ergebnis (Pokal) und Start-Knopf.
+- Garage: links groß das gewählte Auto mit Zustand, Motor, Kilometern und Wert, rechts die Liste aller Autos. Ein Klick auf eine Spaltenüberschrift sortiert die Liste.
+- Café: Das aktuelle Heft liegt aufgeschlagen auf einer hellen Tafel, daneben alle Hefte als kleine Hefte. Erledigte tragen einen Stempel.
+
 ### Fehler behoben
 - Beim Laden eines Spielstands blitzte das World-Menü kurz auf, dann kam der Ladebildschirm, dann wieder das Menü. Jetzt erscheint ein eigener Turismo-Ladebildschirm und das Menü erst, wenn die Karte geladen ist.
 - Die Minikarte (von BeamNG oder einer anderen Mod) lag über dem Turismo-Menü. Sie ist jetzt ausgeblendet, solange das Menü offen ist, und kommt beim Fahren zurück.

@@ -22,6 +22,7 @@ const path = require('path');
     ['05_events', 'preview.hub("events")'],
     ['06_series', 'preview.hub("series", {arg2: "einsteiger"})'],
     ['07_used', 'preview.hub("used")'],
+    ['07b_used_detail', 'preview.hub("used"); setTimeout(function () { var a = window.__turismoApp; a.showOffer("used", a.data.offers[0].id); }, 200)'],
     ['08_garage', 'preview.hub("garage")'],
     ['09_workshop', 'preview.hub("workshop", {carId: window.TURISMO_MOCK.garage[0].id})'],
     ['10_dealers', 'preview.hub("dealers")'],

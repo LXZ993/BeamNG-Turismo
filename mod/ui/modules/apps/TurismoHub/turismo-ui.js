@@ -198,7 +198,7 @@
     this.root.addEventListener('focusout', function (ev) { if (isText(ev.target) && b.typing) b.typing(false); });
     b.on('CEFTypingLostFocus', function () { var a = document.activeElement; if (isText(a)) a.blur(); });
     this.root.addEventListener('mouseover', function (ev) {
-      var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab,.tz-pin,.tz-dockbtn');
+      var t = ev.target.closest('.tz-tile,.tz-btn,.tz-tab,.tz-pin,.tz-dockbtn,.tz-mcard,.tz-brand,.tz-scard');
       if (t && t !== self._hover) { self._hover = t; Audio_.sfx('ui_hover'); }
       var pin = ev.target.closest('.tz-pin');
       if (pin && pin.getAttribute('data-pin') !== self._mapSel) self.mapSelect(pin.getAttribute('data-pin'));
@@ -458,16 +458,35 @@
       '<div class="row">' + actions + '</div></div>';
   };
 
+  // garage like the GT4 garage: selected car large on the left, sortable list on the right
   App.prototype.scr_garage = function (d) {
-    var self = this;
     var cars = arr(d.cars);
     if (!cars.length) return this.head('Garage') + '<div class="tz-panel">Deine Garage ist leer. Beim Gebrauchtwagenhändler findest du günstige Einstiegsautos.<div style="margin-top:12px"><button class="tz-btn primary" data-act="go" data-arg="used">Zum Gebrauchtwagenhändler</button></div></div>';
-    return this.head('Garage', cars.length + ' Fahrzeuge') + '<div class="tz-grid">' + cars.map(function (c) {
-      return self.carCard(c,
-        (c.active ? '' : '<button class="tz-btn primary" data-act="setActive" data-arg="' + c.id + '">Auswählen</button>') +
-        '<button class="tz-btn" data-act="goWorkshop" data-arg="' + c.id + '">Werkstatt</button>' +
-        '<button class="tz-btn" data-act="go" data-arg="car" data-arg2="' + c.id + '">Details</button>');
-    }).join('') + '</div>';
+    var sort = this.ui.garageSort || 'name';
+    var keyf = { name: function (c) { return String(c.nickname || c.name).toLowerCase(); }, li: function (c) { return -((c.rating && c.rating.li) || 0); },
+      km: function (c) { return c.mileageKm || 0; }, value: function (c) { return -(c.value || 0); } }[sort];
+    cars = cars.slice().sort(function (x, y) { if (x.active !== y.active) return x.active ? -1 : 1; var a = keyf(x), b = keyf(y); return a < b ? -1 : a > b ? 1 : 0; });
+    var selId = this.ui.garageSel, sel = cars.filter(function (c) { return c.id === selId; })[0] || cars[0];
+    var dmg = sel.damage || 0;
+    var left = '<div class="tz-gsel">' + carPhoto(sel) +
+      '<div class="info"><div class="br">' + esc(sel.brand) + (sel.active ? ' · <b class="act">Aktives Auto</b>' : '') + '</div>' +
+      '<h2>' + esc(sel.nickname || sel.name) + (sel.favorite ? ' ★' : '') + '</h2>' +
+      '<div style="margin:6px 0 10px">' + liBadge(sel.rating, sel.effectiveLI) + ' <span class="cat">' + esc(sel.rating && sel.rating.categoryName || '') + '</span></div>' +
+      '<div class="tz-gstats"><div><span>Kilometer</span><b>' + km(sel.mileageKm) + '</b></div>' +
+      '<div><span>Zustand</span><b class="' + (dmg > 0.15 ? 'bad' : dmg > 0.02 ? 'mid' : 'ok') + '">' + Math.round((1 - dmg) * 100) + ' %</b></div>' +
+      '<div><span>Motor</span><b>' + Math.round((1 - (sel.engineWear || 0)) * 100) + ' %</b></div><div><span>Sauberkeit</span><b>' + Math.round(sel.cleanliness || 0) + ' %</b></div>' +
+      '<div><span>Rennen</span><b>' + esc(sel.races || 0) + ' / ' + esc(sel.wins || 0) + ' Siege</b></div><div><span>Wert</span><b>' + money(sel.value) + '</b></div></div>' +
+      '<div class="acts">' + (sel.active ? '' : '<button class="tz-btn primary" data-act="setActive" data-arg="' + sel.id + '">Auswählen</button>') +
+      '<button class="tz-btn" data-act="goWorkshop" data-arg="' + sel.id + '">Werkstatt</button>' +
+      '<button class="tz-btn" data-act="go" data-arg="car" data-arg2="' + sel.id + '">Details</button></div></div></div>';
+    function th(k, label) { return '<th class="' + (sort === k ? 'on' : '') + '" data-act="garageSort" data-arg="' + k + '">' + label + '</th>'; }
+    var list = '<div class="tz-glist"><table><tr>' + th('name', 'Fahrzeug') + th('li', 'LI') + th('km', 'Kilometer') + th('value', 'Wert') + '</tr>' +
+      cars.map(function (c) {
+        return '<tr class="' + (c.id === sel.id ? 'sel' : '') + (c.active ? ' act' : '') + '" data-act="garageSel" data-arg="' + c.id + '">' +
+          '<td><span class="dot"></span>' + esc(c.nickname || c.name) + (c.favorite ? ' ★' : '') + (c.damage > 0.02 ? ' <span class="dm">Schaden</span>' : '') + '</td>' +
+          '<td>' + esc((c.rating && c.rating.li) || '') + ' <small>' + esc(c.rating && c.rating['class'] || '') + '</small></td><td>' + km(c.mileageKm) + '</td><td>' + money(c.value) + '</td></tr>';
+      }).join('') + '</table></div>';
+    return this.head('Garage', cars.length + ' Fahrzeuge') + '<div class="tz-garage">' + left + list + '</div>';
   };
 
   App.prototype.scr_car = function (d) {
@@ -537,19 +556,60 @@
     var region = regions.filter(function (r) { return r.id === tab; })[0] || regions[0];
     return this.head('Neuwagen', 'Händler nach Region') +
       '<div class="tz-tabs">' + regions.map(function (r) { return '<div class="tz-tab' + (r.id === tab ? ' on' : '') + '" data-act="tab" data-arg="dealer" data-arg2="' + r.id + '">' + esc(r.name) + '</div>'; }).join('') + '</div>' +
-      '<div class="tz-grid">' + (region ? arr(region.brands).map(function (b) {
-        return '<div class="tz-tile c-dealer" style="height:110px" data-act="go" data-arg="showroom" data-arg2="' + esc(b.name) + '"><h3>' + esc(b.name) + '</h3><p>' + esc(b.count) + ' Modelle</p><div class="tz-ico">' + ICONS.car + '</div></div>';
+      '<div class="tz-brands">' + (region ? arr(region.brands).map(function (b) {
+        return '<div class="tz-brand" data-act="go" data-arg="showroom" data-arg2="' + esc(b.name) + '"><div class="nm">' + esc(b.name) + '</div><div class="sub">' + esc(b.count) + ' Modelle</div></div>';
       }).join('') : '') + '</div>';
   };
-  App.prototype.scr_showroom = function (d, p) { var self = this; return this.head(p.arg2 || p.brand, 'Schauraum') + '<div class="tz-grid">' + arr(d.offers).map(function (o) { return self.offerCard(o, 'new'); }).join('') + '</div>'; };
-  App.prototype.scr_used = function (d) { var self = this; return this.head('Gebrauchtwagen', 'Neue Angebote alle paar Tage. Gebrauchte haben Verschleiß – ein Werkstattbesuch lohnt sich.') + '<div class="tz-grid">' + arr(d.offers).map(function (o) { return self.offerCard(o, 'used'); }).join('') + '</div>'; };
+  // ---- car market in the GT used-car style: grid of light cards with photo, detail window on click
+  function carPhoto(o) {
+    var src = o && o.preview ? String(o.preview) : '';
+    if (src && src.charAt(0) !== '/' && src.indexOf('://') < 0) src = '/' + src;
+    return '<div class="ph"><i class="sil">' + ICONS.car + '</i>' + (src ? '<img src="' + esc(src) + '" alt="" onerror="this.style.display=\'none\'">' : '') + '</div>';
+  }
+  App.prototype.marketCard = function (o, kind, i) {
+    var gone = o.soldOut, warn = !o.licenseOk;
+    return '<div class="tz-mcard' + (gone ? ' gone' : '') + '" style="animation-delay:' + (0.02 * (i || 0)).toFixed(2) + 's" data-act="offer" data-arg="' + kind + '" data-arg2="' + esc(o.id) + '">' +
+      carPhoto(o) + (o.rating ? '<div class="li">' + liBadge(o.rating) + '</div>' : '') +
+      (gone ? '<div class="flag">Verkauft</div>' : o.daysLeft != null && kind !== 'new' && o.daysLeft <= 1 ? '<div class="flag new">Letzter Tag</div>' : '') +
+      '<div class="body"><div class="br">' + esc(o.brand) + (o.year ? ' · ' + esc(o.year) : '') + (o.country ? ' · ' + esc(o.country) : '') + '</div>' +
+      '<div class="nm">' + esc(o.name) + '</div>' +
+      '<div class="ft"><span class="sub">' + (o.mileageKm ? km(o.mileageKm) : kind === 'new' ? 'Neuwagen' : '') + (warn ? ' · <b class="warn">Lizenz ' + esc(o.licenseRequired) + '</b>' : '') + '</span>' +
+      '<span class="pr">' + money(o.price) + '</span></div></div></div>';
+  };
+  App.prototype.marketGrid = function (offers, kind) {
+    var self = this;
+    offers = arr(offers);
+    if (!offers.length) return '<div class="tz-panel">Gerade keine Angebote. Schau in ein paar Tagen wieder vorbei.</div>';
+    return '<div class="tz-mgrid">' + offers.map(function (o, i) { return self.marketCard(o, kind, i); }).join('') + '</div>';
+  };
+  App.prototype.showOffer = function (kind, id) {
+    var o = arr(this.data.offers).filter(function (x) { return String(x.id) === String(id); })[0];
+    if (!o) return;
+    var canBuy = o.licenseOk && !o.soldOut && (this.state.money || 0) >= o.price;
+    var why = o.soldOut ? 'Schon verkauft.' : !o.licenseOk ? 'Dafür brauchst du Lizenz ' + esc(o.licenseRequired) + '.' :
+      (this.state.money || 0) < o.price ? 'Dir fehlen ' + money(o.price - (this.state.money || 0)) + '.' : '';
+    function row(l, v) { return v == null || v === '' ? '' : '<tr><th>' + l + '</th><td>' + v + '</td></tr>'; }
+    this.modalShow('<div class="tz-cdetail">' + carPhoto(o) +
+      '<div class="info"><div class="br">' + esc(o.brand) + (o.country ? ' · ' + esc(o.country) : '') + '</div>' +
+      '<h2>' + esc(o.name) + '</h2>' + (o.rating ? '<div style="margin:6px 0 12px">' + liBadge(o.rating) + ' <span class="cat">' + esc(o.rating.categoryName || '') + '</span></div>' : '') +
+      '<table>' + row('Baujahr', esc(o.year || '')) + row('Leistung', o.power ? num(o.power) + ' PS' : '') + row('Gewicht', o.weight ? num(o.weight) + ' kg' : '') +
+      row('Antrieb', esc(o.drivetrain || '')) + row('Kilometer', o.mileageKm ? km(o.mileageKm) : '') +
+      row('Angebot', o.daysLeft != null && kind !== 'new' ? 'noch ' + esc(o.daysLeft) + ' Tage' : '') + '</table>' +
+      '<div class="buy"><span class="pr">' + money(o.price) + '</span>' + (why ? '<span class="why">' + why + '</span>' : '') + '</div>' +
+      '<div class="actions"><button class="tz-btn" data-act="closeModal">Schließen</button>' +
+      '<button class="tz-btn primary" ' + (canBuy ? '' : 'disabled') + ' data-act="buy" data-arg="' + kind + '" data-arg2="' + esc(o.id) + '">Kaufen</button></div></div></div>', 'light');
+  };
+  App.prototype.scr_showroom = function (d, p) { return this.head(p.arg2 || p.brand, 'Schauraum · Neuwagen') + this.marketGrid(d.offers, 'new'); };
+  App.prototype.scr_used = function (d) {
+    return this.head('Gebrauchtwagen', 'Neue Angebote alle paar Tage. Gebrauchte haben Verschleiß, ein Werkstattbesuch lohnt sich.') + this.marketGrid(d.offers, 'used');
+  };
   App.prototype.scr_legends = function (d) {
-    var self = this, s = this.state, lvl = (s.collector && s.collector.level) || 0;
+    var s = this.state, lvl = (s.collector && s.collector.level) || 0;
     var offers = arr(d.offers);
     var gate = offers[0] && offers[0].collectorLevel && lvl < offers[0].collectorLevel;
     return this.head('Klassiker-Galerie', 'Seltene Fahrzeuge bis Baujahr 1995. Jedes Stück gibt es nur einmal pro Ausstellung.') +
       (gate ? '<div class="tz-panel">Die Galerie verkauft erst ab Sammlerstufe ' + esc(offers[0].collectorLevel) + '. Du bist auf Stufe ' + lvl + '.</div>' : '') +
-      '<div class="tz-grid">' + offers.map(function (o) { return self.offerCard(o, 'legend'); }).join('') + '</div>';
+      this.marketGrid(offers, 'legend');
   };
 
   App.prototype.scr_licenses = function (d) {
@@ -586,12 +646,23 @@
     }).join('') + '</div>';
   };
 
+  var HALL_HUE = { einsteiger: 200, amateur: 150, profi: 265, extrem: 350, langstrecke: 30, marken: 210, regional: 175, gelaende: 40, rallye: 40, spezial: 300 };
+  function hallHue(h, i) { var k = String(h.id || '').toLowerCase(); for (var n in HALL_HUE) if (k.indexOf(n) === 0) return HALL_HUE[n]; return (i * 47) % 360; }
+  function trophyImg(place, cls) {
+    var t = place == 1 ? 'gold' : place == 2 ? 'silver' : place == 3 ? 'bronze' : '';
+    return t ? '<img class="' + (cls || 'tz-mtrophy') + '" src="' + BASE + 'art/trophy_' + t + '.png" alt="">' : '';
+  }
+
   App.prototype.scr_events = function (d) {
     var halls = arr(d.halls);
-    return this.head('Rennen', 'Wähle eine Halle') + '<div class="tz-world">' + halls.map(function (h, i) {
+    return this.head('Rennen', 'Wähle eine Rennklasse') + '<div class="tz-srow">' + halls.map(function (h, i) {
       var series = arr(h.series), won = series.filter(function (s) { return s.won; }).length, open = series.filter(function (s) { return s.available; }).length;
-      return '<div class="tz-tile c-race s4" style="animation-delay:' + (i * 0.03) + 's" data-act="go" data-arg="series" data-arg2="' + h.id + '"><h3>' + esc(h.name) + '</h3><p>' + esc(h.desc || '') + '<br>' +
-        series.length + ' Serien · ' + open + ' offen · ' + won + ' gewonnen</p><div class="tz-ico">' + ICONS.race + '</div></div>';
+      var hue = hallHue(h, i), frac = series.length ? won / series.length : 0;
+      return '<div class="tz-scard' + (open ? '' : ' locked') + '" style="--h:' + hue + ';animation-delay:' + (i * 0.04).toFixed(2) + 's" data-act="go" data-arg="series" data-arg2="' + esc(h.id) + '">' +
+        '<div class="top"><span class="no">' + (i + 1) + '</span><i class="ico">' + ICONS.race + '</i></div>' +
+        '<div class="bd"><h3>' + esc(h.name) + '</h3><p>' + esc(h.desc || '') + '</p>' +
+        '<div class="kv"><span>Serien</span><b>' + series.length + '</b></div><div class="kv"><span>Offen</span><b>' + open + '</b></div><div class="kv"><span>Gewonnen</span><b>' + won + '</b></div>' +
+        '<div class="prog"><i style="width:' + Math.round(frac * 100) + '%"></i></div></div></div>';
     }).join('') + '</div>';
   };
 
@@ -615,15 +686,21 @@
         '<div style="margin:8px 0;color:var(--dim);font-size:13px">Teilnahme: ' + esc(s.requirement || 'offen') + '</div>';
       if (!s.available) html += '<div style="color:#ffb3ba">' + esc(s.reason) + '</div>';
       else if (!elig.length) html += '<div style="color:var(--money)">Kein passendes Auto in deiner Garage.</div>';
-      html += '<table class="tz-table"><tr><th>#</th><th>Lauf</th><th>Strecke</th><th>Runden</th><th>Bestes</th><th></th></tr>' + races.map(function (r) {
+      html += '<div class="tz-rrow">' + races.map(function (r) {
         var canStart = s.available && useCar && r.trackOk && (!s.championship || r.idx === s.raceIndex);
-        return '<tr><td>' + r.idx + '</td><td>' + esc(r.name || ('Lauf ' + r.idx)) + '</td><td>' + esc(r.track) + (r.level ? ' <span class="tz-tag">' + esc(r.level) + '</span>' : '') + '</td><td>' + esc(r.laps) + '</td>' +
-          '<td>' + (r.trophy ? 'P' + esc(r.trophy) : '–') + '</td><td style="text-align:right">' +
-          (canStart ? (s.format === 'choice' && !hardcore
-            ? '<button class="tz-btn" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|quick">Schnelles Rennen</button> ' +
-              '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|weekend">Rennwochenende</button>'
-            : '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '">Start</button>') : '') + '</td></tr>';
-      }).join('') + '</table>';
+        var btns = canStart ? (s.format === 'choice' && !hardcore
+            ? '<button class="tz-btn" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|quick">Schnell</button>' +
+              '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '|weekend">Wochenende</button>'
+            : '<button class="tz-btn primary" data-act="startRace" data-arg="' + esc(s.id) + '" data-arg2="' + r.idx + '|' + esc(useCar) + '">Start</button>')
+          : '<span class="na">' + (!r.trackOk ? 'Strecke fehlt' : s.championship && s.available && r.idx !== s.raceIndex ? (r.idx < s.raceIndex ? 'Gefahren' : 'Später') : 'Gesperrt') + '</span>';
+        return '<div class="tz-rcard' + (canStart ? ' go' : '') + '">' +
+          '<div class="hd"><span class="no">' + r.idx + '</span>' + trophyImg(r.trophy) + '</div>' +
+          '<div class="nm">' + esc(r.name || ('Lauf ' + r.idx)) + '</div>' +
+          '<div class="tr">' + esc(r.track) + '</div>' + (r.level ? '<div class="lv">' + esc(r.level) + '</div>' : '') +
+          '<div class="kv"><span>Runden</span><b>' + esc(r.laps) + '</b></div>' +
+          '<div class="kv"><span>Bestes</span><b>' + (r.trophy ? 'P' + esc(r.trophy) : '–') + '</b></div>' +
+          '<div class="bt">' + btns + '</div></div>';
+      }).join('') + '</div>';
       if (s.championship && s.points) {
         var pts = Object.keys(s.points).map(function (k) { return { k: k, v: s.points[k] }; }).sort(function (a, b) { return b.v - a.v; }).slice(0, 8);
         if (pts.length) html += '<div style="margin-top:10px;color:var(--dim);font-size:13px">Punktestand: ' + pts.map(function (x) { return (x.k === 'player' ? '<b style="color:var(--accent)">Du</b>' : esc(x.k)) + ' ' + x.v; }).join(' · ') + '</div>';
@@ -643,7 +720,7 @@
     var steps = arr(cur.steps);
     var allDone = steps.length && steps.every(function (s) { return s.done; });
     var rw = cur.reward || {};
-    html += '<div class="tz-book"><div class="tz-paper"><div class="no">MENÜHEFT ' + esc(cur.number) + ' · KAPITEL ' + esc(cur.chapter) + '</div><h2>' + esc(cur.name) + '</h2><p>' + esc(cur.intro) + '</p>' +
+    html += '<div class="tz-book tz-board"><div class="tz-paper"><div class="no">MENÜHEFT ' + esc(cur.number) + ' · KAPITEL ' + esc(cur.chapter) + '</div><h2>' + esc(cur.name) + '</h2><p>' + esc(cur.intro) + '</p>' +
       steps.map(function (s) {
         return '<div class="step"><span class="chk' + (s.done ? ' on' : '') + '">' + (s.done ? '✓' : '') + '</span><div style="flex:1">' + esc(s.label) +
           (s.need > 1 ? ' <b>(' + esc(Math.min(s.have, s.need)) + '/' + esc(s.need) + ')</b>' : '') + (s.hint && !s.done ? '<div class="hint">' + esc(s.hint) + '</div>' : '') + '</div></div>';
@@ -652,9 +729,10 @@
       (arr(cur.unlocks).length ? '<br>Schaltet frei: ' + arr(cur.unlocks).map(esc).join(', ') : '') + '</p>' +
       (cur.status === 'next' ? '<button class="tz-btn primary" data-act="cafeAccept" data-arg="' + cur.id + '">Heft annehmen</button>' : '') +
       (cur.status === 'active' && allDone ? '<button class="tz-btn primary" data-act="cafeComplete" data-arg="' + cur.id + '">Heft abgeben</button>' : '') +
-      '</div><div><div class="tz-panel"><h3 style="margin-top:0">Alle Hefte</h3><div class="tz-bookList">' + books.map(function (b) {
-        return '<div class="' + esc(b.status) + '">' + esc(b.number) + '<br>' + (b.status === 'locked' ? '???' : esc(b.name)) + '</div>';
-      }).join('') + '</div></div></div></div>';
+      '</div><div class="tz-shelf"><h3>Alle Hefte</h3><div class="tz-covers">' + books.map(function (b, i) {
+        return '<div class="tz-cover ' + esc(b.status) + '" style="--h:' + ((i * 37 + 10) % 360) + '"><span class="n">' + esc(b.number) + '</span>' +
+          '<span class="t">' + (b.status === 'locked' ? '' : esc(b.name)) + '</span>' + (b.status === 'done' ? '<span class="stamp">Erledigt</span>' : '') + '</div>';
+      }).join('') + '</div></div></div>';
     return html;
   };
 
@@ -775,6 +853,10 @@
           self.call('convert', { carId: arg, key: arg2 }).then(function () { return self.refreshState(); }).then(function () { self.reload(); });
         });
         break;
+      case 'offer': this.showOffer(arg, arg2); break;
+      case 'garageSel': this.ui.garageSel = arg; this.render(); break;
+      case 'garageSort': this.ui.garageSort = arg; this.render(); break;
+      case 'closeModal': this.closeModal(); break;
       case 'buy':
         this.confirm('Kaufen?', 'Das Fahrzeug wird in deine Garage gestellt.', function () {
           self.call('buy', { kind: arg, id: arg2 }).then(function (car) {
@@ -845,7 +927,7 @@
   App.prototype.refreshState = function () { var self = this; return this.call('state').then(function (s) { self.state = s; self.renderTop(); }); };
 
   // ------------------------------------------------------------------ modal & toasts
-  App.prototype.modalShow = function (html) { this.modal = true; this.el.modal.firstChild.innerHTML = html; this.el.modal.classList.remove('tz-hidden'); };
+  App.prototype.modalShow = function (html, cls) { this.modal = true; this.el.modal.firstChild.className = cls || ''; this.el.modal.firstChild.innerHTML = html; this.el.modal.classList.remove('tz-hidden'); };
   App.prototype.showGuide = function () {
     this.modalShow('<div class="tz-guide"><h2>Willkommen bei Turismo</h2>' +
       '<p>Du startest mit wenig Geld und ohne Auto. Ziel: dir eine Garage voller Autos erfahren und die großen Meisterschaften gewinnen.</p>' +
