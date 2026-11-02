@@ -1,91 +1,184 @@
 {
- "info": "Alle Stücke wurden für Turismo prozedural komponiert und synthetisiert (tools/gen_music.py). Eigene Musik: Dateien hier ablegen und unten eintragen.",
+ "info": "Musik: Kevin MacLeod (incompetech.com), Lizenz Creative Commons BY 4.0 (http://creativecommons.org/licenses/by/4.0/). Namensnennung wird beim Abspielen eingeblendet und steht in CREDITS.md. Eigene Musik: OGG hier ablegen und unten eintragen.",
+ "credit": "Alle Musikstücke von Kevin MacLeod (incompetech.com), lizenziert unter Creative Commons BY 4.0. Für Turismo nur ins OGG-Format umgewandelt und in der Lautstärke angeglichen.",
  "tracks": {
-  "title": {
-   "file": "turismo_titel.ogg",
-   "title": "Lichter der Stadt",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "exhilarate": {
+   "file": "km_exhilarate.ogg",
+   "title": "Exhilarate",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Exhilarate.mp3"
   },
-  "lounge": {
-   "file": "turismo_lounge.ogg",
-   "title": "Boulevard Lounge",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "airport_lounge": {
+   "file": "km_airport_lounge.ogg",
+   "title": "Airport Lounge",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Airport%20Lounge.mp3"
   },
-  "lounge2": {
-   "file": "turismo_lounge2.ogg",
-   "title": "Espresso am Ring",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "bossa_antigua": {
+   "file": "km_bossa_antigua.ogg",
+   "title": "Bossa Antigua",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Bossa%20Antigua.mp3"
   },
-  "funk": {
-   "file": "turismo_funk.ogg",
-   "title": "Showroom Funk",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "cool_vibes": {
+   "file": "km_cool_vibes.ogg",
+   "title": "Cool Vibes",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cool%20Vibes.mp3"
   },
-  "license": {
-   "file": "turismo_fahrschule.ogg",
-   "title": "Fahrschule",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "lobby_time": {
+   "file": "km_lobby_time.ogg",
+   "title": "Lobby Time",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Lobby%20Time.mp3"
   },
-  "race1": {
-   "file": "turismo_rennen1.ogg",
-   "title": "Vollgas",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "local_forecast": {
+   "file": "km_local_forecast.ogg",
+   "title": "Local Forecast - Elevator",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Local%20Forecast%20-%20Elevator.mp3"
   },
-  "race2": {
-   "file": "turismo_rennen2.ogg",
-   "title": "Kurvenjagd",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "funkorama": {
+   "file": "km_funkorama.ogg",
+   "title": "Funkorama",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funkorama.mp3"
   },
-  "race3": {
-   "file": "turismo_rennen3.ogg",
-   "title": "Neon-Apex",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "funky_chunk": {
+   "file": "km_funky_chunk.ogg",
+   "title": "Funky Chunk",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Funky%20Chunk.mp3"
   },
-  "race4": {
-   "file": "turismo_rennen4.ogg",
-   "title": "Nachtfahrt",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "groove_grove": {
+   "file": "km_groove_grove.ogg",
+   "title": "Groove Grove",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Groove%20Grove.mp3"
   },
-  "results": {
-   "file": "turismo_siegerehrung.ogg",
-   "title": "Siegerehrung",
-   "artist": "Turismo (generiert)",
-   "license": "eigenes Werk, frei verwendbar"
+  "easy_lemon": {
+   "file": "km_easy_lemon.ogg",
+   "title": "Easy Lemon",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Easy%20Lemon.mp3"
+  },
+  "cut_and_run": {
+   "file": "km_cut_and_run.ogg",
+   "title": "Cut and Run",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Cut%20and%20Run.mp3"
+  },
+  "exit_the_premises": {
+   "file": "km_exit_the_premises.ogg",
+   "title": "Exit the Premises",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Exit%20the%20Premises.mp3"
+  },
+  "movement_prop": {
+   "file": "km_movement_prop.ogg",
+   "title": "Movement Proposition",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Movement%20Proposition.mp3"
+  },
+  "ouroboros": {
+   "file": "km_ouroboros.ogg",
+   "title": "Ouroboros",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Ouroboros.mp3"
+  },
+  "raving_energy": {
+   "file": "km_raving_energy.ogg",
+   "title": "Raving Energy",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Raving%20Energy.mp3"
+  },
+  "rhinoceros": {
+   "file": "km_rhinoceros.ogg",
+   "title": "Rhinoceros",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Rhinoceros.mp3"
+  },
+  "volatile_reaction": {
+   "file": "km_volatile_reaction.ogg",
+   "title": "Volatile Reaction",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Volatile%20Reaction.mp3"
+  },
+  "hep_cats": {
+   "file": "km_hep_cats.ogg",
+   "title": "Hep Cats",
+   "artist": "Kevin MacLeod (incompetech.com)",
+   "license": "CC BY 4.0",
+   "licenseText": "Licensed under Creative Commons: By Attribution 4.0 License, http://creativecommons.org/licenses/by/4.0/",
+   "source": "https://incompetech.com/music/royalty-free/mp3-royaltyfree/Hep%20Cats.mp3"
   }
  },
  "contexts": {
   "title": [
-   "title"
+   "exhilarate"
   ],
   "menu": [
-   "lounge",
-   "lounge2",
-   "funk"
+   "airport_lounge",
+   "bossa_antigua",
+   "cool_vibes",
+   "lobby_time",
+   "local_forecast",
+   "funkorama"
   ],
   "dealer": [
-   "funk",
-   "lounge"
+   "bossa_antigua",
+   "funkorama",
+   "funky_chunk",
+   "groove_grove"
   ],
   "license": [
-   "license"
+   "easy_lemon"
   ],
   "race": [
-   "race1",
-   "race2",
-   "race3",
-   "race4"
+   "cut_and_run",
+   "exit_the_premises",
+   "movement_prop",
+   "ouroboros",
+   "raving_energy",
+   "rhinoceros",
+   "volatile_reaction"
   ],
   "results": [
-   "results"
+   "hep_cats"
   ]
  }
 }

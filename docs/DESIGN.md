@@ -1,7 +1,7 @@
 # Design – wie Turismo funktioniert
 
 ## Grundsätze
-- **Original statt Kopie:** eigene Namen (Turismo, Boxenstopp-Café, Leistungsindex), eigene Texte, Grafiken, Sounds und Musik. Die Struktur folgt bewährten Genre-Mustern (Lizenzen, Hallen, Menühefte), nicht einem bestimmten Spiel.
+- **Original statt Kopie:** eigene Namen (Turismo, Boxenstopp-Café, Leistungsindex), eigene Texte, Grafiken und Sounds; Musik von Kevin MacLeod (CC BY 4.0, Namensnennung im Spiel). Die Struktur folgt bewährten Genre-Mustern (Lizenzen, Hallen, Menühefte), nicht einem bestimmten Spiel.
 - **Funktioniert mit jeder Installation:** Autos werden über Kriterien gewählt (Kategorie, LI, Antrieb, Region, Baujahr …), Strecken über Selektoren mit Ausweichlisten (`@circuit:hirochi_raceway` → `@circuit:tarmac` → beliebiger Rundkurs). Mod-Autos und -Karten werden automatisch eingebunden.
 - **Robust gegen Versionsunterschiede:** jeder Aufruf in die Spiel-Engine ist abgesichert; fällt etwas aus, gibt es eine Meldung statt eines Absturzes.
 

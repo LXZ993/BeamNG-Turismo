@@ -26,4 +26,4 @@ Die UI-App „Turismo Karriere“ muss in 0.40 nicht mehr ins Layout gezogen wer
 `settings\turismo\profile_<1-3>.json` (plus `.bak` als Sicherung des vorherigen Stands). Eigene Strecken aus dem Rekorder: `settings\turismo\tracks\`.
 
 ## Eigene Inhalte
-Zusätzliche JSON-Dateien `data/turismo/events_<name>.json`, `cafe_<name>.json`, `drivers_<name>.json` usw. werden automatisch mit den Grunddaten zusammengeführt (gleiche `id` = ersetzen). Eigene Musik: Datei nach `ui/modules/apps/TurismoHub/audio/music/` und in `playlist.json` eintragen.
+Zusätzliche JSON-Dateien `data/turismo/events_<name>.json`, `cafe_<name>.json`, `drivers_<name>.json` usw. werden automatisch mit den Grunddaten zusammengeführt (gleiche `id` = ersetzen). Eigene Musik: Datei nach `ui/modules/apps/TurismoHub/audio/music/` und in `playlist.json` eintragen. Die Musik (ca. 50 MB) kann auch getrennt liegen: `tools/build.sh` baut zusätzlich `turismo_karriere_ohne_musik.zip`; die OGGs und `playlist.json` kommen dann nach `mods/unpacked/turismo_musik/ui/modules/apps/TurismoHub/audio/music/`.

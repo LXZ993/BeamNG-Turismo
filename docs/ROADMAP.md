@@ -4,7 +4,6 @@
 - Fehler aus der Prüfliste beheben, Feintuning KI/Zielzeiten/Wirtschaft
 - Eigene Drag-Konfigurationen (Straße+, Street/Strip, Pro) für 5–6 Vanilla-Modelle
 - Kuratierte Streckenliste für 0.40 (welche race.json pro Karte für welche Serie)
-- Optional: lizenzierte Musik (CC BY) zusätzlich zur eigenen
 
 ## Version 0.3
 - Boxenstopps in Langstreckenrennen (Reifen/Sprit/Reparatur mit Standzeit)

@@ -9,3 +9,8 @@ mkdir -p dist
 rm -f dist/turismo_karriere.zip
 (cd mod && zip -qr -X ../dist/turismo_karriere.zip . -x '*.DS_Store')
 echo "dist/turismo_karriere.zip ($(du -h dist/turismo_karriere.zip | cut -f1))"
+# Variant without music (small, < 25 MB): music then goes as loose files to
+# mods/unpacked/turismo_musik/ui/modules/apps/TurismoHub/audio/music/
+rm -f dist/turismo_karriere_ohne_musik.zip
+(cd mod && zip -qr -X ../dist/turismo_karriere_ohne_musik.zip . -x '*.DS_Store' -x 'ui/modules/apps/TurismoHub/audio/music/*')
+echo "dist/turismo_karriere_ohne_musik.zip ($(du -h dist/turismo_karriere_ohne_musik.zip | cut -f1))"

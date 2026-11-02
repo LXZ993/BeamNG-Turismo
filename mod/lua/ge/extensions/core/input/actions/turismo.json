@@ -28,5 +28,11 @@
     "onDown": "if extensions.turismo_core then extensions.turismo_core.call('recorderCheckpoint', {}) end",
     "title": "Turismo: Streckenrekorder - Checkpoint setzen",
     "desc": "Setzt beim Aufnehmen einer eigenen Strecke einen Checkpoint an der aktuellen Position."
+  },
+  "turismo_bugReport": {
+    "cat": "gameplay", "order": 6, "ctx": "tlua",
+    "onDown": "if extensions.turismo_core then extensions.turismo_core.bugReport() end",
+    "title": "Turismo: Fehlerbericht erstellen",
+    "desc": "Schreibt settings/turismo/logs/bugreport.txt mit Log und Spielstand. Diese Datei schickst du bei Fehlern."
   }
 }

@@ -1,0 +1,758 @@
+<!doctype html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Turismo Karriere Handbuch</title>
+<style>
+:root {
+  --bg: #15171c; --panel: #1e2128; --panel2: #262a33; --line: #343945;
+  --text: #e6e8ec; --muted: #9aa1ad; --accent: #3d8bfd; --accent2: #7db4ff;
+  --ok: #5fd38d; --warn: #ffcc4d; --bad: #ff6b6b; --code: #0f1115; --link: #7db4ff;
+}
+:root[data-theme="light"] {
+  --bg: #f4f4f2; --panel: #ffffff; --panel2: #f0efec; --line: #dcdad5;
+  --text: #1c1d20; --muted: #5d6270; --accent: #1f6fe0; --accent2: #1a56b0;
+  --ok: #1b8a4b; --warn: #9a6a00; --bad: #c0392b; --code: #f6f5f2; --link: #1f6fe0;
+}
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; scroll-padding-top: 16px; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 15px/1.6 "Segoe UI", system-ui, sans-serif; }
+a { color: var(--link); }
+.wrap { display: grid; grid-template-columns: 290px 1fr; min-height: 100vh; }
+nav { position: sticky; top: 0; height: 100vh; overflow-y: auto; background: var(--panel); border-right: 1px solid var(--line); padding: 18px 14px 40px; }
+nav .brand { font-weight: 700; font-size: 18px; letter-spacing: .5px; }
+nav .brand span { color: var(--accent); }
+nav .sub { color: var(--muted); font-size: 12px; margin-bottom: 12px; }
+nav input { width: 100%; padding: 8px 10px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); margin-bottom: 10px; font-size: 14px; }
+nav a { display: block; color: var(--text); text-decoration: none; padding: 3px 8px; border-radius: 5px; font-size: 14px; }
+nav a:hover { background: var(--panel2); }
+nav a.l2 { padding-left: 22px; color: var(--muted); font-size: 13px; }
+nav .grp { color: var(--accent); font-size: 11px; text-transform: uppercase; letter-spacing: 1.2px; margin: 14px 8px 4px; }
+nav button { margin-top: 14px; width: 100%; padding: 6px; border-radius: 6px; border: 1px solid var(--line); background: var(--panel2); color: var(--text); cursor: pointer; }
+main { padding: 28px 44px 80px; max-width: 1050px; }
+h1 { font-size: 30px; margin: 0 0 4px; }
+h1 span, h2 span.n { color: var(--accent); }
+h2 { font-size: 23px; border-bottom: 2px solid var(--accent); padding-bottom: 6px; margin: 52px 0 14px; }
+h3 { font-size: 18px; margin: 30px 0 8px; color: var(--accent2); }
+h4 { font-size: 15px; margin: 20px 0 6px; }
+p { margin: 8px 0; }
+code { font-family: Consolas, "Cascadia Mono", monospace; font-size: 13px; background: var(--code); border: 1px solid var(--line); padding: 1px 5px; border-radius: 4px; }
+pre { background: var(--code); border: 1px solid var(--line); border-left: 3px solid var(--accent); border-radius: 6px; padding: 12px 14px; overflow-x: auto; font: 13px/1.5 Consolas, "Cascadia Mono", monospace; }
+pre code { background: none; border: 0; padding: 0; }
+.path { font-family: Consolas, monospace; font-size: 13px; color: var(--accent2); word-break: break-all; }
+table { border-collapse: collapse; width: 100%; margin: 10px 0 14px; font-size: 14px; }
+th, td { border: 1px solid var(--line); padding: 6px 9px; text-align: left; vertical-align: top; }
+th { background: var(--panel2); }
+td code { white-space: nowrap; }
+.box { border-radius: 8px; padding: 10px 14px; margin: 12px 0; border: 1px solid var(--line); background: var(--panel); }
+.tip { border-left: 4px solid var(--ok); }
+.warn { border-left: 4px solid var(--warn); }
+.bad { border-left: 4px solid var(--bad); }
+.box b:first-child { display: block; margin-bottom: 2px; }
+.hero { background: linear-gradient(135deg, var(--panel) 0%, var(--panel2) 100%); border: 1px solid var(--line); border-radius: 10px; padding: 20px 24px; margin-bottom: 20px; }
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; margin: 12px 0; }
+.card { background: var(--panel); border: 1px solid var(--line); border-radius: 8px; padding: 10px 12px; text-decoration: none; color: var(--text); }
+.card:hover { border-color: var(--accent); }
+.card b { color: var(--accent2); display: block; }
+.card small { color: var(--muted); }
+ol.steps li, ul li { margin: 4px 0; }
+.hidden { display: none !important; }
+.tag { display: inline-block; font-size: 11px; padding: 1px 7px; border-radius: 10px; background: var(--panel2); border: 1px solid var(--line); color: var(--muted); margin-left: 6px; vertical-align: middle; }
+details.cl { border: 1px solid var(--line); border-radius: 8px; background: var(--panel); margin: 8px 0; }
+details.cl summary { cursor: pointer; padding: 9px 14px; list-style: none; }
+details.cl summary::-webkit-details-marker { display: none; }
+details.cl summary::before { content: "▸"; color: var(--accent); display: inline-block; width: 16px; }
+details.cl[open] summary::before { content: "▾"; }
+details.cl summary small { color: var(--muted); margin-left: 6px; }
+details.cl > div { padding: 0 16px 10px; border-top: 1px solid var(--line); }
+details.cl h4 { color: var(--accent2); margin: 12px 0 4px; font-size: 15px; }
+.mods td:nth-child(1) { min-width: 170px; }
+.st { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 10px; border: 1px solid var(--line); white-space: nowrap; }
+.st.ok { color: var(--ok); border-color: var(--ok); }
+.st.ask { color: var(--warn); border-color: var(--warn); }
+.st.open { color: var(--muted); }
+.st.no { color: var(--bad); border-color: var(--bad); }
+.top { position: fixed; right: 18px; bottom: 18px; background: var(--accent); color: #fff; text-decoration: none; border-radius: 50%; width: 40px; height: 40px; display: grid; place-items: center; font-size: 20px; }
+@media (max-width: 860px) {
+  .wrap { grid-template-columns: 1fr; }
+  nav { position: static; height: auto; }
+  main { padding: 20px 16px 60px; }
+}
+@media print { nav, .top { display: none; } .wrap { display: block; } }
+</style>
+</head>
+<body>
+<div class="wrap">
+<nav>
+  <div class="brand">Turismo <span>Karriere</span></div>
+  <div class="sub">Handbuch für eigene Änderungen · Stand 02.11.2026</div>
+  <input id="q" type="search" placeholder="Suchen (z. B. Startgeld, Lizenz, Log)">
+  <div id="toc">
+    <div class="grp">Start</div>
+    <a href="#start">Wie du dieses Handbuch nutzt</a>
+    <a href="#ordner">Ordner und Dateien</a>
+    <a href="#sicher">Sicher ändern (JSON-Regeln)</a>
+    <a href="#testen">Testen und Fehler finden</a>
+    <a href="#log">Log-System und Fehlerbericht</a>
+    <div class="grp">Inhalte (data\turismo)</div>
+    <a href="#wirtschaft">Startgeld und Wirtschaft</a>
+    <a href="#kriterien">Auto-Kriterien (criteria)</a>
+    <a href="#serien">Rennserien</a>
+    <a class="l2" href="#serie-felder">Alle Felder einer Serie</a>
+    <a class="l2" href="#rennarten">Rennarten (type)</a>
+    <a class="l2" href="#strecken-ref">Strecken angeben</a>
+    <a class="l2" href="#serie-neu">Neue Serie anlegen</a>
+    <a href="#lizenzen">Lizenzen und Tests</a>
+    <a href="#trainings">Fahrschule (Trainings)</a>
+    <a href="#cafe">Café-Hefte</a>
+    <a href="#fahrer">KI-Fahrer</a>
+    <a href="#strecken">Strecken</a>
+    <a href="#orte">Orte für Tests (venues)</a>
+    <a href="#eigene-dateien">Eigene Zusatzdateien</a>
+    <div class="grp">Spiel</div>
+    <a href="#li">Leistungsindex und Klassen</a>
+    <a href="#ki">KI und Gegnerstärke</a>
+    <a href="#musik">Musik und Credits</a>
+    <a href="#ui">Oberfläche und Hauptmenü</a>
+    <a href="#tasten">Tastenbelegung</a>
+    <a href="#spielstand">Spielstand</a>
+    <div class="grp">Hilfe</div>
+    <a href="#roadmap">Roadmap</a>
+    <a href="#changelog">Changelog (alle Versionen)</a>
+    <a href="#regeln">Arbeitsregeln (für Claude)</a>
+    <a href="#werkzeuge">Werkzeuge und Tests</a>
+    <a href="#probleme">Wenn etwas nicht geht</a>
+    <a href="#lua">Lua-Dateien im Überblick</a>
+  </div>
+  <button id="theme">Hell / Dunkel</button>
+</nav>
+
+<main id="content">
+
+<section id="start">
+<div class="hero">
+  <h1>Turismo <span>Karriere</span> · Handbuch</h1>
+  <p>Hier steht, wo du was findest und wie du es selbst änderst. Jedes Kapitel nennt die <b>Datei</b>, die <b>Felder</b> und zeigt ein <b>Beispiel zum Kopieren</b>.</p>
+  <p>Fast alle Inhalte (Serien, Lizenzen, Café-Hefte, Fahrer, Preise) stehen in <b>JSON-Dateien</b> im Ordner <span class="path">data\turismo\</span>. Lua-Code musst du dafür nicht anfassen.</p>
+</div>
+<h3>Lesezeichen</h3>
+<p>Diese Seite liegt im Repo unter <span class="path">docs\handbuch.html</span> und wird mit jeder Version aktualisiert. Am besten als Lesezeichen im Browser speichern. Oben links kannst du suchen.</p>
+<h3>Häufige Aufgaben</h3>
+<div class="cards">
+  <a class="card" href="#wirtschaft"><b>Startgeld ändern</b><small>economy.json → startMoney</small></a>
+  <a class="card" href="#serie-neu"><b>Neue Rennserie</b><small>events.json</small></a>
+  <a class="card" href="#serie-felder"><b>Preisgeld einer Serie</b><small>events.json → rewards</small></a>
+  <a class="card" href="#lizenzen"><b>Lizenztest anpassen</b><small>licenses.json</small></a>
+  <a class="card" href="#cafe"><b>Café-Heft ändern</b><small>cafe.json</small></a>
+  <a class="card" href="#log"><b>Fehler melden</b><small>bugreport.txt</small></a>
+</div>
+</section>
+
+<section id="ordner">
+<h2><span class="n">1</span> Ordner und Dateien</h2>
+<p>Bei dir liegt die Mod entpackt in <span class="path">F:\BeamNG\current\mods\unpacked\turismo_karriere\</span>. Die Musik ist ein eigener Mod-Ordner daneben: <span class="path">mods\unpacked\turismo_musik\</span>. Im Repo (GitHub <code>LXZ993/BeamNG-Turismo</code>) steht der Inhalt des Mod-Ordners unter <span class="path">mod\</span>.</p>
+<table>
+<tr><th>Pfad (im Mod-Ordner)</th><th>Inhalt</th></tr>
+<tr><td class="path">scripts\turismo_career\modScript.lua</td><td>Lädt die Mod beim Start</td></tr>
+<tr><td class="path">lua\ge\extensions\turismo\</td><td>Die Spiellogik (Lua-Module, siehe <a href="#lua">Überblick</a>)</td></tr>
+<tr><td class="path">lua\vehicle\extensions\turismoDragAi.lua</td><td>Drag-KI im Fahrzeug</td></tr>
+<tr><td class="path">data\turismo\*.json</td><td>Alle Inhalte: Serien, Lizenzen, Hefte, Fahrer, Wirtschaft …</td></tr>
+<tr><td class="path">data\turismo\build.json</td><td>Mod-Version und Log-Einstellungen</td></tr>
+<tr><td class="path">ui\modules\apps\TurismoHub\</td><td>Oberfläche (turismo-ui.js, app.css), Sounds</td></tr>
+<tr><td class="path">ui\ui-vue\mods\turismo_karriere\</td><td>Eintrag im Hauptmenü und Karte im Pausenmenü</td></tr>
+<tr><td class="path">lua\ge\extensions\core\input\actions\turismo.json</td><td>Tasten-Aktionen</td></tr>
+</table>
+<p>Im Repo zusätzlich:</p>
+<table>
+<tr><th>Pfad (im Repo)</th><th>Inhalt</th></tr>
+<tr><td class="path">CHANGELOG.md, CHANGELOG_EN.md</td><td>Alle Versionen auf Deutsch und Englisch</td></tr>
+<tr><td class="path">docs\handbuch.html</td><td>Dieses Handbuch</td></tr>
+<tr><td class="path">docs\PRUEFLISTE.md, OFFENE_FRAGEN.md</td><td>Was im Spiel noch geprüft werden muss</td></tr>
+<tr><td class="path">tools\roadmap.json</td><td>Meilensteine und Versionsnummern</td></tr>
+<tr><td class="path">tools\gen_data.py</td><td>Erzeugt die JSON-Dateien in data\turismo</td></tr>
+<tr><td class="path">tools\test\</td><td>Automatische Tests (laufen ohne BeamNG)</td></tr>
+</table>
+</section>
+
+<section id="sicher">
+<h2><span class="n">2</span> Sicher ändern (JSON-Regeln)</h2>
+<ol class="steps">
+<li><b>Vorher sichern:</b> Datei kopieren (z. B. <code>events.json.bak</code>) oder einfach mir sagen, was du geändert hast.</li>
+<li><b>Ändern</b> mit einem Editor, der JSON kennt (VS Code, Notepad++). Speichern als UTF-8.</li>
+<li><b>Neu laden:</b> BeamNG neu starten oder in der Konsole <code>extensions.turismo_core.call('rescan')</code>.</li>
+<li><b>Prüfen:</b> Im <a href="#log">Log</a> steht beim Start eine Zeile „Datencheck“. Steht dort ein Fehler, ist die Datei kaputt.</li>
+</ol>
+<h3>Die fünf JSON-Regeln</h3>
+<table>
+<tr><th>Regel</th><th>Richtig</th><th>Falsch</th></tr>
+<tr><td>Text immer in <b>doppelten</b> Anführungszeichen</td><td><code>"name": "Sonntagspokal"</code></td><td><code>'name': 'Sonntagspokal'</code></td></tr>
+<tr><td>Zwischen Einträgen ein <b>Komma</b>, nach dem letzten <b>keins</b></td><td><code>{"a": 1, "b": 2}</code></td><td><code>{"a": 1, "b": 2,}</code></td></tr>
+<tr><td>Zahlen ohne Anführungszeichen, Kommazahlen mit <b>Punkt</b></td><td><code>"skill": 0.65</code></td><td><code>"skill": "0,65"</code></td></tr>
+<tr><td>Wahr/falsch klein, ohne Anführungszeichen</td><td><code>"championship": true</code></td><td><code>"championship": "True"</code></td></tr>
+<tr><td>Anführungszeichen <b>im</b> Text mit Backslash</td><td><code>"Er sagt \"Los!\""</code></td><td><code>"Er sagt "Los!""</code></td></tr>
+</table>
+<div class="box warn"><b>Generator</b>Die großen Dateien (events, licenses, cafe, drivers, trainings) erzeugt <span class="path">tools\gen_data.py</span>. Wenn du sie direkt änderst, sag mir Bescheid, dann übernehme ich deine Änderung in den Generator. Sonst würde sie beim nächsten Erzeugen überschrieben. Noch sicherer: eine <a href="#eigene-dateien">eigene Zusatzdatei</a> anlegen, die überschreibt der Generator nie.</div>
+<div class="box tip"><b>Deine Änderungen gehen nicht verloren</b>Bevor ich neue Dateien auf deinen PC kopiere, prüfe ich, ob du dort etwas geändert hast (Änderungsdatum), und übernehme deine Änderung zuerst ins Repo.</div>
+</section>
+
+<section id="testen">
+<h2><span class="n">3</span> Testen und Fehler finden</h2>
+<ul>
+<li><b>Mod-Log:</b> <span class="path">F:\BeamNG\current\settings\turismo\logs\turismo.log</span>. Nur die Meldungen von Turismo, mit Uhrzeit. Siehe <a href="#log">Log-System</a>.</li>
+<li><b>BeamNG-Log:</b> <span class="path">F:\BeamNG\current\beamng.log</span>. Dort steht alles vom Spiel. Turismo-Meldungen haben den Tag <code>turismo</code>.</li>
+<li><b>Konsole im Spiel:</b> Taste <code>^</code> (bzw. <code>~</code>). Rote Zeilen sind Fehler.</li>
+<li><b>Diagnose:</b> Im World-Menü unter Einstellungen, oder in der Konsole <code>dump(extensions.turismo_core.call('diagnostics'))</code>. Zeigt Anzahl Autos, Strecken und Inhaltsfehler.</li>
+<li><b>Notfall-Menü:</b> Falls die Oberfläche nicht erscheint, gibt es ein einfaches IMGUI-Menü (Taste „Turismo: Notfall-Menü“).</li>
+<li><b>Prüfliste:</b> <span class="path">docs\PRUEFLISTE.md</span> sagt, was im Spiel zu testen ist.</li>
+</ul>
+</section>
+
+<section id="log">
+<h2><span class="n">3b</span> Log-System und Fehlerbericht <span class="tag">logger.lua</span></h2>
+<p>Die Mod schreibt ihr eigenes Log. Wenn bei dir oder einem Tester etwas schiefgeht, schickst du mir eine Datei und ich kann sie auswerten.</p>
+<h3>Wo liegt was?</h3>
+<p>Alles liegt im BeamNG-Userordner unter <span class="path">settings\turismo\logs\</span>. Bei dir: <span class="path">F:\BeamNG\current\settings\turismo\logs\</span>. Bei anderen Spielern meist unter <span class="path">%LOCALAPPDATA%\BeamNG\BeamNG.drive\current\</span> (der Launcher öffnet ihn über „Userordner öffnen“).</p>
+<table>
+<tr><th>Datei</th><th>Inhalt</th></tr>
+<tr><td><code>turismo.log</code></td><td>Das aktuelle Log</td></tr>
+<tr><td><code>turismo.1.log</code> bis <code>.3.log</code></td><td>Ältere Teile. Wird das Log zu groß, rückt es hierher, die älteste Datei wird gelöscht.</td></tr>
+<tr><td><code>bugreport.txt</code></td><td>Kommt von <b>Fehlerbericht erstellen</b>. Das ist die eine Datei, die du schickst.</td></tr>
+</table>
+<h3>Was wird geloggt?</h3>
+<ul>
+<li><b>Sitzungskopf</b> bei jedem Start: Mod-Version, BeamNG-Version, Sprache und alle aktiven Mods.</li>
+<li><b>Datencheck</b> beim Start: kaputte JSON-Dateien und Inhaltsfehler (z. B. Serie verweist auf eine Lizenz, die es nicht gibt).</li>
+<li><b>Jeder Klick</b> im Turismo-Menü, z. B. <code>Aktion: startRace raceIndex=1 seriesId=sonntagspokal</code>. Ständige Abfragen der Oberfläche (Status, Ping) stehen nicht drin.</li>
+<li><b>Spielereignisse</b>: Fahrzeuge indiziert, Rennen gestartet, Spawn-Fehler, Schäden gespeichert, Karte geladen.</li>
+<li><b>Fehler im Code</b> mit genauer Stelle (Traceback) und dem Spielzustand: Karte, Spielstand, Tag, Geld, Auto, ob ein Rennen oder Test läuft, Tempo. Das Spiel läuft danach weiter.</li>
+<li>Erwartete Meldungen an den Spieler (z. B. „Kein Spielstand geladen“) stehen als Warnung <code>W</code> drin, nicht als Fehler.</li>
+<li>Alle 5 Minuten eine <b>Statuszeile</b>.</li>
+</ul>
+<h3>Warum die Datei nicht riesig wird</h3>
+<ul>
+<li>Jede Datei höchstens 512 KB, höchstens 4 Dateien, also etwa 2 MB, egal wie lange man spielt.</li>
+<li>Gleiche Meldungen direkt hintereinander werden zu einer Zeile zusammengefasst: <code>... 37x wiederholt</code>.</li>
+<li>Kommt dieselbe Meldung öfter als 30-mal pro Minute, wird sie nur noch gezählt.</li>
+<li>Ein Code-Fehler bekommt nur beim ersten Mal den ganzen Traceback, danach nur noch eine Zeile mit Zähler.</li>
+</ul>
+<h3>Einstellungen <span class="tag">data\turismo\build.json</span></h3>
+<pre><code>"modVersion": "0.1.3",
+"release": false,
+"log": {"level": "I", "maxKb": 512, "files": 4, "statusMinutes": 5, "perMinute": 30}</code></pre>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>modVersion</code></td><td>Steht im Log-Kopf. Muss zur obersten Version im Changelog passen, wird bei jeder Version hochgezählt.</td></tr>
+<tr><td><code>release</code></td><td>Für später (Release-Build ohne Entwickler-Werkzeuge). Steht im Log-Kopf als „Release“ oder „Entwicklung“.</td></tr>
+<tr><td><code>level</code></td><td><code>"D"</code> = alles (Debug, nur zur Fehlersuche), <code>"I"</code> = normal, <code>"W"</code> = nur Warnungen und Fehler, <code>"E"</code> = nur Fehler</td></tr>
+<tr><td><code>maxKb</code> / <code>files</code></td><td>Größe einer Datei und Anzahl Dateien</td></tr>
+<tr><td><code>statusMinutes</code></td><td>Statuszeile alle x Minuten, <code>0</code> = aus</td></tr>
+<tr><td><code>perMinute</code></td><td>Ab so vielen gleichen Meldungen pro Minute wird gedrosselt</td></tr>
+</table>
+<h3>Ablauf, wenn etwas nicht geht</h3>
+<ol class="steps">
+<li>Im Spiel die Taste <b>„Turismo: Fehlerbericht erstellen“</b> drücken (einmal in Optionen → Steuerung belegen) oder im Notfall-Menü auf <b>Fehlerbericht erstellen</b>. Unten erscheint der Pfad zur Datei. Konsole geht auch: <code>extensions.turismo_core.bugReport()</code></li>
+<li><code>bugreport.txt</code> hier im Projekt hochladen und kurz dazuschreiben, was passiert ist.</li>
+<li>Ich werte sie aus und baue den Fix.</li>
+</ol>
+<p>Der Bericht enthält den Log-Kopf, den Spielzustand, den geladenen Spielstand und die letzten etwa 1800 Log-Zeilen. Persönliche Daten stehen nicht drin, höchstens der Fahrername aus dem Spielstand und die Liste der Mods.</p>
+<div class="box tip"><b>Für Entwickler</b>In Lua immer <code>U().log('I', 'text %s', wert)</code> benutzen (<code>turismo_util.log</code>). Das schreibt in beamng.log und in turismo.log. <code>'D'</code> erscheint nur mit <code>"level": "D"</code>. Alle Hooks (<code>on...</code>) der Turismo-Module und alle UI-Aktionen sind automatisch gegen Fehler geschützt und loggen mit Traceback.</div>
+</section>
+
+<section id="wirtschaft">
+<h2><span class="n">4</span> Startgeld und Wirtschaft <span class="tag">data\turismo\economy.json</span></h2>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th><th>Standard</th></tr>
+<tr><td><code>startMoney</code></td><td>Geld bei einem neuen Spielstand</td><td>15000</td></tr>
+<tr><td><code>homeLevel</code></td><td>Heimatkarte, die nach dem Laden eines Spielstands geladen wird</td><td>west_coast_usa</td></tr>
+<tr><td><code>dailyGoalKm</code></td><td>Tagesziel in km (Fahrleistung pro Spieltag)</td><td>42</td></tr>
+<tr><td><code>currentYear</code></td><td>„Heute“ für Fahrzeugalter und Klassiker</td><td>2025</td></tr>
+<tr><td><code>usedRotationDays</code> / <code>usedOfferCount</code></td><td>Gebrauchtwagen: alle x Tage neue Angebote, so viele Autos</td><td>3 / 20</td></tr>
+<tr><td><code>legendRotationDays</code> / <code>legendOfferCount</code></td><td>Klassiker-Galerie: Wechsel und Anzahl</td><td>7 / 8</td></tr>
+<tr><td><code>legendYearMax</code></td><td>Klassiker = Baujahr bis einschließlich</td><td>1995</td></tr>
+<tr><td><code>legendCollectorLevel</code></td><td>Ab dieser Sammlerstufe ist die Klassiker-Galerie offen</td><td>4</td></tr>
+<tr><td><code>testRewards</code></td><td>Preisgeld für Bronze, Silber, Gold in Lizenztests</td><td>1000 / 2500 / 5000</td></tr>
+<tr><td><code>collectorLevels</code></td><td>Sammlerpunkte für Stufe 0, 1, 2 … (aufsteigend)</td><td>0, 30000, 80000 …</td></tr>
+<tr><td><code>baseUnlocks</code></td><td>Was von Anfang an offen ist</td><td>dealer_used, services, …</td></tr>
+<tr><td><code>purchaseLicenseByLI</code></td><td>Kauf eines Autos ab diesem LI braucht diese Lizenz</td><td>ab 800 → L4, ab 650 → L3</td></tr>
+</table>
+<pre><code>"startMoney": 25000,
+"testRewards": { "bronze": 1500, "silver": 3000, "gold": 6000 }</code></pre>
+<p>Das Startgeld gilt nur für <b>neue</b> Spielstände.</p>
+</section>
+
+<section id="kriterien">
+<h2><span class="n">5</span> Auto-Kriterien (criteria)</h2>
+<p>Turismo nennt nie feste Automodelle, sondern beschreibt, welche Autos passen. So funktioniert alles mit jeder Installation, auch mit Mod-Autos. Kriterien stehen in Serien (<code>eligibility</code>), Preisautos, Lizenztests (<code>car.criteria</code>) und Café-Heften.</p>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th><th>Beispiel</th></tr>
+<tr><td><code>liMin</code> / <code>liMax</code></td><td>Leistungsindex von/bis (siehe <a href="#li">LI</a>)</td><td><code>"liMax": 330</code></td></tr>
+<tr><td><code>classes</code></td><td>Klassen E, D, C, B, A, S, X</td><td><code>["C", "B"]</code></td></tr>
+<tr><td><code>categories</code></td><td>street, sport, touring, gt, proto, rally, offroad, drift, truck, classic</td><td><code>["street"]</code></td></tr>
+<tr><td><code>excludeCategories</code></td><td>Diese Kategorien nicht</td><td><code>["gt"]</code></td></tr>
+<tr><td><code>brands</code>, <code>models</code>, <code>configs</code></td><td>Marke, Modell oder genaue Config (<code>modell/config</code>)</td><td><code>["ETK"]</code></td></tr>
+<tr><td><code>regions</code>, <code>countries</code></td><td>Herkunft</td><td><code>["Germany"]</code></td></tr>
+<tr><td><code>drivetrains</code></td><td>Antrieb</td><td><code>["RWD"]</code></td></tr>
+<tr><td><code>bodyStyles</code></td><td>Karosserie</td><td><code>["Coupe"]</code></td></tr>
+<tr><td><code>powerMin/Max</code>, <code>weightMin/Max</code></td><td>PS und kg</td><td><code>"powerMax": 200</code></td></tr>
+<tr><td><code>yearMin/Max</code>, <code>priceMin/Max</code></td><td>Baujahr und Neupreis</td><td><code>"yearMax": 1995</code></td></tr>
+<tr><td><code>aspiration</code></td><td><code>"NA"</code> (Sauger) oder <code>"Turbo"</code></td><td></td></tr>
+<tr><td><code>nameContains</code></td><td>Name enthält eines der Wörter</td><td><code>["Rally"]</code></td></tr>
+</table>
+<p>Alle angegebenen Felder müssen passen (UND). Ein leeres <code>{}</code> passt auf jedes Auto.</p>
+</section>
+
+<section id="serien">
+<h2><span class="n">6</span> Rennserien <span class="tag">data\turismo\events.json</span></h2>
+<p>53 Serien in 9 Hallen: <code>einsteiger</code>, <code>amateur</code>, <code>profi</code>, <code>extrem</code>, <code>langstrecke</code>, <code>marken</code>, <code>regional</code>, <code>gelaende</code>, <code>spezial</code>. Jede Serie ist ein Eintrag in der Liste.</p>
+<h3 id="serie-felder">Alle Felder einer Serie</h3>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code></td><td>Eindeutige Kennung, nur Kleinbuchstaben ohne Leerzeichen. Nie ändern, der Spielstand merkt sich Pokale darüber.</td></tr>
+<tr><td><code>name</code>, <code>desc</code></td><td>Anzeigename und Beschreibung</td></tr>
+<tr><td><code>hall</code></td><td>In welcher Halle die Serie steht (siehe oben)</td></tr>
+<tr><td><code>type</code></td><td>Rennart, Standard <code>circuit</code> (siehe <a href="#rennarten">Rennarten</a>)</td></tr>
+<tr><td><code>races</code></td><td>Liste der Läufe: <code>name</code>, <code>track</code>, <code>laps</code>, optional <code>timeLimit</code>, <code>parTime</code>, <code>distance</code>, <code>venue</code>, <code>level</code></td></tr>
+<tr><td><code>eligibility</code></td><td>Welche Autos teilnehmen dürfen (<a href="#kriterien">Kriterien</a>)</td></tr>
+<tr><td><code>recommendedLI</code></td><td>Empfohlener LI (Anzeige, Ziel für die Gegnerauswahl)</td></tr>
+<tr><td><code>difficulty</code></td><td>1 bis 5 (Anzeige und KI-Stärke)</td></tr>
+<tr><td><code>field</code></td><td><code>size</code> = Anzahl Autos, <code>tiers</code> = KI-Stufen der Gegner, <code>liSpread</code> = wie weit der LI der Gegner streut</td></tr>
+<tr><td><code>rewards</code></td><td><code>positions</code> = Preisgeld für Platz 1, 2, 3 …; <code>car</code> = Preisauto (Kriterien); optional <code>ticketTier</code>, <code>championship.money</code> / <code>championship.car</code></td></tr>
+<tr><td><code>championship</code></td><td><code>true</code> = Punkte über alle Läufe, feste Gegner für die Saison. <code>false</code> = jeder Lauf einzeln.</td></tr>
+<tr><td><code>format</code></td><td><code>quick</code> (schnelles Rennen), <code>weekend</code> (Training, Qualifying, Einführungsrunde) oder <code>choice</code> (Spieler wählt). Hardcore erzwingt Wochenende.</td></tr>
+<tr><td><code>startType</code></td><td><code>standing</code> (stehend) oder <code>rolling</code> (fliegend)</td></tr>
+<tr><td><code>requires</code></td><td>Voraussetzung, z. B. <code>{"license": "L1"}</code></td></tr>
+<tr><td>nur Drag</td><td><code>bracket</code>, <code>tree</code>, <code>runs</code>, <code>qualifyingRuns</code></td></tr>
+<tr><td>nur Verfolgung / Touge</td><td><code>gap</code> (Sekunden Vorsprung), <code>parScore</code></td></tr>
+</table>
+<div class="box tip"><b>Preisgeld bei Wiederholung</b>Einzelrennen, die du schon gewonnen hast, zahlen nur noch ein Drittel. Meisterschaften zahlen immer voll.</div>
+<h3 id="rennarten">Rennarten (type)</h3>
+<table>
+<tr><th>type</th><th>Was passiert</th></tr>
+<tr><td><code>circuit</code></td><td>Rundstreckenrennen gegen das Feld</td></tr>
+<tr><td><code>elimination</code></td><td>K.O.: Der Letzte jeder Runde scheidet aus</td></tr>
+<tr><td><code>pursuit</code></td><td>Verfolgung mit Vorsprung <code>gap</code></td></tr>
+<tr><td><code>timeAttack</code></td><td>Zeitfahren allein</td></tr>
+<tr><td><code>touge</code></td><td>Bergduell gegen einen Gegner</td></tr>
+<tr><td><code>drift</code></td><td>Punkte für Drift</td></tr>
+<tr><td><code>derby</code></td><td>Destruction Derby in einer Arena (<a href="#orte">venue</a>)</td></tr>
+<tr><td><code>crawl</code></td><td>Crawling im Gelände</td></tr>
+<tr><td><code>trucking</code></td><td>Transport-Auftrag</td></tr>
+<tr><td><code>drag</code></td><td>Drag-Wochenende mit Qualifying und K.O.-Leiter</td></tr>
+</table>
+<h3 id="strecken-ref">Strecken angeben</h3>
+<p><code>track</code> kann eine feste Strecken-ID sein oder eine Liste von Auswahl-Regeln. Die erste Regel, die auf deiner Installation eine Strecke findet, gewinnt:</p>
+<pre><code>"track": ["@circuit:hirochi_raceway", "@circuit:west_coast_usa", "@circuit:tarmac", "@circuit:"]</code></pre>
+<table>
+<tr><th>Regel</th><th>Bedeutung</th></tr>
+<tr><td><code>@circuit:hirochi_raceway</code></td><td>Eine Rundstrecke auf dieser Karte (längste zuerst)</td></tr>
+<tr><td><code>@circuit:tarmac</code></td><td>Eine Rundstrecke mit diesem Tag (aus <a href="#strecken">tracks.json</a>)</td></tr>
+<tr><td><code>@sprint:dirt</code></td><td>Eine Strecke von A nach B auf Schotter</td></tr>
+<tr><td><code>@any:west_coast_usa</code></td><td>Irgendeine Strecke auf der Karte</td></tr>
+<tr><td><code>@circuit:</code></td><td>Irgendeine Rundstrecke</td></tr>
+</table>
+<h3 id="serie-neu">Neue Serie anlegen (Schritt für Schritt)</h3>
+<ol class="steps">
+<li>Am sichersten in einer eigenen Datei <span class="path">data\turismo\events_meine.json</span> (siehe <a href="#eigene-dateien">Zusatzdateien</a>). Inhalt ist eine Liste <code>[ … ]</code>.</li>
+<li>Diesen Eintrag kopieren und anpassen:</li>
+</ol>
+<pre><code>[
+  {
+    "id": "kompakt_cup",
+    "name": "Kompakt-Cup",
+    "hall": "amateur",
+    "desc": "Kleine Autos, enge Kurven.",
+    "races": [
+      { "name": "Lauf 1", "track": ["@circuit:hirochi_raceway", "@circuit:"], "laps": 3 },
+      { "name": "Lauf 2", "track": ["@circuit:italy", "@circuit:"], "laps": 3 }
+    ],
+    "eligibility": { "categories": ["street"], "liMax": 400, "weightMax": 1300 },
+    "recommendedLI": 380,
+    "difficulty": 2,
+    "field": { "size": 8, "tiers": ["rookie", "amateur"], "liSpread": 30 },
+    "rewards": { "positions": [4000, 2500, 1800, 1200, 800, 500, 300, 200] },
+    "championship": true,
+    "format": "choice",
+    "startType": "standing",
+    "requires": { "license": "L1" }
+  }
+]</code></pre>
+<ol class="steps" start="3"><li>BeamNG neu starten. Im Log steht „Datencheck“. Die Serie erscheint in der Halle Amateur.</li></ol>
+</section>
+
+<section id="lizenzen">
+<h2><span class="n">7</span> Lizenzen und Tests <span class="tag">data\turismo\licenses.json</span></h2>
+<p>7 Lizenzen (C, B, A, I, S, Rallye, Drift) mit zusammen 50 Tests.</p>
+<table>
+<tr><th>Feld (Lizenz)</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code></td><td>z. B. <code>L1</code>. Wird in <code>requires</code> von Serien benutzt. Nicht ändern.</td></tr>
+<tr><td><code>name</code>, <code>short</code>, <code>color</code>, <code>desc</code></td><td>Anzeige</td></tr>
+<tr><td><code>allGoldReward</code></td><td>Geschenkauto für alle Tests in Gold (<a href="#kriterien">Kriterien</a>)</td></tr>
+<tr><td><code>tests</code></td><td>Liste der Tests</td></tr>
+</table>
+<table>
+<tr><th>Feld (Test)</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code>, <code>name</code>, <code>desc</code></td><td>Kennung und Anzeige</td></tr>
+<tr><td><code>type</code></td><td><code>gates</code> (Tore auf dem Testgelände) oder <code>track</code> (Rundenzeit auf einer Strecke)</td></tr>
+<tr><td><code>venue</code></td><td>Ort aus <a href="#orte">venues.json</a></td></tr>
+<tr><td><code>course</code></td><td>Tore: <code>kind</code> (<code>gate</code> oder <code>stop</code>), <code>x</code>/<code>y</code> = Meter rechts/vorwärts vom Startpunkt, <code>w</code> = Breite, <code>len</code> = Länge der Stoppzone, <code>label</code></td></tr>
+<tr><td><code>car</code></td><td>Leihwagen nach <code>criteria</code>, oder <code>"rental": false</code> = eigenes Auto</td></tr>
+<tr><td><code>targets</code></td><td>Zielzeiten. <code>{"mode": "estimate"}</code> = automatisch aus Strecke und Auto geschätzt, sonst <code>gold</code>/<code>silver</code>/<code>bronze</code> in Sekunden</td></tr>
+<tr><td><code>timeLimit</code></td><td>Abbruch nach x Sekunden</td></tr>
+</table>
+<pre><code>"targets": { "gold": 21.5, "silver": 23.0, "bronze": 25.0 }</code></pre>
+</section>
+
+<section id="trainings">
+<h2><span class="n">8</span> Fahrschule (Trainings) <span class="tag">data\turismo\trainings.json</span></h2>
+<p>10 freiwillige Übungen. Aufbau wie ein Lizenztest, dazu <code>category</code> (Gruppe in der Anzeige) und <code>dayCost</code> (wie viele Spieltage das Training kostet, 0 = keine).</p>
+</section>
+
+<section id="cafe">
+<h2><span class="n">9</span> Café-Hefte <span class="tag">data\turismo\cafe.json</span></h2>
+<p>20 Hefte sind der rote Faden der Karriere (Fortschrittsmodus „Café“). Jedes Heft hat Aufgaben, eine Belohnung und schaltet Bereiche frei.</p>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code>, <code>name</code>, <code>chapter</code></td><td>Kennung, Titel, Kapitel</td></tr>
+<tr><td><code>intro</code> / <code>outro</code></td><td>Text beim Annehmen und beim Abschließen</td></tr>
+<tr><td><code>steps</code></td><td>Aufgaben (siehe unten)</td></tr>
+<tr><td><code>reward</code></td><td>z. B. <code>{"money": 2000}</code></td></tr>
+<tr><td><code>unlocks</code> / <code>unlockNames</code></td><td>Was danach offen ist (z. B. <code>license_L1</code>, <code>hall_amateur</code>) und wie es angezeigt wird</td></tr>
+</table>
+<table>
+<tr><th>Aufgabe (type)</th><th>Erfüllt, wenn …</th><th>Felder</th></tr>
+<tr><td><code>own</code></td><td>du so viele passende Autos besitzt</td><td><code>criteria</code>, <code>count</code></td></tr>
+<tr><td><code>trophy</code></td><td>du in einer Serie diese Platzierung hast</td><td><code>series</code>, <code>position</code>, <code>allRaces</code></td></tr>
+<tr><td><code>championship</code></td><td>du die Meisterschaft gewonnen hast</td><td><code>series</code></td></tr>
+<tr><td><code>license</code></td><td>du die Lizenz hast</td><td><code>license</code></td></tr>
+<tr><td><code>collector</code></td><td>du diese Sammlerstufe erreicht hast</td><td><code>level</code></td></tr>
+</table>
+<p>Jede Aufgabe hat ein <code>label</code> (Anzeige) und optional einen <code>hint</code> (Tipp, wo man das macht).</p>
+</section>
+
+<section id="fahrer">
+<h2><span class="n">10</span> KI-Fahrer <span class="tag">data\turismo\drivers.json</span></h2>
+<p>90 erfundene Fahrer. Die Rennfelder werden daraus nach Stufe zusammengestellt.</p>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code>, <code>name</code>, <code>nation</code></td><td>Kennung, Name, Länderkürzel (Flagge)</td></tr>
+<tr><td><code>tier</code></td><td><code>rookie</code>, <code>amateur</code>, <code>pro</code>, <code>expert</code>, <code>legend</code></td></tr>
+<tr><td><code>style</code></td><td><code>smooth</code> (sauber), <code>aggressive</code>, <code>defensive</code>, <code>latebraker</code> (Spätbremser), <code>wet</code></td></tr>
+<tr><td><code>skill</code>, <code>consistency</code>, <code>racecraft</code>, <code>aggression</code>, <code>reaction</code></td><td>Werte von 0 bis 1. Fehlen sie, gelten die Standardwerte der Stufe. <code>reaction</code> = Reaktionszeit am Start (kleiner ist schneller).</td></tr>
+</table>
+</section>
+
+<section id="strecken">
+<h2><span class="n">11</span> Strecken <span class="tag">data\turismo\tracks.json</span></h2>
+<p>Strecken findet Turismo selbst: alle <code>*.race.json</code> aus dem Spiel und aus Mods, dazu eigene Strecken aus dem <b>Streckenrekorder</b> (gespeichert in <span class="path">settings\turismo\tracks\</span>). In <code>tracks.json</code> gibst du Strecken nur Zusatzinfos:</p>
+<pre><code>{ "match": "hirochi_raceway", "tags": ["tarmac", "circuit-main"] },
+{ "match": "/utah/", "surface": "dirt" }</code></pre>
+<p><code>match</code> ist ein Teil des Dateipfads. Mögliche Felder: <code>tags</code>, <code>surface</code> (<code>tarmac</code>, <code>dirt</code>), Name, Standardrunden, Startplätze.</p>
+</section>
+
+<section id="orte">
+<h2><span class="n">12</span> Orte für Tests (venues) <span class="tag">data\turismo\venues.json</span></h2>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>id</code>, <code>name</code></td><td>z. B. <code>testgelaende</code></td></tr>
+<tr><td><code>level</code></td><td>Karte</td></tr>
+<tr><td><code>fallbackLevels</code></td><td>Ersatzkarten, falls die erste fehlt</td></tr>
+<tr><td><code>anchor</code></td><td>Startpunkt, <code>spawn</code> = Spawnpunkt der Karte</td></tr>
+<tr><td><code>offset</code></td><td>Verschiebung in Metern <code>[rechts, vorwärts]</code></td></tr>
+<tr><td><code>radius</code></td><td>Größe der Arena (Derby)</td></tr>
+</table>
+<p>Liegt ein Test ungünstig, stell dich an die gewünschte Stelle und nutze im Menü „Testgelände hier festlegen“ (Aktion <code>calibrateVenue</code>).</p>
+</section>
+
+<section id="eigene-dateien">
+<h2><span class="n">13</span> Eigene Zusatzdateien</h2>
+<p>Für jede Inhaltsart kannst du eine eigene Datei danebenlegen: <span class="path">data\turismo\&lt;art&gt;_&lt;name&gt;.json</span>, z. B. <code>events_meine.json</code> oder <code>drivers_freunde.json</code>.</p>
+<ul>
+<li>Listen (Serien, Lizenzen, Hefte, Fahrer …): Einträge mit <b>gleicher id</b> ersetzen das Original, neue ids kommen dazu.</li>
+<li>Objekte (<code>economy</code>): einzelne Felder überschreiben, z. B. <code>economy_meine.json</code> mit <code>{"startMoney": 50000}</code>.</li>
+<li>Der Generator fasst diese Dateien nie an.</li>
+</ul>
+<p>Arten: economy, licenses, trainings, events, cafe, drivers, teams, dealers, tracks, venues, music.</p>
+</section>
+
+<section id="li">
+<h2><span class="n">14</span> Leistungsindex und Klassen <span class="tag">rating.lua</span></h2>
+<p>Jedes Auto bekommt einen LI von 100 bis 1000 aus Leistung, Gewicht, Beschleunigung, Antrieb und Kategorie. Verschleiß und Schaden senken den <b>effektiven LI</b>.</p>
+<table>
+<tr><th>Klasse</th><th>E</th><th>D</th><th>C</th><th>B</th><th>A</th><th>S</th><th>X</th></tr>
+<tr><td>LI</td><td>bis 299</td><td>300–399</td><td>400–499</td><td>500–599</td><td>600–699</td><td>700–799</td><td>ab 800</td></tr>
+</table>
+</section>
+
+<section id="ki">
+<h2><span class="n">15</span> KI und Gegnerstärke <span class="tag">aiDirector.lua</span></h2>
+<p>Die Gegnerstärke stellt sich automatisch ein: Eine versteckte Wertung (0 bis 1) folgt deinen Ergebnissen. Siege heben sie, letzte Plätze senken sie. Am Anfang gibt es eine leichte Aufholhilfe, die mit steigender Wertung verschwindet. Im Rennwochenende und im Hardcore-Modus gibt es keine Aufholhilfe.</p>
+<p>Standardwerte der Stufen und Stile stehen oben in <span class="path">aiDirector.lua</span> (<code>M.tiers</code>, <code>M.styles</code>).</p>
+</section>
+
+<section id="musik">
+<h2><span class="n">16</span> Musik und Credits</h2>
+<p>Alle Stücke sind von <b>Kevin MacLeod</b> (incompetech.com) unter der Lizenz <b>Creative Commons BY 4.0</b>. Die Lizenz erlaubt die Nutzung, verlangt aber eine Namensnennung. Deshalb blendet das Spiel bei jedem Stück Titel und Künstler ein, und alle Stücke stehen im Credits-Menü und in <span class="path">CREDITS.md</span>.</p>
+
+<h3>Wo die Musik liegt</h3>
+<ul>
+<li><b>Stücke:</b> <span class="path">mods\unpacked\turismo_musik\ui\modules\apps\TurismoHub\audio\music\km_*.ogg</span> (eigener Mod-Ordner, weil die Musik rund 50 MB groß ist).</li>
+<li><b>Playlist:</b> <span class="path">playlist.json</span> im selben Ordner. Sie legt fest, welches Stück wo läuft.</li>
+<li><b>Credits-Menü:</b> Titelbildschirm oder Einstellungen → <b>Credits</b>. Es liest seine Liste direkt aus <span class="path">playlist.json</span>.</li>
+</ul>
+
+<h3>Aufbau von playlist.json</h3>
+<table>
+<tr><th>Feld</th><th>Bedeutung</th></tr>
+<tr><td><code>tracks.&lt;schlüssel&gt;.file</code></td><td>Dateiname der OGG-Datei im Musikordner.</td></tr>
+<tr><td><code>title</code>, <code>artist</code></td><td>Wird beim Abspielen eingeblendet und im Credits-Menü gezeigt.</td></tr>
+<tr><td><code>license</code></td><td>Kurzform der Lizenz, z. B. <code>CC BY 4.0</code> oder <code>CC0</code>.</td></tr>
+<tr><td><code>licenseText</code></td><td>Vollständiger Lizenzhinweis für das Credits-Menü.</td></tr>
+<tr><td><code>source</code></td><td>Woher das Stück stammt (Download-Adresse).</td></tr>
+<tr><td><code>contexts.&lt;bereich&gt;</code></td><td>Liste der Schlüssel, die in diesem Bereich zufällig nacheinander laufen. Bereiche: <code>title</code> (Titel), <code>menu</code> (Menü und Café), <code>dealer</code> (Händler), <code>license</code> (Lizenzen), <code>race</code> (Rennen), <code>results</code> (Siegerehrung).</td></tr>
+<tr><td><code>credit</code></td><td>Kurzer Text oben im Credits-Menü.</td></tr>
+</table>
+
+<h3>So tauschst du ein Stück aus oder fügst eins hinzu</h3>
+<ol>
+<li>Stück als OGG in den Musikordner legen (MP3 kann die Spieloberfläche nicht sicher abspielen).</li>
+<li>In <span class="path">playlist.json</span> unter <code>tracks</code> einen Eintrag anlegen, Beispiel:
+<pre>"mein_song": { "file": "mein_song.ogg", "title": "Mein Song", "artist": "Künstlername",
+  "license": "CC0", "licenseText": "Public Domain (CC0 1.0)", "source": "https://..." }</pre></li>
+<li>Den Schlüssel in die gewünschten Bereiche unter <code>contexts</code> eintragen, z. B. <code>"race": ["mein_song", "cut_and_run", ...]</code>.</li>
+<li>Ein Stück entfernen: Schlüssel aus <code>contexts</code> löschen. Der Eintrag unter <code>tracks</code> darf bleiben, dann steht er aber weiter im Credits-Menü.</li>
+<li>Spiel neu starten.</li>
+</ol>
+<p>Achte auf die Lizenz: nur Stücke mit CC0, CC BY oder einer klaren Freigabe. Auch CC0-Stücke tragen wir mit Künstler in die Credits ein.</p>
+
+<h3>Für Entwickler: Import-Skript</h3>
+<p><code>python3 tools/import_music.py &lt;ordner mit MP3s&gt;</code> wandelt die Originale in OGG um, gleicht die Lautheit an (Menü −18, Händler/Lizenz/Siegerehrung −17, Titel/Rennen −15 LUFS) und schreibt <span class="path">playlist.json</span> neu. Die Stückliste steht oben im Skript (<code>TRACKS</code>). <code>--playlist-only</code> schreibt nur die Playlist.</p>
+</section>
+
+<section id="ui">
+<h2><span class="n">17</span> Oberfläche und Hauptmenü</h2>
+<ul>
+<li><b>Hauptmenü:</b> „Turismo Karriere“ unter <b>Mehr</b> (Vue-UI-Mod in <span class="path">ui\ui-vue\mods\turismo_karriere\index.js</span>).</li>
+<li><b>Pausenmenü:</b> Esc → Mods → Turismo-Menü (<span class="path">PauseCard.vue</span>).</li>
+<li><b>World-Menü und HUD:</b> <span class="path">ui\modules\apps\TurismoHub\turismo-ui.js</span> und <span class="path">app.css</span>. Lädt von selbst, keine Layout-App nötig.</li>
+<li><b>Notfall-Menü:</b> <span class="path">imguiHub.lua</span>, falls die Oberfläche nicht erscheint.</li>
+</ul>
+<p>Die Oberfläche spricht mit Lua über <code>extensions.turismo_core.uiCall('&lt;aktion&gt;', {…}, reqId)</code>. Jede Aktion steht im Log.</p>
+</section>
+
+<section id="tasten">
+<h2><span class="n">18</span> Tastenbelegung <span class="tag">core\input\actions\turismo.json</span></h2>
+<p>Turismo legt keine Tasten fest. Belegen in BeamNG unter Optionen → Steuerung, Kategorie Gameplay:</p>
+<table>
+<tr><th>Aktion</th><th>Wofür</th></tr>
+<tr><td>Turismo: Hauptmenü öffnen/schließen</td><td>World-Menü (Vorschlag: F6)</td></tr>
+<tr><td>Turismo: Notfall-Menü (IMGUI)</td><td>Ersatzmenü</td></tr>
+<tr><td>Turismo: Rennmenü</td><td>Neustart / Aufgeben im Rennen</td></tr>
+<tr><td>Turismo: Intro überspringen</td><td>Kamerafahrt oder Ergebnis überspringen</td></tr>
+<tr><td>Turismo: Streckenrekorder - Checkpoint setzen</td><td>Eigene Strecke aufnehmen</td></tr>
+<tr><td>Turismo: Fehlerbericht erstellen</td><td>Schreibt <code>bugreport.txt</code> (<a href="#log">Log-System</a>)</td></tr>
+</table>
+</section>
+
+<section id="spielstand">
+<h2><span class="n">19</span> Spielstand <span class="tag">save.lua</span></h2>
+<p>3 Plätze: <span class="path">settings\turismo\profile_1.json</span> bis <code>profile_3.json</code> im BeamNG-Userordner, mit Sicherungskopie (<code>.bak</code>). Automatisch gespeichert wird regelmäßig und nach Rennen. Neue Felder in neuen Versionen werden alten Spielständen automatisch hinzugefügt.</p>
+</section>
+
+<section id="roadmap">
+<h2><span class="n">★</span> Roadmap <span class="tag">tools\roadmap.json</span></h2>
+<p>Die Meilensteine kommen aus <span class="path">tools\roadmap.json</span>. Danach richten sich die Versionsnummern: Zwischenstände zählen die letzte Stelle hoch (0.1.3 → 0.1.4), erst wenn ein Meilenstein fertig ist, gibt es seine Nummer (z. B. 0.2.0).</p>
+<!-- ROADMAP-START -->
+<table>
+<tr><th>Version</th><th>Meilenstein</th><th>Stand</th></tr>
+<tr><td><b>0.1.0</b></td><td>Erste Version: Karriere, Lizenzen, 53 Serien, Händler, Werkstatt, Schäden, KI-Fahrer</td><td><span style="color:var(--ok)">✓ fertig</span></td></tr>
+<tr><td><b>0.2.0</b></td><td>Nach dem Test am PC: Fehler aus der Prüfliste, Feintuning KI, Zielzeiten und Wirtschaft, eigene Drag-Configs, feste Streckenliste für 0.40, Musik mit Credits</td><td><span style="color:var(--accent)">▶ als Nächstes</span></td></tr>
+<tr><td><b>0.3.0</b></td><td>Boxenstopps in Langstreckenrennen, stehender Start nach der Einführungsrunde, Wetter und Tageszeit pro Lauf, Anhänger für Transport-Aufträge, Tuning-Teile einzeln</td><td><span style="color:var(--muted)">geplant</span></td></tr>
+<tr><td><b>0.4.0</b></td><td>Hub-Karte mit Orten und Fahrten zwischen den Terminen, Showroom mit 3D-Vorschau, Sammlerbuch, Rivalen mit Geschichte</td><td><span style="color:var(--muted)">geplant</span></td></tr>
+<tr><td><b>1.0</b></td><td>Komplette Karriere</td><td><span style="color:var(--muted)">geplant</span></td></tr>
+</table>
+<!-- ROADMAP-ENDE -->
+</section>
+
+<section id="changelog">
+<h2><span class="n">★</span> Changelog <span class="tag">CHANGELOG.md</span></h2>
+<p>Alle Versionen zum Aufklappen, neueste oben. Kommt aus <span class="path">CHANGELOG.md</span> (englisch: <span class="path">CHANGELOG_EN.md</span>) und wird mit <code>python3 tools/handbuch_sync.py</code> hier eingetragen.</p>
+<!-- CHANGELOG-START -->
+<details class="cl">
+<summary><b>0.1.4</b> <small>Stand 02.11.2026</small></summary>
+<div>
+<h4>Neu: Echte Musik und Credits-Menü</h4>
+<ul>
+<li>Die selbst erzeugte Musik ist raus. Jetzt laufen 18 echte Stücke von Kevin MacLeod (incompetech.com): Lounge und Bossa im Menü und Café, Funk beim Händler, Rock und Electro im Rennen, Jazz bei der Siegerehrung.</li>
+<li>Die Lautstärke der Stücke ist angeglichen, Rennmusik ist etwas kräftiger als Menümusik. Die Lautstärke stellst du wie bisher in den Einstellungen ein.</li>
+<li>Beim Start jedes Stücks erscheint oben kurz Titel und Künstler.</li>
+<li>Neu: <b>Credits</b> im Titelbildschirm und in den Einstellungen. Dort stehen alle Songs mit Künstler, Lizenz und Lizenzhinweis. Mit ▶ hörst du ein Stück an, ■ stoppt es wieder.</li>
+<li>Die Musik liegt als eigener Ordner <code>mods\unpacked\turismo_musik</code>. Die Mod selbst liegt entpackt in <code>mods\unpacked\turismo_karriere</code>.</li>
+</ul>
+</div>
+</details>
+<details class="cl">
+<summary><b>0.1.3</b> <small>Stand 02.11.2026</small></summary>
+<div>
+<h4>Neu: Fehlerbericht und eigenes Log</h4>
+<ul>
+<li>Die Mod schreibt jetzt ein eigenes Log: <code>settings\turismo\logs\turismo.log</code> im BeamNG-Userordner. Darin stehen nur die Meldungen von Turismo, mit Uhrzeit, gut lesbar.</li>
+<li>Bei jedem Start steht oben, welche Mod-Version, welche BeamNG-Version und welche anderen Mods aktiv sind. Danach prüft die Mod ihre Daten und meldet kaputte Dateien sofort.</li>
+<li>Jeder Klick im Turismo-Menü und jeder Fehler wird festgehalten, Fehler mit genauer Stelle und dem Spielzustand in diesem Moment. Das Spiel läuft danach weiter.</li>
+<li>Das Log wird nie riesig: höchstens 4 Dateien zu je 512 KB.</li>
+<li>Neu: <b>Fehlerbericht erstellen</b>. Das geht über die Taste „Turismo: Fehlerbericht erstellen“ (in den Optionen unter Steuerung belegen) oder im Notfall-Menü. Es entsteht <code>bugreport.txt</code> mit Log und Spielstand. Diese eine Datei schickst du, wenn etwas schiefgeht.</li>
+<li>Neu: Handbuch <code>docs/handbuch.html</code>. Dort steht, wo du was findest und wie du Serien, Lizenzen, Café-Hefte, Fahrer und Preise selbst änderst.</li>
+</ul>
+<h4>Erster Test am PC</h4>
+<ul>
+<li>Das Namensfeld beim neuen Spielstand nimmt jetzt Tastatureingaben an.</li>
+<li>Die Gegnerstärke stellt sich automatisch nach deinen Ergebnissen ein. Es gibt dafür keine Einstellung mehr. Anfänger bekommen am Anfang eine leichte Aufholhilfe, die mit der Zeit verschwindet.</li>
+<li>Das World-Menü erklärt jeden Bereich. Beim ersten Besuch gibt es eine kurze Einführung, später findest du sie unter „So funktioniert's“.</li>
+<li>Lizenztests: Das BeamNG-Menü schließt sich beim Start, die Pfosten sind größer und beschriftet, eine gelbe Linie zeigt den Weg und oben steht das nächste Ziel mit Entfernung. Vor dem Start gibt es eine kurze Einweisung.</li>
+<li>Das Banner im Hauptmenü ist weg, es hat im Pausenmenü den Knopf „Back“ verdeckt.</li>
+</ul>
+</div>
+</details>
+<details class="cl">
+<summary><b>0.1.2</b> <small>Stand 02.11.2026</small></summary>
+<div>
+<h4>Neu: Eigener Spielmodus im Hauptmenü</h4>
+<ul>
+<li>Turismo Karriere steht jetzt im BeamNG-Hauptmenü unter <b>Mehr</b>. Du startest die Karriere wie einen eigenen Spielmodus, nicht mehr aus dem Freeroam.</li>
+<li>Spielstand laden oder neu anlegen lädt die Heimatkarte und öffnet das World-Menü.</li>
+<li>Während der Fahrt: Esc, dann <b>Mods</b>, dann <b>Turismo-Menü</b>.</li>
+<li>Die Oberfläche lädt von selbst. Du musst keine App mehr ins UI-Layout ziehen.</li>
+</ul>
+</div>
+</details>
+<details class="cl">
+<summary><b>0.1.1</b> <small>Stand 02.11.2026</small></summary>
+<div>
+<h4>Fehler behoben</h4>
+<ul>
+<li>Angepasst an BeamNG.drive 0.40.4.</li>
+<li>Bergungspunkte einer Strecke landen nicht mehr in der Startaufstellung.</li>
+<li>Gegner springen beim Start nicht mehr zum ersten Wegpunkt.</li>
+<li>Dragstrips im neuen Format von 0.40 werden erkannt, das alte Format geht weiter.</li>
+<li>Die BeamNG-Rundenzeiten-App wird während Turismo-Rennen ausgeblendet, damit sie das eigene HUD nicht überdeckt.</li>
+</ul>
+</div>
+</details>
+<details class="cl">
+<summary><b>0.1.0</b> <small>Stand 01.11.2026</small></summary>
+<div>
+<h4>Erste Version</h4>
+<ul>
+<li>Karriere mit 3 Spielständen, Fortschritt über 20 Café-Hefte oder „Klassisch“ mit allem offen, Schadensmodus und Hardcore-Modus.</li>
+<li>Lizenzen C, B, A, I, S, Rallye und Drift mit 50 Tests, Gold, Silber und Bronze. 10 freiwillige Trainings in der Fahrschule.</li>
+<li>53 Rennserien in 9 Hallen: Rundstrecke, K.O.-Rennen, Verfolgung, Zeitfahren, Bergrennen, Touge, Drift, Destruction Derby, Transport, Crawling und Drag-Wochenenden.</li>
+<li>Schnelles Rennen oder Rennwochenende mit Training, Qualifying, Kamerafahrt, Einführungsrunde und fliegendem Start.</li>
+<li>Leistungsindex (LI) und Klassen E bis X für alle Autos deiner Installation, auch Mod-Autos.</li>
+<li>Händler für Neuwagen, Gebrauchtwagen und Klassiker. Werkstatt mit Wäsche, Ölwechsel, Reparatur, Motorüberholung und Umbau.</li>
+<li>Schäden bleiben: Der Zustand der Teile wird gespeichert und nichts repariert sich von selbst.</li>
+<li>90 KI-Fahrer mit eigener Stufe und eigenem Fahrstil.</li>
+<li>World-Menü, eigenes Renn-HUD, Startampel, Drag-Baum, Ergebnis-Screens und ein Notfall-Menü.</li>
+</ul>
+</div>
+</details>
+<!-- CHANGELOG-ENDE -->
+</section>
+
+<section id="regeln">
+<h2><span class="n">★</span> Arbeitsregeln (für Claude)</h2>
+<p>Diese Regeln gelten für jede Änderung an Turismo, egal in welchem Thread. Sie kommen aus Hashiriya Battle.</p>
+<ol class="steps">
+<li><b>Handbuch:</b> Jedes neue Feature oder jede neue Datendatei bekommt im selben Commit ein Kapitel oder eine Ergänzung hier, mit allen Feldern und einem Beispiel.</li>
+<li><b>Changelog:</b> Jede Änderung, die der Spieler merkt, steht in <code>CHANGELOG.md</code> und <code>CHANGELOG_EN.md</code>. Kopf <code>## &lt;Version&gt; (Stand TT.MM.JJJJ)</code>, Abschnitte <code>### Neu: …</code> und <code>### Fehler behoben</code>. Kurze, einfache Sätze für Spieler: was ist neu, wie benutzt man es. Kein Code, keine Dateinamen, außer der Spieler braucht sie.</li>
+<li><b>Sync:</b> Nach jeder Änderung an Changelog oder Roadmap <code>python3 tools/handbuch_sync.py</code> ausführen. Das Skript warnt, wenn die Versionen nicht zusammenpassen.</li>
+<li><b>Versionen:</b> <code>CHANGELOG.md</code>, <code>CHANGELOG_EN.md</code>, <code>data/turismo/build.json</code> (<code>modVersion</code>) und <code>turismo_core.VERSION</code> tragen dieselbe Version. Zwischenstände zählen hinten hoch, die Meilenstein-Nummer erst mit <code>"fertig": true</code> in der Roadmap.</li>
+<li><b>Log:</b> In Lua immer <code>turismo_util.log</code>. Neue Systeme loggen ihre wichtigen Ereignisse (Start, Ergebnis, Fehler) mit Werten.</li>
+<li><b>Credits:</b> Alles Fremde (Musik, Karten, Code) steht mit Lizenz in <code>CREDITS.md</code> und im Credits-Menü.</li>
+<li><b>Tests:</b> Vor jedem Push <code>luajit tools/test/unit.lua</code> und <code>luajit tools/test/smoke.lua</code>.</li>
+<li><b>PC-Ordner:</b> Vor dem Kopieren auf Alex' PC prüfen, ob dort Dateien geändert wurden, und diese zuerst übernehmen. Nur geänderte Dateien kopieren.</li>
+</ol>
+</section>
+
+<section id="werkzeuge">
+<h2><span class="n">★</span> Werkzeuge und Tests</h2>
+<pre><code>python3 tools/gen_data.py        # Inhalte in data/turismo neu erzeugen
+python3 tools/gen_sfx.py         # Soundeffekte
+python3 tools/handbuch_sync.py   # Changelog und Roadmap ins Handbuch
+luajit tools/test/unit.lua       # Logik-Tests
+luajit tools/test/smoke.lua      # Karrierestart-Test
+node tools/ui-preview/shoot.js out/   # Screenshots der Oberfläche
+bash tools/build.sh              # Tests + Zip bauen</code></pre>
+<p>Die Tests laufen ohne BeamNG mit einer Nachbildung der Spiel-Schnittstellen (<span class="path">tools\test\mock.lua</span>).</p>
+</section>
+
+<section id="probleme">
+<h2><span class="n">★</span> Wenn etwas nicht geht</h2>
+<table>
+<tr><th>Problem</th><th>Was tun</th></tr>
+<tr><td>„Turismo Karriere“ fehlt im Hauptmenü</td><td>Im Mod-Manager prüfen, ob die Mod aktiv ist. Dann im Log nach dem Sitzungskopf suchen. Fehlt er, lädt die Mod gar nicht (Ordnerstruktur prüfen: <span class="path">mods\unpacked\turismo_karriere\scripts\turismo_career\modScript.lua</span> muss existieren).</td></tr>
+<tr><td>Serien oder Texte fehlen</td><td>Eine JSON-Datei ist kaputt. Im Log steht „Datencheck … ist kaputt“. Datei prüfen (VS Code oder jsonlint.com).</td></tr>
+<tr><td>Oberfläche erscheint nicht</td><td>Notfall-Menü öffnen, Fehlerbericht erstellen und schicken.</td></tr>
+<tr><td>Rennen startet nicht / keine Strecke</td><td>Diagnose aufrufen: dort stehen fehlende Strecken. Eventuell fehlt die Karte.</td></tr>
+<tr><td>Alles andere</td><td><a href="#log">Fehlerbericht erstellen</a> und schicken.</td></tr>
+</table>
+</section>
+
+<section id="lua">
+<h2><span class="n">★</span> Lua-Dateien im Überblick <span class="tag">lua\ge\extensions\turismo\</span></h2>
+<table>
+<tr><th>Datei</th><th>Aufgabe</th></tr>
+<tr><td>core.lua</td><td>Lädt alle Module, Menü-Brücke zur Oberfläche (alle UI-Aktionen), Hauptmenü und Pausenmenü</td></tr>
+<tr><td>logger.lua</td><td>Eigenes Log, Datencheck, Fehlerschutz, Fehlerbericht</td></tr>
+<tr><td>util.lua</td><td>Hilfsfunktionen, <code>log</code>, Geld- und Zeitformat</td></tr>
+<tr><td>save.lua</td><td>Spielstände, Autosave, Migration</td></tr>
+<tr><td>data.lua</td><td>Lädt data\turismo\*.json und Zusatzdateien, prüft Inhalte</td></tr>
+<tr><td>vehicleDb.lua, rating.lua</td><td>Alle Autos der Installation, LI, Klassen, Kriterien</td></tr>
+<tr><td>profile.lua, progression.lua</td><td>Geld, Tage, Sammlerstufe, Freischaltungen</td></tr>
+<tr><td>garage.lua, condition.lua, services.lua</td><td>Garage, Teilezustand und Schäden, Werkstatt</td></tr>
+<tr><td>dealer.lua</td><td>Neu-, Gebraucht- und Klassikerhändler</td></tr>
+<tr><td>licenses.lua, tests.lua</td><td>Lizenzen und der Ablauf eines Tests (Tore, Zeiten, Medaillen)</td></tr>
+<tr><td>events.lua</td><td>Serien, Teilnahme, Felder, Preisgeld, Meisterschaften</td></tr>
+<tr><td>race.lua, session.lua</td><td>Rennablauf (Startaufstellung, Kamerafahrt, Runden, Ergebnis), Karte laden und Spawnen</td></tr>
+<tr><td>modes.lua, drag.lua</td><td>Sonderformen (K.O., Verfolgung, Touge, Drift, Derby, Crawl, Transport) und Drag-Wochenende</td></tr>
+<tr><td>aiDirector.lua</td><td>KI-Fahrer, automatische Gegnerstärke, Aufholhilfe</td></tr>
+<tr><td>tracks.lua</td><td>Streckenliste, Auswahl-Regeln, Streckenrekorder</td></tr>
+<tr><td>cafe.lua</td><td>Café-Hefte und Aufgaben</td></tr>
+<tr><td>audio.lua</td><td>Musik und Sounds</td></tr>
+<tr><td>imguiHub.lua</td><td>Notfall-Menü</td></tr>
+</table>
+</section>
+
+</main>
+</div>
+<a class="top" href="#start" title="Nach oben">↑</a>
+<script>
+(function () {
+  var root = document.documentElement;
+  try { var t = localStorage.getItem('turismo-theme'); if (t) root.setAttribute('data-theme', t); } catch (e) {}
+  document.getElementById('theme').onclick = function () {
+    var t = root.getAttribute('data-theme') === 'light' ? 'dark' : 'light';
+    root.setAttribute('data-theme', t);
+    try { localStorage.setItem('turismo-theme', t); } catch (e) {}
+  };
+  var q = document.getElementById('q');
+  var sections = Array.prototype.slice.call(document.querySelectorAll('main section'));
+  var links = Array.prototype.slice.call(document.querySelectorAll('#toc a'));
+  q.addEventListener('input', function () {
+    var s = q.value.trim().toLowerCase();
+    var hit = {};
+    sections.forEach(function (sec) {
+      var ok = !s || sec.textContent.toLowerCase().indexOf(s) !== -1;
+      sec.classList.toggle('hidden', !ok);
+      if (ok) hit[sec.id] = true;
+    });
+    links.forEach(function (a) {
+      var id = a.getAttribute('href').slice(1);
+      var el = document.getElementById(id);
+      var sec = el && el.closest('section');
+      a.classList.toggle('hidden', !!s && !(sec && hit[sec.id]));
+    });
+  });
+})();
+</script>
+</body>
+</html>

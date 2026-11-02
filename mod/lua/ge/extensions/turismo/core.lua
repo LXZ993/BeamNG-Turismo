@@ -9,10 +9,10 @@
 
 local M = {}
 
-M.VERSION = '0.1.0'
+M.VERSION = '0.1.4' -- muss zu data/turismo/build.json "modVersion" und CHANGELOG.md passen
 
 M.MODULES = {
-  'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',
+  'turismo_logger', 'turismo_util', 'turismo_save', 'turismo_data', 'turismo_rating', 'turismo_vehicleDb',
   'turismo_profile', 'turismo_garage', 'turismo_condition', 'turismo_services', 'turismo_dealer',
   'turismo_licenses', 'turismo_tracks', 'turismo_aiDirector', 'turismo_race', 'turismo_tests',
   'turismo_modes', 'turismo_drag', 'turismo_events', 'turismo_cafe', 'turismo_progression',
@@ -44,15 +44,20 @@ local function loadModules()
     end
     if setExtensionUnloadMode then setExtensionUnloadMode(name, 'manual') end
   end
+  X('logger').start()
   -- data must be available before anything reads it
   X('data').reload()
+  X('logger').checkData()
+  for _, name in ipairs(M.MODULES) do
+    if name ~= 'turismo_logger' then X('logger').protect(name) end
+  end
 end
 
 function M.onExtensionLoaded()
   if setExtensionUnloadMode then setExtensionUnloadMode(M, 'manual') end
   loadModules()
   M.registerPauseButton()
-  log('I', 'turismo', 'Turismo Karriere ' .. M.VERSION .. ' geladen')
+  U().log('I', 'Turismo Karriere %s geladen', M.VERSION)
 end
 
 function M.onUpdate(dtReal, dtSim, dtRaw)
@@ -66,8 +71,9 @@ function M.onUpdate(dtReal, dtSim, dtRaw)
     if X('imguiHub') then X('imguiHub').draw(dtReal) end
   end)
   if not ok then
-    log('E', 'turismo', 'update error: ' .. tostring(err))
+    U().log('E', 'FEHLER in onUpdate: %s | Zustand: %s', tostring(err), X('logger').context())
   end
+  X('logger').onUpdate(dtReal)
   stateTimer = stateTimer + dtReal
   if stateDirty and stateTimer > 0.5 then
     stateTimer = 0
@@ -103,7 +109,7 @@ function M.toggleHub() M.setHubVisible(not hubVisible) end
 
 -- main menu button "Turismo Karriere": title screen with the save slots
 function M.startCareer()
-  log('I', 'turismo', 'Karriere aus dem Hauptmenü gestartet')
+  U().log('I', 'Karriere aus dem Hauptmenü gestartet')
   M.registerPauseButton()
   -- started from the in-game menu: close it, the Turismo menu takes over
   if levelLoaded() and ui_menuManager and ui_menuManager.closeMenu then pcall(ui_menuManager.closeMenu) end
@@ -480,20 +486,59 @@ handlers.recorderSave = function()
   return file
 end
 
+-- Fehlerbericht: schreibt settings/turismo/logs/bugreport.txt (die eine Datei, die Tester schicken)
+handlers.bugReport = function(a)
+  local path = X('logger').writeReport(a and a.note)
+  if not path then error('Fehlerbericht konnte nicht geschrieben werden', 0) end
+  return { path = path }
+end
+function M.bugReport(note)
+  local path = X('logger').writeReport(note)
+  if path then M.onTurismoToast('Fehlerbericht gespeichert: ' .. path, 'info') end
+  return path
+end
+
 handlers.hub = function(a) M.setHubVisible(a.visible) return true end
 handlers.sound = function(a) X('audio').play(a.cue) return true end
+
+-- Aktionen, die die UI ständig abfragt: nicht ins Log (sonst wird es unlesbar)
+local QUIET_ACTIONS = { ping = true, state = true, recorderState = true, sound = true, getSlots = true }
+
+-- kurze Zusammenfassung der Argumente für das Log (keine langen Texte)
+local function argSummary(args)
+  if type(args) ~= 'table' then return '' end
+  local parts = {}
+  for k, v in pairs(args) do
+    if type(v) ~= 'table' then
+      local t = tostring(v)
+      if #t > 40 then t = t:sub(1, 40) .. '...' end
+      parts[#parts + 1] = tostring(k) .. '=' .. t
+    end
+  end
+  table.sort(parts)
+  return table.concat(parts, ' ')
+end
 
 function M.uiCall(action, args, reqId)
   local h = handlers[action]
   local res = { reqId = reqId, action = action }
+  if not QUIET_ACTIONS[action] then U().log('I', 'Aktion: %s %s', tostring(action), argSummary(args)) end
   if not h then
     res.ok, res.error = false, 'Unbekannte Aktion: ' .. tostring(action)
+    U().log('W', 'uiCall: unbekannte Aktion %s', tostring(action))
   else
-    local ok, data = pcall(h, args or {})
+    local ok, data = xpcall(h, debug.traceback, args or {})
     res.ok = ok
     if ok then res.data = data else
-      res.error = tostring(data)
-      log('W', 'turismo', 'uiCall ' .. tostring(action) .. ' failed: ' .. tostring(data))
+      local msg = tostring(data)
+      res.error = msg:match('^[^\n]*') or msg
+      -- error('Text', 0) sind erwartete Meldungen an den Spieler (z. B. "Kein Spielstand geladen"), kein Code-Fehler
+      local expected = not msg:find('%.lua:%d+:')
+      if expected then
+        U().log('W', 'uiCall %s abgelehnt: %s', tostring(action), res.error)
+      else
+        U().log('E', 'FEHLER in uiCall %s: %s | Zustand: %s', tostring(action), msg, X('logger').context())
+      end
     end
   end
   if guihooks then guihooks.trigger('TurismoResult', res) end
