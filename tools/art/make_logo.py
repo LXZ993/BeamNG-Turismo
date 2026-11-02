@@ -1,0 +1,584 @@
+#!/usr/bin/env python3
+"""Beam Turismo: Logo-Varianten und Hauptmenü-Icon.
+
+Aufruf: python3 tools/art/make_logo.py OUTDIR
+  OUTDIR/<name>.svg + <name>_steps.json  (für VectorCraft, siehe build.sh)
+Schrift der endgültigen Fassung (runde8): Russo One (OFL 1.1, tools/art/fonts/). Ältere Runden: Inter Display (OFL), als Pfade umgewandelt,
+breiter gezogen und schräg gestellt. Im Mod steckt keine Schriftdatei, nur die Pfade.
+Benötigt: pip install fonttools; Inter liegt unter /usr/share/fonts/opentype/inter/
+(oder FONT_DIR=... setzen).
+"""
+import json, math, os, sys
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from bt_emblem import emblem_paths, emblem_width
+from fontTools.ttLib import TTFont
+from fontTools.pens.svgPathPen import SVGPathPen
+from fontTools.pens.transformPen import TransformPen
+
+FONT_DIR = os.environ.get("FONT_DIR", "/usr/share/fonts/opentype/inter")
+RED, RED_D = "#D0021B", "#8E0012"
+INK, SILVER = "#121417", "#C9CDD2"
+_fonts = {}
+
+
+def font(weight):
+    if weight not in _fonts:
+        if weight.endswith(".ttf"):  # eigene Schrift aus tools/art/fonts/
+            _fonts[weight] = TTFont(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts", weight))
+        else:
+            _fonts[weight] = TTFont(os.path.join(FONT_DIR, f"InterDisplay-{weight}.otf"))
+    return _fonts[weight]
+
+
+def text_path(s, size, weight="ExtraBold", wide=1.22, slant=12, track=0.0, ox=0.0, oy=0.0):
+    """Text als SVG-Pfad (Grundlinie y=0, links x=0). Gibt (d, breite) zurück."""
+    f = font(weight)
+    gs, cmap, upm = f.getGlyphSet(), f.getBestCmap(), f["head"].unitsPerEm
+    k = size / upm
+    sk = math.tan(math.radians(slant))
+    pen = SVGPathPen(gs)
+    x = 0.0
+    for i, ch in enumerate(s):
+        if ch == " ":
+            x += gs[cmap[32]].width * k * wide * 0.8
+            continue
+        g = gs[cmap[ord(ch)]]
+        # x' = wide*k*x + sk*k*y + x0 ; y' = -k*y  (Font-y zeigt nach oben)
+        g.draw(TransformPen(pen, (wide * k, 0, sk * k, -k, ox + x, oy)))
+        x += g.width * k * wide + track * size
+    return pen.getCommands(), x - track * size
+
+
+class Doc:
+    def __init__(self, w, h, bg=None):
+        self.w, self.h, self.bg = w, h, bg
+        self.defs, self.body, self.fx, self.n = [], [], [], 0
+
+    def uid(self, p):
+        self.n += 1
+        return f"{p}{self.n:03d}"
+
+    def lin(self, stops, x1=0, y1=0, x2=0, y2=1):
+        i = self.uid("lg")
+        st = "".join(f'<stop offset="{o}" stop-color="{c}"/>' for o, c in stops)
+        self.defs.append(f'<linearGradient id="{i}" x1="{x1}" y1="{y1}" x2="{x2}" y2="{y2}">{st}</linearGradient>')
+        return f"url(#{i})"
+
+    def path(self, d, fill, extra="", name=None):
+        name = name or self.uid("p")
+        self.body.append(f'<path id="{name}" d="{d}" fill="{fill}" {extra}/>')
+        return name
+
+    def text(self, s, x, y, size, fill, **kw):
+        d, w = text_path(s, size, **kw)
+        self.body.append(f'<g transform="translate({x:.1f} {y:.1f})"><path id="{self.uid("t")}" d="{d}" fill="{fill}"/></g>')
+        return w
+
+    def shadow(self, name, blur=6, dy=3, opacity=0.35):
+        self.fx.append((name, "stylize.dropShadow", {"opacity": round(opacity * 100), "x": 0, "y": dy, "blur": blur}))
+
+    def svg(self):
+        bg = f'<rect width="{self.w}" height="{self.h}" fill="{self.bg}"/>' if self.bg else ""
+        return (f'<svg xmlns="http://www.w3.org/2000/svg" width="{self.w}" height="{self.h}" viewBox="0 0 {self.w} {self.h}">'
+                f'<defs>{"".join(self.defs)}</defs>{bg}{"".join(self.body)}</svg>')
+
+    def steps(self):
+        out = []
+        for name, eff, params in self.fx:
+            out.append({"command": "document.find", "params": {"name": name, "select": True}})
+            out.append({"command": "effect.apply", "params": {"effect": eff, "params": params}})
+        return out
+
+
+def para(x, y, w, h, sl, r=0):
+    """Schräges Rechteck (Parallelogramm), Neigung sl Pixel über die Höhe."""
+    return f"M{x+sl:.1f},{y:.1f}H{x+w+sl:.1f}L{x+w:.1f},{y+h:.1f}H{x:.1f}Z"
+
+
+def swoosh(x0, x1, y, rise, thick):
+    """Ideallinie: Kurve, die vorne dünn beginnt und hinten kräftig endet."""
+    xm = (x0 + x1) / 2
+    top = f"M{x0:.1f},{y:.1f} C{xm:.1f},{y+rise*0.15:.1f} {xm+ (x1-xm)*0.4:.1f},{y-rise:.1f} {x1:.1f},{y-rise*1.1:.1f}"
+    bot = f"L{x1-thick*0.6:.1f},{y-rise*1.1+thick:.1f} C{xm+(x1-xm)*0.35:.1f},{y-rise+thick*1.1:.1f} {xm:.1f},{y+rise*0.15+thick*0.7:.1f} {x0+8:.1f},{y+1.2:.1f}Z"
+    return top + bot
+
+
+# ---------- Bausteine ----------
+
+def monogram(d, x, y, s, fg="#fff", bar=RED):
+    """BT-Plakette: schräge Plakette, darin 'BT', unten roter Streifen."""
+    sl = s * 0.22
+    d.path(para(x, y, s * 1.25, s, sl), d.lin([(0, "#2A2E34"), (1, INK)]), name=d.uid("badge"))
+    d.shadow(d.body[-1].split('id="')[1].split('"')[0], blur=8, dy=4, opacity=0.4)
+    d.path(para(x + s * .05, y + s * .05, s * 1.15, s * .9, sl * .9), "none", f'stroke="{SILVER}" stroke-width="{s*0.018:.2f}" opacity="0.55"')
+    d.path(para(x + s * .02, y + s * .74, s * 1.21, s * .1, sl * .1), bar)
+    d.text("BT", x + s * .2, y + s * .64, s * .55, fg, weight="Black", wide=1.15, slant=12, track=-0.02)
+
+
+def wordmark_line(d, x, y, size, beam=RED, tur=INK):
+    w1 = d.text("BEAM", x, y, size, beam, weight="Black", wide=1.25, slant=12, track=0.02)
+    gap = size * 0.28
+    w2 = d.text("TURISMO", x + w1 + gap, y, size, tur, weight="ExtraBold", wide=1.25, slant=12, track=0.02)
+    return w1 + gap + w2
+
+
+def variant_a(dark, bg=True):
+    """A 'Plakette': BT-Plakette + Schriftzug in einer Zeile."""
+    d = Doc(1200, 360, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    monogram(d, 60, 90, 180)
+    fg = "#FFFFFF" if dark else INK
+    w = wordmark_line(d, 365, 210, 80, RED, fg)
+    d.text("KARRIERE FÜR BEAMNG.DRIVE", 369, 262, 22, SILVER if dark else "#6B7078", weight="SemiBold", wide=1.1, slant=12, track=0.28)
+    return d
+
+
+def variant_b(dark, bg=True):
+    """B 'Ideallinie': gestapelter Schriftzug, rote Linie wie eine Kurve durch den Scheitelpunkt."""
+    d = Doc(1200, 420, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    fg = "#FFFFFF" if dark else INK
+    d.text("BEAM", 168, 150, 54, SILVER if dark else "#5A5F67", weight="Bold", wide=1.35, slant=12, track=0.55)
+    d.text("TURISMO", 150, 290, 150, fg, weight="Black", wide=1.22, slant=12, track=0.01)
+    n = d.path(swoosh(140, 1080, 335, 36, 13), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    d.shadow(n, blur=4, dy=2, opacity=0.3)
+    return d
+
+
+def roundel(d, cx, cy, r, mono=None):
+    """C 'Rondell': Kreis mit drei schrägen Streifen (Flagge + Fahrbahn)."""
+    i = d.uid("cp")
+    d.defs.append(f'<clipPath id="{i}"><circle cx="{cx}" cy="{cy}" r="{r*0.86:.1f}"/></clipPath>')
+    ring = mono or SILVER
+    d.body.append(f'<circle id="{d.uid("ring")}" cx="{cx}" cy="{cy}" r="{r:.1f}" fill="{mono or INK}"/>')
+    d.shadow(d.body[-1].split('id="')[1].split('"')[0], blur=8, dy=4, opacity=0.35)
+    d.body.append(f'<circle cx="{cx}" cy="{cy}" r="{r*0.93:.1f}" fill="none" stroke="{ring if not mono else "#000"}" stroke-width="{r*0.025:.2f}" opacity="{0.6 if not mono else 0}"/>')
+    g = []
+    cols = (["#000", "#000", "#000"] if mono else [RED, "#FFFFFF", RED])
+    for k, c in enumerate(cols):
+        off = (k - 1) * r * 0.42
+        x0, y0 = cx + off - r * 0.3, cy + r
+        g.append(f'<path d="M{x0-r*0.25:.1f},{y0:.1f} L{x0+r*0.85:.1f},{cy-r:.1f} L{x0+r*1.13:.1f},{cy-r:.1f} L{x0+r*0.05:.1f},{y0:.1f}Z" fill="{c}"/>')
+    d.body.append(f'<g clip-path="url(#{i})" {"opacity=\"0\"" if False else ""}>{"".join(g)}</g>')
+
+
+def variant_c(dark, bg=True):
+    d = Doc(1200, 420, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    roundel(d, 210, 210, 140)
+    fg = "#FFFFFF" if dark else INK
+    d.text("BEAM", 420, 175, 64, RED, weight="Black", wide=1.3, slant=12, track=0.3)
+    d.text("TURISMO", 412, 290, 120, fg, weight="Black", wide=1.2, slant=12, track=0.01)
+    return d
+
+
+def icon(kind):
+    """Hauptmenü-Icon: weiß auf transparent, quadratisch. Ohne Masken (Löcher per evenodd),
+    damit VectorCraft und der Spiel-Browser es gleich darstellen."""
+    d = Doc(256, 256)
+    if kind == "a":
+        sl = 34
+        bt, w = text_path("BT", 100, weight="Black", wide=1.15, slant=12, track=-0.02, ox=46, oy=156)
+        d.body.append(f'<path id="icon" fill="#FFFFFF" fill-rule="evenodd" d="{para(10, 52, 206, 150, sl)} '
+                      f'{para(16, 170, 196, 13, 3)} {bt}"/>')
+    elif kind == "b":
+        dpath, w = text_path("T", 190, weight="Black", wide=1.2, slant=12)
+        d.body.append(f'<g transform="translate({(256-w)/2-14:.0f} 170)"><path id="icon" d="{dpath}" fill="#FFFFFF"/></g>')
+        d.path(swoosh(8, 250, 236, 26, 22), "#FFFFFF")
+    else:
+        d.defs.append('<clipPath id="ci"><circle cx="128" cy="128" r="96"/></clipPath>')
+        d.body.append('<circle id="icon" cx="128" cy="128" r="112" fill="none" stroke="#FFFFFF" stroke-width="16"/>')
+        st = "".join(f'<path d="M{x-40:.0f},256 L{x+70:.0f},0 L{x+104:.0f},0 L{x-6:.0f},256Z" fill="#FFFFFF"/>' for x in (48, 112, 176))
+        d.body.append(f'<g clip-path="url(#ci)">{st}</g>')
+    return d
+
+
+def main(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for v, fn in (("a", variant_a), ("b", variant_b), ("c", variant_c)):
+        for dark in (False, True):
+            items[f"logo_{v}_{'dunkel' if dark else 'hell'}"] = fn(dark)          # Vorschau mit Hintergrund
+            items[f"logo_{v}_auf_{'dunkel' if dark else 'hell'}"] = fn(dark, False)  # transparent, fürs Spiel
+        items[f"icon_{v}"] = icon(v)
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+# ---------- Runde 2: BT-Emblem im Stil eines großen Spiele-Logos (Alex: "mehr wie GT, aber eigenständig") ----------
+FORMS = {"d": "schlitz", "e": "platte", "f": "band"}
+
+
+def emblem(d, cx, top, scale, form, dark, mono=None):
+    w = emblem_width(scale)
+    b, t = emblem_paths(cx - w / 2, top, scale, form=form)
+    bfill = mono or (d.lin([(0, "#FFFFFF"), (1, "#AEB4BC")]) if dark else d.lin([(0, "#3A3F47"), (1, "#121417")]))
+    nb = d.path(b, bfill, 'fill-rule="evenodd"')
+    nt = d.path(t, mono or d.lin([(0, "#FF2338"), (1, "#B80018")]), 'fill-rule="evenodd"')
+    if not mono:
+        d.shadow(nb, blur=6, dy=4, opacity=0.25)
+        d.shadow(nt, blur=6, dy=4, opacity=0.25)
+    return w
+
+
+def centered_text(d, s, cy, size, fill, **kw):
+    dp, w = text_path(s, size, **kw)
+    d.body.append(f'<g transform="translate({(d.w - w) / 2:.1f} {cy:.1f})"><path id="{d.uid("t")}" d="{dp}" fill="{fill}"/></g>')
+    return w
+
+
+def stacked(v, dark, bg=True):
+    """Emblem oben, Schriftzug darunter, rote Ideallinie, Untertitel (Aufbau wie ein Spieltitel)."""
+    d = Doc(1200, 760, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    emblem(d, 600, 70, 1.45, FORMS[v], dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    w = centered_text(d, "BEAM TURISMO", 520, 104, fg, weight="Black", wide=1.18, slant=14, track=0.0)
+    x0 = (d.w - w) / 2
+    n = d.path(swoosh(x0 - 10, x0 + w + 30, 572, 22, 11), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 640, 26, SILVER if dark else "#5A5F67", weight="Bold", wide=1.15, slant=14, track=0.32)
+    return d
+
+
+def wide(v, dark, bg=True):
+    """Querformat für Menüleiste: Emblem links, Schriftzug rechts."""
+    d = Doc(1400, 300, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    ew = emblem(d, 60 + emblem_width(0.95) / 2, 55, 0.95, FORMS[v], dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    x = 60 + ew + 40
+    w = d.text("BEAM TURISMO", x, 190, 104, fg, weight="Black", wide=1.18, slant=14)
+    d.path(swoosh(x - 6, x + w + 20, 236, 14, 9), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    d.w = int(x + w + 60)
+    return d
+
+
+def icon2(v):
+    d = Doc(256, 256)
+    s = 230 / emblem_width(1)
+    b, t = emblem_paths((256 - emblem_width(s)) / 2, 128 - 100 * s, s, form=FORMS[v])
+    d.path(b, "#FFFFFF", 'fill-rule="evenodd"', name="icon")
+    d.path(t, RED, 'fill-rule="evenodd"')
+    return d
+
+
+def main2(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for v in FORMS:
+        for dark in (False, True):
+            t = "dunkel" if dark else "hell"
+            items[f"logo_{v}_{t}"] = stacked(v, dark)
+            items[f"logo_{v}_auf_{t}"] = stacked(v, dark, False)
+            items[f"leiste_{v}_auf_{t}"] = wide(v, dark, False)
+        items[f"icon_{v}"] = icon2(v)
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__":
+    out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
+    if len(sys.argv) > 2 and sys.argv[2] == "runde1":
+        main(out)
+    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b", "runde6", "runde7", "runde8"):
+        pass  # main3 läuft am Dateiende (braucht die Funktionen darunter)
+    else:
+        main2(out)
+
+
+# ---------- Runde 3: "Strecke" – das B ist ein Rundkurs mit Curbs, Mittellinie und Start-Ziel ----------
+import bt_swoosh as _sw
+
+
+def track_emblem(d, ox, oy, s, dark, mono=None):
+    cl = _sw._sk(_sw.track_b_centerline(), ox, oy, s, 14)
+    dpath = "M" + " L".join(f"{x:.1f},{y:.1f}" for x, y in cl) + " Z"
+    w = 32 * s
+    if mono:
+        d.body.append(f'<path id="icon" d="{dpath}" fill="none" stroke="{mono}" stroke-width="{w*1.35:.1f}" stroke-linejoin="round"/>')
+    else:
+        n = d.uid("curb")
+        d.body.append(f'<path id="{n}" d="{dpath}" fill="none" stroke="{RED}" stroke-width="{w*1.32:.1f}" stroke-linejoin="round"/>')
+        d.shadow(n, blur=8, dy=5, opacity=0.3)
+        d.body.append(f'<path d="{dpath}" fill="none" stroke="#FFFFFF" stroke-width="{w*1.32:.1f}" stroke-linejoin="round" stroke-dasharray="{w*0.42:.1f} {w*0.42:.1f}"/>')
+        d.body.append(f'<path d="{dpath}" fill="none" stroke="{"#2B2F36" if dark else "#1F2328"}" stroke-width="{w:.1f}" stroke-linejoin="round"/>')
+        d.body.append(f'<path d="{dpath}" fill="none" stroke="#E8EAED" stroke-width="{max(2, w*0.08):.1f}" stroke-dasharray="{w*0.5:.1f} {w*0.45:.1f}"/>')
+        # Start-Ziel: Schachbrett quer über die Gerade (Stamm)
+        sq = 6.5
+        for r in range(2):
+            for c in range(4):
+                if (r + c) % 2:
+                    col = "#FFFFFF"
+                else:
+                    col = "#111316"
+                x0, y0 = 1 + c * sq, 128 + r * sq
+                pts = _sw._sk([(x0, y0), (x0 + sq, y0), (x0 + sq, y0 + sq), (x0, y0 + sq)], ox, oy, s, 14)
+                d.path(_sw._d(pts), col)
+    T = [(196, 0), (402, 0), (386, 50), (312, 50), (282, 200), (226, 200), (254, 50), (182, 50)]
+    nt = d.path(_sw._d(_sw._sk(T, ox, oy, s, 14)), mono or d.lin([(0, "#FF2338"), (1, "#B80018")]))
+    if not mono:
+        d.shadow(nt, blur=8, dy=5, opacity=0.3)
+    return (402 + 200 * math.tan(math.radians(14))) * s
+
+
+def stacked3(dark, bg=True):
+    d = Doc(1200, 800, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    s = 1.55
+    ew = (402 + 200 * math.tan(math.radians(14))) * s
+    track_emblem(d, (1200 - ew) / 2 + 10, 60, s, dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    w = centered_text(d, "BEAM TURISMO", 590, 96, fg, weight="Black", wide=1.18, slant=14)
+    x0 = (d.w - w) / 2
+    d.path(swoosh(x0 - 10, x0 + w + 30, 638, 20, 10), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 700, 24, SILVER if dark else "#5A5F67", weight="Bold", wide=1.15, slant=14, track=0.32)
+    return d
+
+
+def wide3(dark, bg=True):
+    d = Doc(1600, 320, ("#0E0F12" if dark else "#F2F3F5") if bg else None)
+    ew = track_emblem(d, 70, 50, 1.0, dark)
+    fg = "#FFFFFF" if dark else "#2A2E35"
+    x = 70 + ew + 40
+    w = d.text("BEAM TURISMO", x, 200, 110, fg, weight="Black", wide=1.18, slant=14)
+    d.path(swoosh(x - 6, x + w + 20, 248, 14, 9), d.lin([(0, RED_D), (0.6, RED), (1, "#FF2A3C")], 0, 0, 1, 0))
+    d.w = int(x + w + 60)
+    return d
+
+
+def icon3():
+    d = Doc(256, 256)
+    s = 236 / (402 + 200 * math.tan(math.radians(14)))
+    track_emblem(d, 10, 128 - 100 * s, s, True)
+    return d
+
+
+def main3(out):
+    os.makedirs(out, exist_ok=True)
+    items = {"icon_g": icon3()}
+    for dark in (False, True):
+        t = "dunkel" if dark else "hell"
+        items[f"logo_g_{t}"] = stacked3(dark)
+        items[f"logo_g_auf_{t}"] = stacked3(dark, False)
+        items[f"leiste_g_auf_{t}"] = wide3(dark, False)
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde3":
+    main3(sys.argv[1])
+
+
+# ---------- Runde 5: BT-Zeichen in BeamNG-Farben mit Tiefe (VectorCraft threeD.inflate) ----------
+import bt_mark as _bm
+
+BNG_ORANGE, BNG_ORANGE_D = "#FF6600", "#B34700"
+BNG_STEEL = "#3D5975"      # BeamNG-Blaugrau, aufgehellt, damit es auf Schwarz trägt
+BNG_STEEL_L = "#E9EEF3"    # helle Variante (B fast weiß)
+
+
+def inflate(d, name, volume):
+    d.fx.append((name, "threeD.inflate", {"volume": volume, "rotationX": 0, "rotationY": 0, "rotationZ": 0,
+                                          "lightRotation": 125, "lightHeight": 45, "lightIntensity": 90,
+                                          "lightSoftness": 25, "ambient": 40}))
+
+
+def mark5(d, mode, ox, oy, s, bcol, tcol, volume, mono=None):
+    B, T = _bm.mark(mode)
+    for i, p in enumerate(B):
+        n = d.uid("b")
+        d.path(_bm.d_of(_bm.sk(p, ox, oy, s)), mono or bcol, name=n)
+        if volume and not mono: inflate(d, n, volume)
+    for p in T:
+        n = d.uid("t")
+        d.path(_bm.d_of(_bm.sk(p, ox, oy, s)), mono or tcol, name=n)
+        if volume and not mono: inflate(d, n, volume)
+
+
+def main5(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for mode, lab in (("normal", "1"), ("dach", "2")):
+        for bgname, bg, bcol in (("dunkel", "#0B0D10", BNG_STEEL_L), ("dunkelblau", "#0B0D10", BNG_STEEL), ("hell", "#F2F3F5", BNG_STEEL)):
+            for vol in (35, 65):
+                oy = 110 if mode == "dach" else 40
+                d = Doc(900, 400 if mode == "dach" else 330, bg)
+                mark5(d, mode, 150, oy, 1.4, bcol, BNG_ORANGE, vol)
+                items[f"z{lab}_{bgname}_v{vol}"] = d
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde5":
+    main5(sys.argv[1])
+
+
+# ---------- Runde 5b: Glanz-Look ohne Inflate (sauberere Kanten): Verlauf, Glanzkante, Innenlicht ----------
+def glossy_piece(d, dpath, top, bot, y0, y1, rim="#FFFFFF"):
+    cid = d.uid("cl")
+    d.defs.append(f'<clipPath id="{cid}"><path d="{dpath}" clip-rule="evenodd"/></clipPath>')
+    g = d.uid("gr")
+    d.defs.append(f'<linearGradient id="{g}" gradientUnits="userSpaceOnUse" x1="0" y1="{y0:.1f}" x2="0" y2="{y1:.1f}">'
+                  f'<stop offset="0" stop-color="{top}"/><stop offset="0.55" stop-color="{bot}"/><stop offset="1" stop-color="{bot}"/></linearGradient>')
+    n = d.uid("piece")
+    d.body.append(f'<path id="{n}" d="{dpath}" fill="url(#{g})" fill-rule="evenodd"/>')
+    d.shadow(n, blur=10, dy=6, opacity=0.45)
+    h = d.uid("gl")
+    d.defs.append(f'<linearGradient id="{h}" gradientUnits="userSpaceOnUse" x1="0" y1="{y0:.1f}" x2="0" y2="{y0 + (y1 - y0) * 0.5:.1f}">'
+                  f'<stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>')
+    d.body.append(f'<g clip-path="url(#{cid})"><rect x="0" y="{y0:.1f}" width="{d.w}" height="{(y1 - y0) * 0.46:.1f}" fill="url(#{h})"/>'
+                  f'<path d="{dpath}" fill="none" stroke="{rim}" stroke-opacity="0.45" stroke-width="5"/>'
+                  f'<path d="{dpath}" fill="none" stroke="#000000" stroke-opacity="0.25" stroke-width="2"/></g>')
+
+
+def mark5b(d, mode, ox, oy, s, bcols, tcols):
+    B, T = _bm.mark(mode)
+    ys = [y for p in B + T for _, y in _bm.sk(p, ox, oy, s)]
+    y0, y1 = min(ys), max(ys)
+    for p in B:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), bcols[0], bcols[1], oy, oy + 200 * s)
+    for p in T:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), tcols[0], tcols[1], y0, y1)
+
+
+ORANGE = ("#FF8A2A", "#E35300")
+WHITE = ("#FFFFFF", "#AEB9C4")
+STEEL = ("#6E8FB0", "#2B4561")
+
+
+def main5b(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for mode, lab in (("normal", "1"), ("dach", "2")):
+        for bgname, bg, bcols in (("dunkel", "#0B0D10", WHITE), ("dunkelblau", "#0B0D10", STEEL), ("hell", "#F2F3F5", STEEL)):
+            oy = 130 if mode == "dach" else 50
+            d = Doc(900, 460 if mode == "dach" else 380, bg)
+            mark5b(d, mode, 150, oy, 1.4, bcols, ORANGE)
+            items[f"g{lab}_{bgname}"] = d
+    # Komplettlogo: Zeichen (Dach-Variante) + Schriftzug darunter
+    for bgname, bg, bcols, fg, sub in (("dunkel", "#0B0D10", WHITE, "#F2F3F5", "#8A96A3"),
+                                        ("hell", "#F2F3F5", STEEL, "#1B2633", "#5A5F67")):
+        d = Doc(1100, 680, bg)
+        mark5b(d, "dach", 282, 120, 1.15, bcols, ORANGE)
+        w = centered_text(d, "BEAM TURISMO", 500, 96, fg, weight="Black", wide=1.18, slant=14)
+        d.path(para(550 - w / 2 + 6, 530, w - 12, 7, 2), d.lin([(0, "#E35300"), (1, "#FF8A2A")], 0, 0, 1, 0))
+        centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 590, 26, sub, weight="Bold", wide=1.15, slant=14, track=0.32)
+        items[f"komplett_{bgname}"] = d
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde5b":
+    main5b(sys.argv[1])
+
+
+def mark6(d, mode, ox, oy, s, bcols, tcols):
+    B, T = _bm.mark_solid(mode)
+    ys = [y for p in T for _, y in _bm.sk(p, ox, oy, s)] + [oy, oy + 200 * s]
+    y0, y1 = min(ys), max(ys)
+    for parts in B:
+        glossy_piece(d, _bm.d_multi([_bm.sk(p, ox, oy, s) for p in parts]), bcols[0], bcols[1], oy, oy + 200 * s)
+    for p in T:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), tcols[0], tcols[1], y0, y1)
+
+
+def main6(out):
+    global mark5b
+    mark5b = mark6
+    main5b(out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde6":
+    main6(sys.argv[1])
+
+
+def mark7(d, mode, ox, oy, s, bcols, tcols):
+    B, T = _bm.mark_soft(mode)
+    y0, y1 = oy - (62 * s if mode == "dach" else 0), oy + 200 * s
+    for parts in B:
+        glossy_piece(d, _bm.d_multi([_bm.sk(p, ox, oy, s) for p in parts]), bcols[0], bcols[1], y0, y1)
+    for p in T:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), tcols[0], tcols[1], y0, y1)
+
+
+def main7(out):
+    """Silber-B auf dunkel/hell, gerundete Ecken; je mit und ohne Dach + Komplettlogo."""
+    global mark5b
+    mark5b = mark7
+    main5b(out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde7":
+    main7(sys.argv[1])
+
+
+# ---------- Runde 8: Schrift Russo One (OFL), Alex' Wahl aus der Schriftenübersicht ----------
+RUSSO = "RussoOne-Regular.ttf"
+SILVER_B = ("#FFFFFF", "#AEB9C4")
+
+
+def russo_cap(size):
+    f = font(RUSSO)
+    return f["OS/2"].sCapHeight * size / f["head"].unitsPerEm
+
+
+def bt_mark8(d, x, base, size, bcols, tcols=ORANGE, wide=1.04, gap=0.02):
+    """B und T einzeln als Glanz-Teile. Gibt die Breite zurück."""
+    top = base - russo_cap(size)
+    db, wb = text_path("B", size, weight=RUSSO, wide=wide, slant=12, ox=x, oy=base)
+    dt, wt = text_path("T", size, weight=RUSSO, wide=wide, slant=12, ox=x + wb + gap * size, oy=base)
+    glossy_piece(d, db, bcols[0], bcols[1], top, base)
+    glossy_piece(d, dt, tcols[0], tcols[1], top, base)
+    return wb + gap * size + wt
+
+
+def mark8_width(size, wide=1.04, gap=0.02):
+    return text_path("B", size, weight=RUSSO, wide=wide)[1] + gap * size + text_path("T", size, weight=RUSSO, wide=wide)[1]
+
+
+def main8(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    looks = (("dunkel", "#0B0D10", SILVER_B, "#F2F3F5", "#8A96A3"), ("hell", "#F2F3F5", STEEL, "#1B2633", "#5A5F67"),
+             # ohne Hintergrund (für den Mod, werden danach zugeschnitten)
+             ("frei_dunkel", None, SILVER_B, "#F2F3F5", "#8A96A3"), ("frei_hell", None, STEEL, "#1B2633", "#5A5F67"))
+    for bgname, bg, bcols, fg, sub in looks:
+        # Komplettlogo
+        d = Doc(1100, 640, bg)
+        size = 270
+        bt_mark8(d, (1100 - mark8_width(size)) / 2 - 12, 330, size, bcols)
+        dp, w = text_path("BEAM TURISMO", 92, weight=RUSSO, wide=1.0, slant=12, track=0.01)
+        d.body.append(f'<g transform="translate({(1100 - w) / 2:.1f} 470)"><path id="{d.uid("t")}" d="{dp}" fill="{fg}"/></g>')
+        d.path(para((1100 - w) / 2 + 4, 498, w - 8, 7, 2), d.lin([(0, "#E35300"), (1, "#FF8A2A")], 0, 0, 1, 0))
+        centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 560, 24, sub, weight=RUSSO, wide=1.0, slant=12, track=0.3)
+        items[f"komplett_{bgname}"] = d
+        # nur Zeichen
+        d = Doc(800, 420, bg)
+        size = 300
+        bt_mark8(d, (800 - mark8_width(size)) / 2 - 14, 330, size, bcols)
+        items[f"zeichen_{bgname}"] = d
+        # Leiste (Querformat: Zeichen links, Schrift rechts)
+        d = Doc(1300, 260, bg)
+        mw = bt_mark8(d, 40, 190, 170, bcols)
+        d.text("BEAM TURISMO", 40 + mw + 50, 165, 78, fg, weight=RUSSO, wide=1.0, slant=12, track=0.01)
+        d.text("KARRIERE FÜR BEAMNG.DRIVE", 40 + mw + 54, 212, 22, sub, weight=RUSSO, wide=1.0, slant=12, track=0.3)
+        items[f"leiste_{bgname}"] = d
+    # Hauptmenü-Icon: Zeichen auf dunkler Kachel
+    d = Doc(512, 512, None)
+    d.defs.append('<linearGradient id="tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E242C"/><stop offset="1" stop-color="#0B0D10"/></linearGradient>')
+    d.body.append('<rect x="16" y="16" width="480" height="480" rx="96" fill="url(#tile)" stroke="#FF6600" stroke-opacity="0.85" stroke-width="10"/>')
+    size = 250
+    bt_mark8(d, (512 - mark8_width(size)) / 2 - 12, 256 + russo_cap(size) / 2, size, SILVER_B)
+    items["menu_icon"] = d
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde8":
+    main8(sys.argv[1])
