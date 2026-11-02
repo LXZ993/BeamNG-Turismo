@@ -23,7 +23,10 @@ _fonts = {}
 
 def font(weight):
     if weight not in _fonts:
-        _fonts[weight] = TTFont(os.path.join(FONT_DIR, f"InterDisplay-{weight}.otf"))
+        if weight.endswith(".ttf"):  # eigene Schrift aus tools/art/fonts/
+            _fonts[weight] = TTFont(os.path.join(os.path.dirname(os.path.abspath(__file__)), "fonts", weight))
+        else:
+            _fonts[weight] = TTFont(os.path.join(FONT_DIR, f"InterDisplay-{weight}.otf"))
     return _fonts[weight]
 
 
@@ -276,7 +279,7 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
     if len(sys.argv) > 2 and sys.argv[2] == "runde1":
         main(out)
-    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b", "runde6", "runde7"):
+    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b", "runde6", "runde7", "runde8"):
         pass  # main3 läuft am Dateiende (braucht die Funktionen darunter)
     else:
         main2(out)
@@ -511,3 +514,69 @@ def main7(out):
 
 if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde7":
     main7(sys.argv[1])
+
+
+# ---------- Runde 8: Schrift Russo One (OFL), Alex' Wahl aus der Schriftenübersicht ----------
+RUSSO = "RussoOne-Regular.ttf"
+SILVER_B = ("#FFFFFF", "#AEB9C4")
+
+
+def russo_cap(size):
+    f = font(RUSSO)
+    return f["OS/2"].sCapHeight * size / f["head"].unitsPerEm
+
+
+def bt_mark8(d, x, base, size, bcols, tcols=ORANGE, wide=1.04, gap=0.02):
+    """B und T einzeln als Glanz-Teile. Gibt die Breite zurück."""
+    top = base - russo_cap(size)
+    db, wb = text_path("B", size, weight=RUSSO, wide=wide, slant=12, ox=x, oy=base)
+    dt, wt = text_path("T", size, weight=RUSSO, wide=wide, slant=12, ox=x + wb + gap * size, oy=base)
+    glossy_piece(d, db, bcols[0], bcols[1], top, base)
+    glossy_piece(d, dt, tcols[0], tcols[1], top, base)
+    return wb + gap * size + wt
+
+
+def mark8_width(size, wide=1.04, gap=0.02):
+    return text_path("B", size, weight=RUSSO, wide=wide)[1] + gap * size + text_path("T", size, weight=RUSSO, wide=wide)[1]
+
+
+def main8(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    looks = (("dunkel", "#0B0D10", SILVER_B, "#F2F3F5", "#8A96A3"), ("hell", "#F2F3F5", STEEL, "#1B2633", "#5A5F67"))
+    for bgname, bg, bcols, fg, sub in looks:
+        # Komplettlogo
+        d = Doc(1100, 640, bg)
+        size = 270
+        bt_mark8(d, (1100 - mark8_width(size)) / 2 - 12, 330, size, bcols)
+        dp, w = text_path("BEAM TURISMO", 92, weight=RUSSO, wide=1.0, slant=12, track=0.01)
+        d.body.append(f'<g transform="translate({(1100 - w) / 2:.1f} 470)"><path id="{d.uid("t")}" d="{dp}" fill="{fg}"/></g>')
+        d.path(para((1100 - w) / 2 + 4, 498, w - 8, 7, 2), d.lin([(0, "#E35300"), (1, "#FF8A2A")], 0, 0, 1, 0))
+        centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 560, 24, sub, weight=RUSSO, wide=1.0, slant=12, track=0.3)
+        items[f"komplett_{bgname}"] = d
+        # nur Zeichen
+        d = Doc(800, 420, bg)
+        size = 300
+        bt_mark8(d, (800 - mark8_width(size)) / 2 - 14, 330, size, bcols)
+        items[f"zeichen_{bgname}"] = d
+        # Leiste (Querformat: Zeichen links, Schrift rechts)
+        d = Doc(1300, 260, bg)
+        mw = bt_mark8(d, 40, 190, 170, bcols)
+        d.text("BEAM TURISMO", 40 + mw + 50, 165, 78, fg, weight=RUSSO, wide=1.0, slant=12, track=0.01)
+        d.text("KARRIERE FÜR BEAMNG.DRIVE", 40 + mw + 54, 212, 22, sub, weight=RUSSO, wide=1.0, slant=12, track=0.3)
+        items[f"leiste_{bgname}"] = d
+    # Hauptmenü-Icon: Zeichen auf dunkler Kachel
+    d = Doc(512, 512, None)
+    d.defs.append('<linearGradient id="tile" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#1E242C"/><stop offset="1" stop-color="#0B0D10"/></linearGradient>')
+    d.body.append('<rect x="16" y="16" width="480" height="480" rx="96" fill="url(#tile)" stroke="#FF6600" stroke-opacity="0.85" stroke-width="10"/>')
+    size = 250
+    bt_mark8(d, (512 - mark8_width(size)) / 2 - 12, 256 + russo_cap(size) / 2, size, SILVER_B)
+    items["menu_icon"] = d
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde8":
+    main8(sys.argv[1])
