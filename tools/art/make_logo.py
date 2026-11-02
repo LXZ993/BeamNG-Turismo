@@ -276,7 +276,7 @@ if __name__ == "__main__":
     out = sys.argv[1] if len(sys.argv) > 1 else "tools/art/out/logo"
     if len(sys.argv) > 2 and sys.argv[2] == "runde1":
         main(out)
-    elif len(sys.argv) > 2 and sys.argv[2] == "runde3":
+    elif len(sys.argv) > 2 and sys.argv[2] in ("runde3", "runde5", "runde5b"):
         pass  # main3 läuft am Dateiende (braucht die Funktionen darunter)
     else:
         main2(out)
@@ -364,3 +364,110 @@ def main3(out):
 
 if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde3":
     main3(sys.argv[1])
+
+
+# ---------- Runde 5: BT-Zeichen in BeamNG-Farben mit Tiefe (VectorCraft threeD.inflate) ----------
+import bt_mark as _bm
+
+BNG_ORANGE, BNG_ORANGE_D = "#FF6600", "#B34700"
+BNG_STEEL = "#3D5975"      # BeamNG-Blaugrau, aufgehellt, damit es auf Schwarz trägt
+BNG_STEEL_L = "#E9EEF3"    # helle Variante (B fast weiß)
+
+
+def inflate(d, name, volume):
+    d.fx.append((name, "threeD.inflate", {"volume": volume, "rotationX": 0, "rotationY": 0, "rotationZ": 0,
+                                          "lightRotation": 125, "lightHeight": 45, "lightIntensity": 90,
+                                          "lightSoftness": 25, "ambient": 40}))
+
+
+def mark5(d, mode, ox, oy, s, bcol, tcol, volume, mono=None):
+    B, T = _bm.mark(mode)
+    for i, p in enumerate(B):
+        n = d.uid("b")
+        d.path(_bm.d_of(_bm.sk(p, ox, oy, s)), mono or bcol, name=n)
+        if volume and not mono: inflate(d, n, volume)
+    for p in T:
+        n = d.uid("t")
+        d.path(_bm.d_of(_bm.sk(p, ox, oy, s)), mono or tcol, name=n)
+        if volume and not mono: inflate(d, n, volume)
+
+
+def main5(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for mode, lab in (("normal", "1"), ("dach", "2")):
+        for bgname, bg, bcol in (("dunkel", "#0B0D10", BNG_STEEL_L), ("dunkelblau", "#0B0D10", BNG_STEEL), ("hell", "#F2F3F5", BNG_STEEL)):
+            for vol in (35, 65):
+                oy = 110 if mode == "dach" else 40
+                d = Doc(900, 400 if mode == "dach" else 330, bg)
+                mark5(d, mode, 150, oy, 1.4, bcol, BNG_ORANGE, vol)
+                items[f"z{lab}_{bgname}_v{vol}"] = d
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde5":
+    main5(sys.argv[1])
+
+
+# ---------- Runde 5b: Glanz-Look ohne Inflate (sauberere Kanten): Verlauf, Glanzkante, Innenlicht ----------
+def glossy_piece(d, dpath, top, bot, y0, y1, rim="#FFFFFF"):
+    cid = d.uid("cl")
+    d.defs.append(f'<clipPath id="{cid}"><path d="{dpath}"/></clipPath>')
+    g = d.uid("gr")
+    d.defs.append(f'<linearGradient id="{g}" gradientUnits="userSpaceOnUse" x1="0" y1="{y0:.1f}" x2="0" y2="{y1:.1f}">'
+                  f'<stop offset="0" stop-color="{top}"/><stop offset="0.55" stop-color="{bot}"/><stop offset="1" stop-color="{bot}"/></linearGradient>')
+    n = d.uid("piece")
+    d.body.append(f'<path id="{n}" d="{dpath}" fill="url(#{g})"/>')
+    d.shadow(n, blur=10, dy=6, opacity=0.45)
+    h = d.uid("gl")
+    d.defs.append(f'<linearGradient id="{h}" gradientUnits="userSpaceOnUse" x1="0" y1="{y0:.1f}" x2="0" y2="{y0 + (y1 - y0) * 0.5:.1f}">'
+                  f'<stop offset="0" stop-color="#FFFFFF" stop-opacity="0.55"/><stop offset="1" stop-color="#FFFFFF" stop-opacity="0"/></linearGradient>')
+    d.body.append(f'<g clip-path="url(#{cid})"><rect x="0" y="{y0:.1f}" width="{d.w}" height="{(y1 - y0) * 0.46:.1f}" fill="url(#{h})"/>'
+                  f'<path d="{dpath}" fill="none" stroke="{rim}" stroke-opacity="0.45" stroke-width="5"/>'
+                  f'<path d="{dpath}" fill="none" stroke="#000000" stroke-opacity="0.25" stroke-width="2"/></g>')
+
+
+def mark5b(d, mode, ox, oy, s, bcols, tcols):
+    B, T = _bm.mark(mode)
+    ys = [y for p in B + T for _, y in _bm.sk(p, ox, oy, s)]
+    y0, y1 = min(ys), max(ys)
+    for p in B:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), bcols[0], bcols[1], oy, oy + 200 * s)
+    for p in T:
+        glossy_piece(d, _bm.d_of(_bm.sk(p, ox, oy, s)), tcols[0], tcols[1], y0, y1)
+
+
+ORANGE = ("#FF8A2A", "#E35300")
+WHITE = ("#FFFFFF", "#AEB9C4")
+STEEL = ("#6E8FB0", "#2B4561")
+
+
+def main5b(out):
+    os.makedirs(out, exist_ok=True)
+    items = {}
+    for mode, lab in (("normal", "1"), ("dach", "2")):
+        for bgname, bg, bcols in (("dunkel", "#0B0D10", WHITE), ("dunkelblau", "#0B0D10", STEEL), ("hell", "#F2F3F5", STEEL)):
+            oy = 130 if mode == "dach" else 50
+            d = Doc(900, 460 if mode == "dach" else 380, bg)
+            mark5b(d, mode, 150, oy, 1.4, bcols, ORANGE)
+            items[f"g{lab}_{bgname}"] = d
+    # Komplettlogo: Zeichen (Dach-Variante) + Schriftzug darunter
+    for bgname, bg, bcols, fg, sub in (("dunkel", "#0B0D10", WHITE, "#F2F3F5", "#8A96A3"),
+                                        ("hell", "#F2F3F5", STEEL, "#1B2633", "#5A5F67")):
+        d = Doc(1100, 680, bg)
+        mark5b(d, "dach", 282, 120, 1.15, bcols, ORANGE)
+        w = centered_text(d, "BEAM TURISMO", 500, 96, fg, weight="Black", wide=1.18, slant=14)
+        d.path(para(550 - w / 2 + 6, 530, w - 12, 7, 2), d.lin([(0, "#E35300"), (1, "#FF8A2A")], 0, 0, 1, 0))
+        centered_text(d, "KARRIERE FÜR BEAMNG.DRIVE", 590, 26, sub, weight="Bold", wide=1.15, slant=14, track=0.32)
+        items[f"komplett_{bgname}"] = d
+    for name, d in items.items():
+        open(os.path.join(out, name + ".svg"), "w").write(d.svg())
+        json.dump(d.steps(), open(os.path.join(out, name + "_steps.json"), "w"), indent=1)
+    print(len(items), "Grafiken nach", out)
+
+
+if __name__ == "__main__" and len(sys.argv) > 2 and sys.argv[2] == "runde5b":
+    main5b(sys.argv[1])
